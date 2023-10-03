@@ -1,0 +1,121 @@
+import { type ClassValue, clsx } from "clsx";
+import {
+  formatDistanceToNowStrict,
+  getDaysInMonth,
+  parse,
+  parseISO,
+} from "date-fns";
+import { twMerge } from "tailwind-merge";
+import locale from "date-fns/locale/id";
+import { format } from "date-fns";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+export function daysInMonths(month: string, year?: string) {
+  const monthNames = [
+    "january",
+    "february",
+    "march",
+    "april",
+    "may",
+    "june",
+    "july",
+    "august",
+    "september",
+    "october",
+    "november",
+    "december",
+  ];
+
+  const currentYear = new Date().getFullYear();
+  const index = monthNames.indexOf(month);
+
+  if (!year) {
+    const result = getDaysInMonth(new Date(currentYear, index));
+    return result;
+  } else {
+    const result = getDaysInMonth(new Date(Number(year), index));
+    return result;
+  }
+}
+
+export function generateYearArray() {
+  const currentYear = new Date().getFullYear();
+  const startYear = 1950;
+
+  const yearArray = [];
+
+  for (let year = currentYear; year >= startYear; year--) {
+    yearArray.push({ value: year.toString(), label: year.toString() });
+  }
+
+  return yearArray;
+}
+
+const formatDistanceLocale = {
+  lessThanXSeconds: "just now",
+  xSeconds: "just now",
+  halfAMinute: "just now",
+  lessThanXMinutes: "{{count}}m",
+  xMinutes: "{{count}}m",
+  aboutXHours: "{{count}}h",
+  xHours: "{{count}}h",
+  xDays: "{{count}}d",
+  aboutXWeeks: "{{count}}w",
+  xWeeks: "{{count}}w",
+  aboutXMonths: "{{count}}m",
+  xMonths: "{{count}}m",
+  aboutXYears: "{{count}}y",
+  xYears: "{{count}}y",
+  overXYears: "{{count}}y",
+  almostXYears: "{{count}}y",
+};
+
+function formatDistance(token: string, count: number, options?: any): string {
+  options = options || {};
+
+  const result = formatDistanceLocale[
+    token as keyof typeof formatDistanceLocale
+  ].replace("{{count}}", count.toString());
+
+  if (options.addSuffix) {
+    if (options.comparison > 0) {
+      return "in " + result;
+    } else {
+      if (result === "just now") return result;
+      return result + " ago";
+    }
+  }
+
+  return result;
+}
+
+export function formatTimeToNow(date: Date): string {
+  return formatDistanceToNowStrict(date, {
+    addSuffix: true,
+    locale: {
+      ...locale,
+      formatDistance,
+    },
+  });
+}
+
+export function removeAtSymbol(username: string) {
+  if (username.startsWith("@")) {
+    return username.substring(1); // Remove the "@" character
+  } else {
+    return username;
+  }
+}
+
+export function formatBirthdate(inputDate: string): string {
+  const parsedDate = parseISO(inputDate);
+  return format(parsedDate, "MMMM dd, yyyy");
+}
+
+// export function formatJoinDate(inputDate: string): string {
+//   const parsedDate = parse(inputDate, "yyyy-MM-dd HH:mm:ss", new Date());
+//   return format(parsedDate, "MMMM yyyy");
+// }

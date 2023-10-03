@@ -1,0 +1,151 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model User {
+  id         String   @id @unique
+  name       String
+  username   String   @unique
+  bio        String?
+  email      String
+  avatar     String
+  birthdate  String?
+  onboarding Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  auth_sessions Session[]
+  keys          Key[]
+
+  user_followers Follower[] @relation("userFollower")
+  followers      Follower[] @relation("followerId")
+
+  user_followings Following[] @relation("userFollowing")
+  followings      Following[] @relation("followingId")
+
+  posts_user_one Post[]   @relation("userOne")
+  posts_user_two Post[]   @relation("userTwo")
+  replys         Reply[]
+  reposts        Repost[]
+  likes          Like[]
+
+  @@index([username])
+  @@map("user")
+}
+
+model Session {
+  id             String @id @unique
+  user_id        String
+  active_expires BigInt
+  idle_expires   BigInt
+  user           User   @relation(references: [id], fields: [user_id])
+
+  @@index([user_id])
+  @@map("session")
+}
+
+model Key {
+  id              String  @id @unique
+  hashed_password String?
+  user_id         String
+  user            User    @relation(references: [id], fields: [user_id])
+
+  @@index([user_id])
+  @@map("key")
+}
+
+model Follower {
+  user_to_follow_id  String
+  user               User   @relation("userFollower", fields: [user_to_follow_id], references: [id], onDelete: Cascade)
+  user_who_follow_id String
+  follower           User   @relation("followerId", fields: [user_who_follow_id], references: [id], onDelete: Cascade)
+
+  @@id([user_to_follow_id, user_who_follow_id])
+  @@unique([user_to_follow_id, user_who_follow_id])
+  @@index([user_who_follow_id])
+  @@map("follower")
+}
+
+model Following {
+  user_who_follow_id String
+  user               User   @relation("userFollowing", fields: [user_who_follow_id], references: [id], onDelete: Cascade)
+  user_to_follow_id  String
+  following          User   @relation("followingId", fields: [user_to_follow_id], references: [id], onDelete: Cascade)
+
+  @@id([user_who_follow_id, user_to_follow_id])
+  @@unique([user_who_follow_id, user_to_follow_id])
+  @@index([user_to_follow_id])
+  @@map("following")
+}
+
+model Post {
+  id          String   @id @unique @default(cuid())
+  user_one_id String
+  user_one    User     @relation("userOne", fields: [user_one_id], references: [id], onDelete: Cascade)
+  user_two_id String?
+  user_two    User?    @relation("userTwo", fields: [user_two_id], references: [id], onDelete: Cascade)
+  content     String?  @db.Text()
+  image_url   String?  @db.Text()
+  views       Int      @default(0)
+  post_type   PostType @default(POST)
+  is_deleted  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  originalPostId String?
+
+  replys  Reply[]
+  reposts Repost[]
+  likes   Like[]
+
+  @@index([user_one_id])
+  @@map("post")
+}
+
+enum PostType {
+  POST
+  REPOST
+}
+
+model Reply {
+  user_id String
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  post_id String
+  post    Post   @relation(fields: [post_id], references: [id], onDelete: Cascade)
+
+  @@id([user_id, post_id])
+  @@map("reply")
+}
+
+enum RepostType {
+  REPOST
+  QUOTE
+}
+
+model Repost {
+  user_id     String
+  user        User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  post_id     String
+  post        Post       @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  repost_type RepostType
+
+  @@id([user_id, post_id])
+  @@map("repost")
+}
+
+model Like {
+  user_id String
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  post_id String
+  post    Post   @relation(fields: [post_id], references: [id], onDelete: Cascade)
+
+  @@id([user_id, post_id])
+  @@map("like")
+}
