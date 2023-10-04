@@ -1,28 +1,17 @@
 "use client";
 
 import { Icons } from "@/components/icons";
-import { cn } from "@/lib/utils";
-import { LikePayload } from "@/lib/validator/like";
-import { Like, Repost, User } from "@prisma/client";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-  Button,
-} from "@nextui-org/react";
+import { Repost } from "@prisma/client";
+import { Button } from "@nextui-org/react";
 
-import axios from "axios";
 import * as React from "react";
 import { toast } from "sonner";
-import { Counter } from "../../framer-motion/counter";
 import LikeButton from "./like-button";
 import RepostButton from "./repost-button";
-import { ExtendedPost } from "@/types/db";
+import { ExtendedPost, ExtendedPostWithoutUserTwo } from "@/types/db";
 
 type PostActionButtonProps = {
-  post: ExtendedPost;
+  post: ExtendedPost | ExtendedPostWithoutUserTwo;
   currentUserId: string;
   reposts: Repost[];
 };

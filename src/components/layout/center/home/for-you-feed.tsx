@@ -1,6 +1,6 @@
 "use client";
 
-import Post from "../post";
+import Post from "../post/post";
 import { ExtendedPost } from "@/types/db";
 import { useIntersection } from "@mantine/hooks";
 
@@ -8,7 +8,7 @@ import * as React from "react";
 import { Loader2 } from "lucide-react";
 import { PostType, User } from "@prisma/client";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
-import Repost from "../repost";
+import Repost from "../post/repost";
 
 type ForYouFeedProps = {
   user: User;
@@ -63,7 +63,7 @@ export default function ForYouFeed({ user }: ForYouFeedProps) {
                       post={post}
                       userPosted={post.user_one.avatar}
                       currentUser={user}
-                      postUserOwnser={post.user_two}
+                      postUserOwner={post.user_two}
                     />
                   </li>
                 );
@@ -85,7 +85,7 @@ export default function ForYouFeed({ user }: ForYouFeedProps) {
                     post={post}
                     userPosted={post.user_one.avatar}
                     currentUser={user}
-                    postUserOwnser={post.user_two}
+                    postUserOwner={post.user_two}
                   />
                 );
               }

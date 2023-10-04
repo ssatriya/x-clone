@@ -1,64 +1,145 @@
 "use client";
 
+import * as React from "react";
+
 import { Icons } from "@/components/icons";
-import { formatBirthdate } from "@/lib/utils";
+import { formatBirthdate, removeAtSymbol } from "@/lib/utils";
 import { Avatar, Button, Image } from "@nextui-org/react";
-import { User } from "@prisma/client";
-import { useMutation } from "@tanstack/react-query";
-import { Session } from "lucia";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FollowPayload } from "@/lib/validator/follow";
 import axios from "axios";
 import { toast } from "sonner";
-import { UserWithFollowersFollowing } from "@/types/db";
+import { Followers, Following, UserWithFollowersFollowing } from "@/types/db";
+import { User } from "@prisma/client";
+import { useRouter } from "next/navigation";
 
 type ProfileInfoProps = {
-  otherUser: UserWithFollowersFollowing;
+  userByUsername: UserWithFollowersFollowing;
   currentUser?: UserWithFollowersFollowing;
 };
 
 export default function ProfileInfo({
-  otherUser,
+  userByUsername,
   currentUser,
 }: ProfileInfoProps) {
+  const queryClient = useQueryClient();
+
+  const [followersAmt, setFollowersAmt] = React.useState<User[]>(
+    userByUsername.followers
+  );
+  const [followingsAmt, setFollowingsAmt] = React.useState<User[]>(
+    userByUsername.following
+  );
+  const [currUserFollowing, setCurrUserFollowing] = React.useState<
+    User[] | undefined
+  >(currentUser?.following);
+
+  const { data: followersData } = useQuery({
+    queryKey: ["followersData", userByUsername],
+    queryFn: async () => {
+      const { data } = await axios.get("/api/follow", {
+        params: {
+          userId: userByUsername.id,
+          follow: "followers",
+        },
+      });
+      return data as Followers;
+    },
+  });
+
+  const { data: followingData } = useQuery({
+    queryKey: ["followingData", userByUsername],
+    queryFn: async () => {
+      const { data } = await axios.get("/api/follow", {
+        params: {
+          userId: userByUsername.id,
+          follow: "following",
+        },
+      });
+      return data as Following;
+    },
+  });
+
+  React.useEffect(() => {
+    if (followersData) {
+      setFollowersAmt(followersData.followers);
+    }
+  }, [followersData]);
+
+  React.useEffect(() => {
+    if (followingData) {
+      setFollowingsAmt(followingData.following);
+    }
+  }, [followingData]);
+
   const bithdate = formatBirthdate(
-    otherUser.birthdate ? otherUser.birthdate : ""
+    userByUsername.birthdate ? userByUsername.birthdate : ""
   );
   // const joinDate = formatJoinDate(user.createdAt.toString());
 
-  const isMyProfile = otherUser.id === currentUser?.id;
+  const isMyProfile = userByUsername.id === currentUser?.id;
 
   const { mutate: followUser } = useMutation({
-    mutationKey: ["followButton", otherUser],
+    mutationKey: ["followButton", userByUsername],
     mutationFn: async () => {
       const payload: FollowPayload = {
-        userToFollowId: otherUser.id,
+        currentUserId: currentUser!.id,
+        viewedUserId: userByUsername.id,
       };
 
       const { data } = await axios.post("/api/follow", payload);
-      console.log(data);
       return data as string;
     },
     onError: () => {
       toast.error("Failed to follow, try again later.");
     },
-    onSuccess: () => {
-      toast.success("Followed");
+    onSuccess: (data) => {
+      if (data === "Followed") {
+        toast.success("Followed");
+      } else if (data === "Unfollowed") {
+        toast.error("Unfollowed");
+      }
+      queryClient.invalidateQueries({ queryKey: ["followersData"] });
+      queryClient.invalidateQueries({ queryKey: ["followingData"] });
+      queryClient.invalidateQueries({ queryKey: ["currUFollowing"] });
     },
   });
 
   const handleFollow = () => {
-    followUser();
+    followUser(); // temporary place, should be after current user check
     if (currentUser) {
       // display login modal
       return null;
     }
   };
 
-  const isFollowed = currentUser?.followings.find(
-    (u) => u.user_to_follow_id === otherUser.id
-  );
-  const followersCount = otherUser.followers.length;
-  const followingCount = otherUser.followings.length;
+  const { data: currUFollowing } = useQuery({
+    queryKey: ["currUFollowing", userByUsername],
+    queryFn: async () => {
+      const { data } = await axios.get("/api/follow", {
+        params: {
+          userId: currentUser?.id,
+          follow: "following",
+        },
+      });
+      return data as Following;
+    },
+  });
+
+  React.useEffect(() => {
+    if (currUFollowing && currUFollowing.following.length > 0) {
+      setCurrUserFollowing(currUFollowing.following);
+    }
+  }, [currUFollowing]);
+
+  // const isFollowed = currUFollowing?.following.length === 0 ? false : true;
+
+  let isFollowed: boolean;
+  if (!currentUser) {
+    isFollowed = false;
+  } else {
+    isFollowed = !!followersAmt.find((user) => user.id === currentUser!.id);
+  }
 
   return (
     <div>
@@ -68,13 +149,13 @@ export default function ProfileInfo({
             width={600}
             alt="NextUI hero Image"
             src="https://nextui-docs-v2.vercel.app/images/hero-card-complete.jpeg"
-            fallbackSrc="https://via.placeholder.com/600x200"
+            // fallbackSrc="https://via.placeholder.com/600x200"
             className="object-contain"
           />
         </div>
         <Avatar
           showFallback
-          src={otherUser.avatar}
+          src={userByUsername.avatar}
           isBordered
           className="absolute ml-4 -translate-y-[50%] h-[134px] w-[134px]"
         />
@@ -87,8 +168,9 @@ export default function ProfileInfo({
           </Button>
         ) : (
           <div className="absolute right-4 mt-3">
-            {!!isFollowed ? (
+            {isFollowed ? (
               <Button
+                onClick={handleFollow}
                 isIconOnly
                 className="fill-text rounded-full border-1"
                 variant="bordered"
@@ -108,13 +190,13 @@ export default function ProfileInfo({
       </div>
       <div className="mt-[85px] px-4 pt-3 mb-4">
         <div className="mb-[18px] flex flex-col gap-[2px]">
-          <p className="text-xl font-bold leading-6">{otherUser.name}</p>
+          <p className="text-xl font-bold leading-6">{userByUsername.name}</p>
           <p className="text-[15px] leading-5 text-gray">
-            {otherUser.username}
+            {userByUsername.username}
           </p>
         </div>
         <div className="flex flex-col gap-3">
-          <p className="text-[15px] leading-5">{otherUser.bio}</p>
+          <p className="text-[15px] leading-5">{userByUsername.bio}</p>
           <div className="flex gap-3 items-center">
             <div className="flex gap-1 items-center">
               <Icons.balloon className="fill-gray w-[18px] h-[18px]" />
@@ -127,11 +209,15 @@ export default function ProfileInfo({
           </div>
           <div className="flex gap-4">
             <div className="text-text text-sm">
-              <span className="font-bold">{followingCount}</span>{" "}
+              <span className="font-bold tabular-nums">
+                {followingsAmt.length}
+              </span>{" "}
               <span className="text-gray text-sm leading-4">Following</span>
             </div>
             <div className="text-text text-sm">
-              <span className="font-bold">{followersCount}</span>{" "}
+              <span className="font-bold tabular-nums">
+                {followersAmt.length}
+              </span>{" "}
               <span className="text-gray text-sm leading-4">Followers</span>
             </div>
           </div>

@@ -3,17 +3,18 @@
 import { Avatar } from "@nextui-org/react";
 import { Image } from "@nextui-org/react";
 import NextImage from "next/image";
-import PostActionButton from "./action-button/post-action-button";
+
 import { User } from "@prisma/client";
 
-import { ExtendedPost } from "@/types/db";
+import { ExtendedPost, ExtendedPostWithoutUserTwo } from "@/types/db";
 import { formatTimeToNow, removeAtSymbol } from "@/lib/utils";
-import UserTooltip from "./user-tooltip";
+import UserTooltip from "../user-tooltip";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import PostActionButton from "./action-button/post-action-button";
 
 type PostProps = {
-  post: ExtendedPost;
+  post: ExtendedPost | ExtendedPostWithoutUserTwo;
   userPosted: string;
   currentUser: User;
 };
@@ -31,7 +32,7 @@ export default function Post({ post, currentUser, userPosted }: PostProps) {
   return (
     <div
       onClick={handleClick}
-      className="hover:bg-hover/30 transition-colors cursor-pointer flex justify-between pt-2 px-4 gap-4 border-b"
+      className="hover:bg-hover/30 transition-colors cursor-pointer flex justify-between pt-3 px-4 gap-4 border-b"
     >
       <div className="h-fit">
         <UserTooltip user={post.user_one}>

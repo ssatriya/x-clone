@@ -1,7 +1,7 @@
 import { Icons } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import { LikePayload } from "@/lib/validator/like";
-import { ExtendedPost } from "@/types/db";
+import { ExtendedPost, ExtendedPostWithoutUserTwo } from "@/types/db";
 import { Button } from "@nextui-org/react";
 import { Like } from "@prisma/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -10,7 +10,7 @@ import * as React from "react";
 import { toast } from "sonner";
 
 type LikeButtonProps = {
-  post: ExtendedPost;
+  post: ExtendedPost | ExtendedPostWithoutUserTwo;
   currentUserId: string;
 };
 

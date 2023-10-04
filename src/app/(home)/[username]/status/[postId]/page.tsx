@@ -1,5 +1,5 @@
 import Header from "@/components/layout/center/header";
-import Post from "@/components/layout/center/post";
+import Post from "@/components/layout/center/post/post";
 import { db } from "@/lib/db";
 import getCurrentSession from "@/lib/getCurrentSession";
 
@@ -54,8 +54,6 @@ export default async function PostPage({ params }: PostPageProps) {
     },
   });
 
-  //   console.log(post);
-
   const currentUser = await db.user.findUnique({
     where: {
       id: session.user.userId,
@@ -69,6 +67,7 @@ export default async function PostPage({ params }: PostPageProps) {
   if (!otherUser || !currentUser || !post) {
     return <h1>Not login</h1>;
   }
+
   return (
     <div>
       <Header title="Post" backButton={true} />

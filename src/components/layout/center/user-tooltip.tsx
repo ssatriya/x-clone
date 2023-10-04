@@ -2,23 +2,25 @@
 
 import * as React from "react";
 
-import { TooltipUser } from "@/types/db";
+import { UserWithFollowersFollowing } from "@/types/db";
 import { Avatar, Button, Tooltip } from "@nextui-org/react";
 
 type UserTooltipProps = {
   children: React.ReactNode;
-  user: TooltipUser;
+  user: UserWithFollowersFollowing;
 };
 
 export default function UserTooltip({ children, user }: UserTooltipProps) {
-  const followersCount = user.followers.length;
-  const followsingsCount = user.followings.length;
+  // const followersCount = user.followers.length;
+  // const followsingsCount = user.followings.length;
+  const followersCount = 1;
+  const followsingsCount = 1;
 
   return (
     <Tooltip
       delay={600}
       classNames={{
-        base: "w-[280px] p-0 bg-black rounded-lg",
+        base: "w-[280px] p-0 bg-black rounded-lg focus-visible:ring-0",
       }}
       placement="bottom"
       content={

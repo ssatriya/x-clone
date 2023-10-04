@@ -17,26 +17,16 @@ export async function GET(req: Request) {
       return new Response("Params is missing.", { status: 400 });
     }
 
-    const following = await db.following.findMany({
-      where: {
-        user_id: session.user.userId,
-      },
-    });
+    // const followingPosts = await db.post.findMany({
+    //   where: {
+    //     user_one: {
+    //       id: {
+    //         in: [...following.map((user) => user.user_one_id)],
+    //       },
+    //     },
+    //   },
+    // });
 
-    if (!following) {
-      return new Response("Following not found.", { status: 404 });
-    }
-
-    const followingPosts = await db.post.findMany({
-      where: {
-        user_one: {
-          id: {
-            in: [...following.map((user) => user.following_id)],
-          },
-        },
-      },
-    });
-
-    console.log(followingPosts);
+    // console.log(followingPosts);
   } catch (error) {}
 }

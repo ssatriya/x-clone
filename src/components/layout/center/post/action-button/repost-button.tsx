@@ -2,7 +2,7 @@ import { Icons } from "@/components/icons";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { cn } from "@/lib/utils";
 import { RepostPayload } from "@/lib/validator/repost";
-import { ExtendedPost } from "@/types/db";
+import { ExtendedPost, ExtendedPostWithoutUserTwo } from "@/types/db";
 import {
   Button,
   Dropdown,
@@ -17,7 +17,7 @@ import * as React from "react";
 import { toast } from "sonner";
 
 type RepostButtonProps = {
-  post: ExtendedPost;
+  post: ExtendedPost | ExtendedPostWithoutUserTwo;
   currentUserId: string;
   reposts: Repost[];
 };
@@ -46,7 +46,7 @@ export default function RepostButton({
   });
 
   React.useEffect(() => {
-    if (repostData && repostData.length > 0) {
+    if (repostData) {
       setRepostsAmount(repostData);
     }
   }, [repostData]);
@@ -122,17 +122,31 @@ export default function RepostButton({
           </Button>
         </DropdownTrigger>
         <DropdownMenu aria-label="repost options" className="p-0">
-          <DropdownItem
-            onClick={() => repost()}
-            startContent={
-              <Icons.repost className="w-[18px] h-[18px] fill-white" />
-            }
-            key="repost"
-            className="data-[hover=true]:bg-white/5 rounded-t-lg rounded-b-none px-4 py-3"
-            textValue="Repost"
-          >
-            <p className="font-bold">Repost</p>
-          </DropdownItem>
+          {isRepostedByCurrentUser ? (
+            <DropdownItem
+              onClick={() => repost()}
+              startContent={
+                <Icons.repost className="w-[18px] h-[18px] fill-white" />
+              }
+              key="repost"
+              className="data-[hover=true]:bg-white/5 rounded-t-lg rounded-b-none px-4 py-3"
+              textValue="Repost"
+            >
+              <p className="font-bold">Undo repost</p>
+            </DropdownItem>
+          ) : (
+            <DropdownItem
+              onClick={() => repost()}
+              startContent={
+                <Icons.repost className="w-[18px] h-[18px] fill-white" />
+              }
+              key="repost"
+              className="data-[hover=true]:bg-white/5 rounded-t-lg rounded-b-none px-4 py-3"
+              textValue="Repost"
+            >
+              <p className="font-bold">Repost</p>
+            </DropdownItem>
+          )}
           <DropdownItem
             startContent={
               <Icons.quote className="w-[18px] h-[18px] fill-white" />

@@ -22,16 +22,21 @@ export type ExtendedPost = Post & {
   likes: Like[];
 };
 
+export type ExtendedPostWithoutUserTwo = Omit<ExtendedPost, "user_two">;
+
 export type RepostPost = Post & {
   user: User;
 };
 
-export type TooltipUser = User & {
-  followers: Follower[];
-  followings: Following[];
-};
-
 export type UserWithFollowersFollowing = User & {
   followers: Follower[];
-  followings: Following[];
+  following: Following[];
+};
+
+export type Followers = User & {
+  followers: User[];
+};
+
+export type Following = User & {
+  following: User[];
 };

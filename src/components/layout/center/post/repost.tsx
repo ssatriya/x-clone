@@ -1,25 +1,25 @@
 import { Avatar } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { ExtendedPost, RepostPost } from "@/types/db";
+import { ExtendedPost } from "@/types/db";
 import { formatTimeToNow, removeAtSymbol } from "@/lib/utils";
 import { User } from "@prisma/client";
 import PostActionButton from "./action-button/post-action-button";
-import UserTooltip from "./user-tooltip";
 import Link from "next/link";
+import UserTooltip from "../user-tooltip";
 
 type RepostProps = {
   post: ExtendedPost;
   userPosted: string;
   currentUser: User;
-  postUserOwnser: User;
+  postUserOwner: User;
 };
 
 export default function Repost({
   post,
   userPosted,
   currentUser,
-  postUserOwnser,
+  postUserOwner,
 }: RepostProps) {
   const usernameWithoutAt = removeAtSymbol(post.user_one.username);
 
@@ -62,12 +62,12 @@ export default function Repost({
               <Avatar
                 className="w-5 h-5"
                 showFallback
-                src={postUserOwnser.avatar}
+                src={postUserOwner.avatar}
                 size="sm"
               />
               <div className="flex items-center gap-2">
-                <p className="font-bold">{postUserOwnser.name}</p>
-                <p className="text-[#555b61]">{postUserOwnser.username}</p>
+                <p className="font-bold">{postUserOwner.name}</p>
+                <p className="text-[#555b61]">{postUserOwner.username}</p>
                 <span>·</span>
                 <p className="text-[#555b61]">
                   {post.createdAt && formatTimeToNow(new Date(post.createdAt))}

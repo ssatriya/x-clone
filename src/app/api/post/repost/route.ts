@@ -1,8 +1,7 @@
 import { db } from "@/lib/db";
 import getCurrentSession from "@/lib/getCurrentSession";
-import { LikeValidator } from "@/lib/validator/like";
 import { RepostValidator } from "@/lib/validator/repost";
-import { PostType, RepostType } from "@prisma/client";
+import { PostType } from "@prisma/client";
 
 export async function PATCH(req: Request) {
   try {
@@ -37,21 +36,31 @@ export async function PATCH(req: Request) {
     }
 
     if (repostExist) {
-      await db.repost.delete({
+      const originalPost = await db.post.findFirst({
         where: {
-          user_id_post_id: {
-            post_id: postId,
-            user_id: session.user.userId,
+          AND: {
+            user_two_id: originalPostOwnerId,
+            originalPostId: repostExist.post_id,
+            post_type: PostType.REPOST,
           },
         },
       });
 
-      // await db.post.delete({
-      //   where: {
-      //     id: post.id
-      //   }
-      // })
-      return new Response("Ok");
+      if (originalPost) {
+        await db.post.delete({
+          where: { id: originalPost.id },
+        });
+
+        await db.repost.delete({
+          where: {
+            user_id_post_id: {
+              user_id: session.user.userId,
+              post_id: postId,
+            },
+          },
+        });
+        return new Response("Ok");
+      }
     }
 
     await db.repost.create({

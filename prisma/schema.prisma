@@ -25,17 +25,23 @@ model User {
   auth_sessions Session[]
   keys          Key[]
 
-  user_followers Follower[] @relation("userFollower")
-  followers      Follower[] @relation("followerId")
+  // user_followers Followers[] @relation("userFollower")
+  // followers      Followers[] @relation("followerId")
 
-  user_followings Following[] @relation("userFollowing")
-  followings      Following[] @relation("followingId")
+  // user_followings Following[] @relation("userFollowing")
+  // followings      Following[] @relation("followingId")
+
+  // followers  Relations[] @relation("followers")
+  // followings Relations[] @relation("followings")
+  followers User[] @relation("follows")
+  following User[] @relation("follows")
 
   posts_user_one Post[]   @relation("userOne")
   posts_user_two Post[]   @relation("userTwo")
   replys         Reply[]
   reposts        Repost[]
   likes          Like[]
+  Post           Post[]
 
   @@index([username])
   @@map("user")
@@ -62,29 +68,40 @@ model Key {
   @@map("key")
 }
 
-model Follower {
-  user_to_follow_id  String
-  user               User   @relation("userFollower", fields: [user_to_follow_id], references: [id], onDelete: Cascade)
-  user_who_follow_id String
-  follower           User   @relation("followerId", fields: [user_who_follow_id], references: [id], onDelete: Cascade)
+// model Relations {
+//   id           String @id @unique @default(cuid())
+//   followers_id String
+//   followers    User   @relation("followers", fields: [followers_id], references: [id], map: "followers_fk")
+//   following_id String
+//   following    User   @relation("followings", fields: [followers_id], references: [id], map: "followings_fk")
 
-  @@id([user_to_follow_id, user_who_follow_id])
-  @@unique([user_to_follow_id, user_who_follow_id])
-  @@index([user_who_follow_id])
-  @@map("follower")
-}
+//   @@index([followers_id, following_id])
+//   @@map("relations")
+// }
 
-model Following {
-  user_who_follow_id String
-  user               User   @relation("userFollowing", fields: [user_who_follow_id], references: [id], onDelete: Cascade)
-  user_to_follow_id  String
-  following          User   @relation("followingId", fields: [user_to_follow_id], references: [id], onDelete: Cascade)
+// model Followers {
+//   user_id      String
+//   user         User   @relation("userFollower", fields: [user_id], references: [id], onDelete: Cascade)
+//   followers_id String
+//   followers    User   @relation("followerId", fields: [followers_id], references: [id], onDelete: Cascade)
 
-  @@id([user_who_follow_id, user_to_follow_id])
-  @@unique([user_who_follow_id, user_to_follow_id])
-  @@index([user_to_follow_id])
-  @@map("following")
-}
+//   @@id([user_id, followers_id])
+//   @@unique([user_id, followers_id])
+//   @@index([followers_id])
+//   @@map("followers")
+// }
+
+// model Following {
+//   user_id      String
+//   user         User   @relation("userFollowing", fields: [user_id], references: [id], onDelete: Cascade)
+//   following_id String
+//   following    User   @relation("followingId", fields: [following_id], references: [id], onDelete: Cascade)
+
+//   @@id([user_id, following_id])
+//   @@unique([user_id, following_id])
+//   @@index([following_id])
+//   @@map("following")
+// }
 
 model Post {
   id          String   @id @unique @default(cuid())
@@ -104,6 +121,8 @@ model Post {
   replys  Reply[]
   reposts Repost[]
   likes   Like[]
+  User    User?    @relation(fields: [userId], references: [id])
+  userId  String?
 
   @@index([user_one_id])
   @@map("post")

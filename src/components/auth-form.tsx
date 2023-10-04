@@ -28,7 +28,7 @@ export default function AuthForm() {
           <div className="h-[1px] w-full rounded-full bg-slate-700" />
         </div>
         <Link href="/api/login/google">
-          <Button className="w-full  rounded-full bg-twitter hover:bg-twitter/90">
+          <Button className="w-full rounded-full bg-blue hover:bg-blue/90">
             <p className="font-bold text-white">Create account</p>
           </Button>
         </Link>
@@ -41,8 +41,8 @@ export default function AuthForm() {
 
         <div className="mt-12">
           <p className="font-bold">Already have an account?</p>
-          <Button className="w-full bg-transparent rounded-full mt-4 border-zinc-600 hover:bg-twitter/10">
-            <p className="font-bold text-twitter">Sign in</p>
+          <Button className="w-full bg-transparent border rounded-full mt-4 border-zinc-600 hover:bg-blue/10">
+            <p className="font-bold text-blue">Sign in</p>
           </Button>
         </div>
       </div>

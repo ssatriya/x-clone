@@ -21,13 +21,13 @@ export async function GET(req: Request) {
           user_one: {
             include: {
               followers: true,
-              followings: true,
+              following: true,
             },
           },
           user_two: {
             include: {
               followers: true,
-              followings: true,
+              following: true,
             },
           },
           replys: true,
@@ -39,7 +39,6 @@ export async function GET(req: Request) {
           createdAt: "desc",
         },
       });
-      console.log(posts);
 
       return new Response(JSON.stringify(posts));
     }
@@ -49,13 +48,13 @@ export async function GET(req: Request) {
         user_one: {
           include: {
             followers: true,
-            followings: true,
+            following: true,
           },
         },
         user_two: {
           include: {
             followers: true,
-            followings: true,
+            following: true,
           },
         },
         replys: true,
@@ -68,8 +67,6 @@ export async function GET(req: Request) {
         createdAt: "desc",
       },
     });
-
-    console.log(posts);
 
     return new Response(JSON.stringify(posts));
   } catch (error) {

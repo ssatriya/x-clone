@@ -3,6 +3,7 @@ import ProfileInfo from "@/components/layout/center/profile/profile-info";
 import ProfileTabs from "@/components/layout/center/profile/profile-tabs";
 import { db } from "@/lib/db";
 import getCurrentSession from "@/lib/getCurrentSession";
+import { notFound } from "next/navigation";
 
 type ProfilePagesProps = {
   params: {
@@ -20,13 +21,13 @@ export default async function ProfilePage({ params }: ProfilePagesProps) {
     return <h1>Not Login</h1>;
   }
 
-  const otherUser = await db.user.findUnique({
+  const userByUsername = await db.user.findUnique({
     where: {
       username: `@${username}`,
     },
     include: {
       followers: true,
-      followings: true,
+      following: true,
     },
   });
 
@@ -36,21 +37,28 @@ export default async function ProfilePage({ params }: ProfilePagesProps) {
     },
     include: {
       followers: true,
-      followings: true,
+      following: true,
     },
   });
 
-  if (!otherUser || !currentUser) {
+  if (!currentUser) {
     return <h1>Not login</h1>;
+  }
+
+  if (!userByUsername) {
+    return notFound();
   }
 
   return (
     <div className="">
       <Header title="Home" subtitle="1,210 posts" backButton={true} />
       {session.user ? (
-        <ProfileInfo otherUser={otherUser} currentUser={currentUser} />
+        <ProfileInfo
+          userByUsername={userByUsername}
+          currentUser={currentUser}
+        />
       ) : (
-        <ProfileInfo otherUser={otherUser} />
+        <ProfileInfo userByUsername={userByUsername} />
       )}
       <ProfileTabs />
     </div>

@@ -11,95 +11,122 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { userToFollowId } = FollowValidator.parse(body);
+    const { currentUserId, viewedUserId } = FollowValidator.parse(body);
 
-    // Following: Check if current logged in user already following other user they currently viewed
-    const isAlreadyFollowed = await db.following.findUnique({
+    const currUserData = await db.user.findUnique({
       where: {
-        user_who_follow_id_user_to_follow_id: {
-          user_who_follow_id: userToFollowId,
-          user_to_follow_id: session.user.userId,
-        },
+        id: currentUserId,
+      },
+      include: {
+        following: true,
       },
     });
 
-    // Followers: Check if current logged in user already in the followers list of other user
-    const isAlreadyFollowers = await db.follower.findUnique({
+    const viewUserData = await db.user.findUnique({
       where: {
-        user_to_follow_id_user_who_follow_id: {
-          user_to_follow_id: session.user.userId,
-          user_who_follow_id: userToFollowId,
-        },
+        id: viewedUserId,
+      },
+      include: {
+        followers: true,
       },
     });
 
-    if (isAlreadyFollowed && isAlreadyFollowers) {
-      await db.following.delete({
+    const isFollowingExist = currUserData?.following.find(
+      (user) => user.id === viewedUserId
+    );
+
+    const isFollowersExist = viewUserData?.followers.find(
+      (user) => user.id === currentUserId
+    );
+
+    if (!!isFollowersExist && !!isFollowingExist) {
+      await db.user.update({
         where: {
-          user_who_follow_id_user_to_follow_id: {
-            user_who_follow_id: userToFollowId,
-            user_to_follow_id: session.user.userId,
-          },
+          id: currentUserId,
+        },
+        data: {
+          following: { disconnect: { id: viewedUserId } },
         },
       });
 
-      await db.follower.delete({
+      await db.user.update({
         where: {
-          user_to_follow_id_user_who_follow_id: {
-            user_to_follow_id: session.user.userId,
-            user_who_follow_id: userToFollowId,
-          },
+          id: viewedUserId,
+        },
+        data: {
+          followers: { disconnect: { id: currentUserId } },
         },
       });
-
-      return new Response("Ok");
+      return new Response("Unfollowed");
     }
 
-    // create following
-    await db.following.create({
+    await db.user.update({
+      where: {
+        id: currentUserId,
+      },
       data: {
-        user_who_follow_id: userToFollowId,
-        user_to_follow_id: session.user.userId,
+        following: { connect: { id: viewedUserId } },
       },
     });
 
-    // create followers
-    await db.follower.create({
+    await db.user.update({
+      where: {
+        id: viewedUserId,
+      },
       data: {
-        user_to_follow_id: session.user.userId,
-        user_who_follow_id: userToFollowId,
+        followers: { connect: { id: currentUserId } },
       },
     });
 
-    return new Response("Ok");
+    return new Response("Followed");
   } catch (error) {
     return new Response("Internal error.", { status: 500 });
   }
 }
 
-// export async function GET(req: Request) {
-//   try {
-//     const session = await getCurrentSession();
-//     const { searchParams } = new URL(req.url);
+export async function GET(req: Request) {
+  try {
+    const session = await getCurrentSession();
+    const { searchParams } = new URL(req.url);
 
-//     if (!session?.user) {
-//       return new Response("Unauthorized.", { status: 401 });
-//     }
+    if (!session?.user) {
+      return new Response("Unauthorized.", { status: 401 });
+    }
 
-//     const userId = searchParams.get("userId");
+    const userId = searchParams.get("userId");
+    const followingParams = searchParams.get("following");
+    const followersParams = searchParams.get("follow");
 
-//     if (!userId) {
-//       return new Response("User ID is missing.", { status: 400 });
-//     }
+    if (!userId) {
+      return new Response("User ID is missing.", { status: 400 });
+    }
 
-//     const userData = await db.user.findUnique({
-//       where: {
-//         id: userId,
-//       },
-//     });
+    if (!followersParams && !followingParams) {
+      return new Response("Parameter is missing.", { status: 400 });
+    }
 
-//     return new Response(JSON.stringify(userData));
-//   } catch (error) {
-//     return new Response("Internal error.", { status: 500 });
-//   }
-// }
+    if (followersParams === "followers") {
+      const followers = await db.user.findUnique({
+        where: {
+          id: userId,
+        },
+        include: {
+          followers: true,
+        },
+      });
+      return new Response(JSON.stringify(followers));
+    }
+
+    const following = await db.user.findUnique({
+      where: {
+        id: userId,
+      },
+      include: {
+        following: true,
+      },
+    });
+    return new Response(JSON.stringify(following));
+  } catch (error) {
+    return new Response("Internal error.", { status: 500 });
+  }
+}
