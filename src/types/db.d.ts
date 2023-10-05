@@ -11,11 +11,11 @@ import {
 export type ExtendedPost = Post & {
   user_one: User & {
     followers: Follower[];
-    followings: Following[];
+    following: Following[];
   };
   user_two: User & {
     followers: Follower[];
-    followings: Following[];
+    following: Following[];
   };
   replys: Reply[];
   reposts: Repost[];

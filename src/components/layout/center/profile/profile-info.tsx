@@ -11,7 +11,6 @@ import axios from "axios";
 import { toast } from "sonner";
 import { Followers, Following, UserWithFollowersFollowing } from "@/types/db";
 import { User } from "@prisma/client";
-import { useRouter } from "next/navigation";
 
 type ProfileInfoProps = {
   userByUsername: UserWithFollowersFollowing;

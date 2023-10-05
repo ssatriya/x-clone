@@ -16,6 +16,10 @@ export default async function HomePage() {
     where: {
       id: session.user.userId,
     },
+    include: {
+      followers: true,
+      following: true,
+    },
   });
 
   const isOnboarded = user?.onboarding;

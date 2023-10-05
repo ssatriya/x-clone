@@ -6,7 +6,11 @@ import NextImage from "next/image";
 
 import { User } from "@prisma/client";
 
-import { ExtendedPost, ExtendedPostWithoutUserTwo } from "@/types/db";
+import {
+  ExtendedPost,
+  ExtendedPostWithoutUserTwo,
+  UserWithFollowersFollowing,
+} from "@/types/db";
 import { formatTimeToNow, removeAtSymbol } from "@/lib/utils";
 import UserTooltip from "../user-tooltip";
 import Link from "next/link";
@@ -16,7 +20,7 @@ import PostActionButton from "./action-button/post-action-button";
 type PostProps = {
   post: ExtendedPost | ExtendedPostWithoutUserTwo;
   userPosted: string;
-  currentUser: User;
+  currentUser: UserWithFollowersFollowing;
 };
 
 export default function Post({ post, currentUser, userPosted }: PostProps) {
@@ -35,7 +39,7 @@ export default function Post({ post, currentUser, userPosted }: PostProps) {
       className="hover:bg-hover/30 transition-colors cursor-pointer flex justify-between pt-3 px-4 gap-4 border-b"
     >
       <div className="h-fit">
-        <UserTooltip user={post.user_one}>
+        <UserTooltip user={post.user_one} currentUser={currentUser}>
           <Link href={`/${usernameWithoutAt}`}>
             <Avatar showFallback src={userPosted} />
           </Link>
@@ -44,7 +48,7 @@ export default function Post({ post, currentUser, userPosted }: PostProps) {
 
       <div className="w-full flex flex-col">
         <div className="flex items-center gap-2">
-          <UserTooltip user={post.user_one}>
+          <UserTooltip user={post.user_one} currentUser={currentUser}>
             <Link
               href={`/${usernameWithoutAt}`}
               className="font-bold hover:underline focus-visible:ring-0"
@@ -52,7 +56,7 @@ export default function Post({ post, currentUser, userPosted }: PostProps) {
               {post.user_one.name}
             </Link>
           </UserTooltip>
-          <UserTooltip user={post.user_one}>
+          <UserTooltip user={post.user_one} currentUser={currentUser}>
             <Link
               href={`/${usernameWithoutAt}`}
               className="text-gray focus-visible:ring-0"

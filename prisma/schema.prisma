@@ -25,14 +25,6 @@ model User {
   auth_sessions Session[]
   keys          Key[]
 
-  // user_followers Followers[] @relation("userFollower")
-  // followers      Followers[] @relation("followerId")
-
-  // user_followings Following[] @relation("userFollowing")
-  // followings      Following[] @relation("followingId")
-
-  // followers  Relations[] @relation("followers")
-  // followings Relations[] @relation("followings")
   followers User[] @relation("follows")
   following User[] @relation("follows")
 
@@ -67,41 +59,6 @@ model Key {
   @@index([user_id])
   @@map("key")
 }
-
-// model Relations {
-//   id           String @id @unique @default(cuid())
-//   followers_id String
-//   followers    User   @relation("followers", fields: [followers_id], references: [id], map: "followers_fk")
-//   following_id String
-//   following    User   @relation("followings", fields: [followers_id], references: [id], map: "followings_fk")
-
-//   @@index([followers_id, following_id])
-//   @@map("relations")
-// }
-
-// model Followers {
-//   user_id      String
-//   user         User   @relation("userFollower", fields: [user_id], references: [id], onDelete: Cascade)
-//   followers_id String
-//   followers    User   @relation("followerId", fields: [followers_id], references: [id], onDelete: Cascade)
-
-//   @@id([user_id, followers_id])
-//   @@unique([user_id, followers_id])
-//   @@index([followers_id])
-//   @@map("followers")
-// }
-
-// model Following {
-//   user_id      String
-//   user         User   @relation("userFollowing", fields: [user_id], references: [id], onDelete: Cascade)
-//   following_id String
-//   following    User   @relation("followingId", fields: [following_id], references: [id], onDelete: Cascade)
-
-//   @@id([user_id, following_id])
-//   @@unique([user_id, following_id])
-//   @@index([following_id])
-//   @@map("following")
-// }
 
 model Post {
   id          String   @id @unique @default(cuid())
