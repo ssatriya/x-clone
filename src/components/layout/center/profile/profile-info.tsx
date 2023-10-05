@@ -3,8 +3,17 @@
 import * as React from "react";
 
 import { Icons } from "@/components/icons";
-import { formatBirthdate, removeAtSymbol } from "@/lib/utils";
-import { Avatar, Button, Image } from "@nextui-org/react";
+import { formatBirthdate, formatJoinDate, removeAtSymbol } from "@/lib/utils";
+import {
+  Avatar,
+  Button,
+  Image,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownSection,
+  DropdownItem,
+} from "@nextui-org/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FollowPayload } from "@/lib/validator/follow";
 import axios from "axios";
@@ -74,7 +83,7 @@ export default function ProfileInfo({
   const bithdate = formatBirthdate(
     userByUsername.birthdate ? userByUsername.birthdate : ""
   );
-  // const joinDate = formatJoinDate(user.createdAt.toString());
+  const joinDate = formatJoinDate(userByUsername.createdAt);
 
   const isMyProfile = userByUsername.id === currentUser?.id;
 
@@ -168,14 +177,40 @@ export default function ProfileInfo({
         ) : (
           <div className="absolute right-4 mt-3">
             {isFollowed ? (
-              <Button
-                onClick={handleFollow}
-                isIconOnly
-                className="fill-text rounded-full border-1"
-                variant="bordered"
+              <Dropdown
+                classNames={{
+                  base: "p-0 min-w-0 bg-black shadow-normal",
+                  trigger: "p-0",
+                }}
               >
-                <Icons.followedIcon className="h-5 w-5" />
-              </Button>
+                <DropdownTrigger>
+                  <Button
+                    isIconOnly
+                    className="fill-text rounded-full border-1"
+                    variant="bordered"
+                  >
+                    <Icons.followedIcon className="h-5 w-5" />
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu
+                  className="p-0 px-2 w-fit"
+                  aria-label="unfollow button"
+                >
+                  <DropdownItem
+                    onClick={handleFollow}
+                    key="unfollow"
+                    className="h-[44px] rounded-xl data-[hover=true]:bg-hover/40 data-[hover=true]:text-text"
+                    textValue="unfollo"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Icons.unfollow className="fill-text h-[18px] w-[18px]" />
+                      <div className="font-bold text-[15px]">
+                        Unfollow {userByUsername.username}
+                      </div>
+                    </div>
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
             ) : (
               <Button
                 onClick={handleFollow}
@@ -203,7 +238,9 @@ export default function ProfileInfo({
             </div>
             <div className="flex gap-1 items-center">
               <Icons.calendar className="fill-gray w-[18px] h-[18px]" />
-              <p className="text-[15px] text-gray leading-3">JoinDate</p>
+              <p className="text-[15px] text-gray leading-3">
+                Joined {joinDate}
+              </p>
             </div>
           </div>
           <div className="flex gap-4">

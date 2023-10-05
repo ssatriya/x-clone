@@ -27,7 +27,7 @@ export default async function PostPage({ params }: PostPageProps) {
     },
     include: {
       followers: true,
-      followings: true,
+      following: true,
     },
   });
 
@@ -39,13 +39,13 @@ export default async function PostPage({ params }: PostPageProps) {
       user_one: {
         include: {
           followers: true,
-          followings: true,
+          following: true,
         },
       },
       user_two: {
         include: {
           followers: true,
-          followings: true,
+          following: true,
         },
       },
       replys: true,
@@ -60,7 +60,7 @@ export default async function PostPage({ params }: PostPageProps) {
     },
     include: {
       followers: true,
-      followings: true,
+      following: true,
     },
   });
 

@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import LikeButton from "./like-button";
 import RepostButton from "./repost-button";
 import { ExtendedPost, ExtendedPostWithoutUserTwo } from "@/types/db";
+import ReplyButton from "./reply-button";
 
 type PostActionButtonProps = {
   post: ExtendedPost | ExtendedPostWithoutUserTwo;
@@ -23,16 +24,11 @@ export default function PostActionButton({
 }: PostActionButtonProps) {
   return (
     <div className="w-full flex justify-between items-center gap-4 py-2">
-      <div className="flex items-center group">
-        <Button
-          size="sm"
-          isIconOnly
-          className="rounded-full bg-transparent flex items-center justify-center gap-2 group-hover:bg-blue/10"
-        >
-          <Icons.reply className="fill-gray w-[18px] h-[18px] group-hover:fill-blue" />
-        </Button>
-        <p className="text-sm text-gray group-hover:text-blue">4</p>
-      </div>
+      <ReplyButton
+        currentUserId={currentUserId}
+        post={post}
+        reposts={reposts}
+      />
 
       <RepostButton
         currentUserId={currentUserId}

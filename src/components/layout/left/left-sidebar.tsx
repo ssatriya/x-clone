@@ -7,12 +7,24 @@ import { Icons } from "@/components/icons";
 import { User } from "@prisma/client";
 import { removeAtSymbol } from "@/lib/utils";
 
+import {
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  useDisclosure,
+} from "@nextui-org/react";
+
 type LeftSidebarProps = {
   currentUser: User;
 };
 
 export default function LeftSidebar({ currentUser }: LeftSidebarProps) {
   const username = removeAtSymbol(currentUser.username);
+
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
   return (
     <nav className="px-2 pt-1 w-[275px]">
       <div className="gap-2 flex flex-col fixed">

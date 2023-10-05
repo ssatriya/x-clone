@@ -1,7 +1,7 @@
 "use client";
 
 import Post from "../post/post";
-import { ExtendedPost } from "@/types/db";
+import { ExtendedPost, UserWithFollowersFollowing } from "@/types/db";
 import { useIntersection } from "@mantine/hooks";
 
 import * as React from "react";
@@ -11,7 +11,7 @@ import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import Repost from "../post/repost";
 
 type ForYouFeedProps = {
-  user: User;
+  user: UserWithFollowersFollowing;
 };
 
 export default function ForYouFeed({ user }: ForYouFeedProps) {

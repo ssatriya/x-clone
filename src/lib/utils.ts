@@ -115,7 +115,12 @@ export function formatBirthdate(inputDate: string): string {
   return format(parsedDate, "MMMM dd, yyyy");
 }
 
-// export function formatJoinDate(inputDate: string): string {
-//   const parsedDate = parse(inputDate, "yyyy-MM-dd HH:mm:ss", new Date());
-//   return format(parsedDate, "MMMM yyyy");
-// }
+export function formatJoinDate(inputDate: Date): string {
+  const mysqlDatetime = "2023-10-04T14:17:48.700Z";
+
+  // Parse the MySQL datetime string into a JavaScript Date object
+  const date = new Date(mysqlDatetime);
+
+  // Use date-fns to format the date in the "MMMM yyyy" format
+  return format(date, "MMMM yyyy");
+}

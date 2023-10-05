@@ -2,7 +2,7 @@
 
 import { Avatar, Textarea, Button, Image } from "@nextui-org/react";
 
-import React from "react";
+import React, { useMemo } from "react";
 import { Icons } from "@/components/icons";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { User } from "@prisma/client";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { useMutation } from "@tanstack/react-query";
+import { cn } from "@/lib/utils";
 
 type TweetFormProps = {
   focusHandler: () => void;
@@ -79,6 +80,63 @@ export default function PostForm({
     createPost(payload);
   };
 
+  type Attachment = {
+    type: string;
+    url: string;
+    mime: string;
+    name: string;
+    extension: string;
+    size: string;
+  };
+
+  const [files, setFiles] = React.useState<Attachment[]>([]);
+
+  const mediaRef = React.useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const newAttachments: Attachment[] = Array.from(e.target.files).map(
+        (file) => ({
+          type: "IMAGE",
+          url: URL.createObjectURL(file),
+          mime: file.type,
+          name: file.name,
+          extension: file.name.split(".").pop() as string,
+          size: file.size.toString(),
+        })
+      );
+
+      setFiles((prevFiles) => [...prevFiles, ...newAttachments]);
+    }
+  };
+
+  const handleMedia = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!isFocus) {
+      focusHandler();
+      return;
+    }
+    if (mediaRef && mediaRef.current) {
+      mediaRef.current.click();
+    }
+  };
+
+  const className = cn(
+    files.length > 0 ? "h-[300px] mb-4" : "",
+    "grid gap-2 w-full",
+    {
+      "grid-rows-1": files.length <= 2,
+      "grid-rows-2": files.length > 2,
+      "grid-cols-1": files.length === 1,
+      "grid-cols-2": files.length > 1,
+    }
+  );
+
+  const handleRemoveImage = (url: string) => {
+    setFiles((prevFiles) =>
+      prevFiles.filter((attachment) => attachment.url !== url)
+    );
+  };
+
   return (
     <div className="flex justify-between py-2 px-4 gap-4 border-b">
       <div className="h-fit">
@@ -95,22 +153,35 @@ export default function PostForm({
             <Icons.arrowDown className="fill-blue h-[15px] w-[15px]" />
           </Button>
         )}
-        <Textarea
-          {...register("content")}
-          onFocus={focusHandler}
-          onChange={handleChange}
-          type="text"
-          variant="flat"
-          value={content}
-          minRows={1}
-          classNames={{
-            base: "py-2",
-            input: "text-lg bg-transparent placeholder:text-gray",
-            inputWrapper:
-              "rounded-none bg-transparent data-[hover=true]:bg-transparent group-data-[focus=true]:bg-transparent",
-          }}
-          placeholder="What is happening?!"
-        />
+        <>
+          <Textarea
+            {...register("content")}
+            onFocus={focusHandler}
+            onChange={handleChange}
+            type="text"
+            variant="flat"
+            value={content}
+            minRows={1}
+            classNames={{
+              base: "py-2",
+              input: "text-lg bg-transparent placeholder:text-gray",
+              inputWrapper:
+                "rounded-none bg-transparent data-[hover=true]:bg-transparent group-data-[focus=true]:bg-transparent",
+            }}
+            placeholder="What is happening?!"
+          />
+
+          <div className={cn(className)}>
+            {files.map((attachment, i) => (
+              <Attachment
+                url={attachment.url}
+                fill={files.length === 3 && i === 0}
+                onRemoveAttachment={handleRemoveImage}
+                key={i}
+              />
+            ))}
+          </div>
+        </>
         {isFocus && (
           <div className="flex flex-col relative">
             <Button
@@ -127,8 +198,15 @@ export default function PostForm({
           </div>
         )}
         <div className="flex justify-between items-center mt-4">
+          <input
+            type="file"
+            className="hidden"
+            ref={mediaRef}
+            onChange={handleFileChange}
+          />
           <div className="flex">
             <Button
+              onClick={handleMedia}
               size="sm"
               isIconOnly
               className="bg-transparent w-9 h-9 rounded-full hover:bg-blue/10"
@@ -185,3 +263,37 @@ export default function PostForm({
     </div>
   );
 }
+
+type AttachmentProps = {
+  url: string;
+  fill: boolean;
+  onRemoveAttachment?: (url: string) => void;
+};
+
+export const Attachment = ({
+  url,
+  fill,
+  onRemoveAttachment,
+}: AttachmentProps) => {
+  const className = cn("overflow-hidden relative rounded-2xl shadow", {
+    "row-span-2": fill,
+  });
+
+  return (
+    <div className={className}>
+      {onRemoveAttachment && (
+        <div className="absolute right-1 top-1">
+          <Button
+            onClick={() => onRemoveAttachment(url)}
+            isIconOnly
+            size="sm"
+            className="absolute bg-black/70 rounded-full z-50 right-1 top-1"
+          >
+            <Icons.close className="h-[18px] w-[18px] fill-text" />
+          </Button>
+        </div>
+      )}
+      <img className="h-full w-full object-cover" alt="Attachment" src={url} />
+    </div>
+  );
+};

@@ -21,6 +21,7 @@ export default function RootLayout({
     <html lang="en" className="dark antialiased">
       <body className={inter.className}>
         <Providers>
+          <div id="reply-container" />
           <main className="min-h-screen">
             <Toaster richColors />
             {children}

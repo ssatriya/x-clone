@@ -92,12 +92,15 @@ export default function UserTooltip({
             </div>
             {isMyProfile ? null : isFollowed ? (
               <Button
+                onMouseEnter={(e) => console.log(e)}
                 onClick={() => handleFollow()}
-                isIconOnly
-                className="fill-text rounded-full border-1"
+                className="fill-text w-24 rounded-full border-1 font-bold hover:text-red-500 hover:border-red-500 hover:bg-red-500/10 hover:content group"
                 variant="bordered"
               >
-                <Icons.followedIcon className="h-5 w-5" />
+                <span className="group-hover:hidden">Following</span>
+                <span className="group-hover:block hidden text-red-500">
+                  Unfollow
+                </span>
               </Button>
             ) : (
               <Button

@@ -6,9 +6,10 @@ import PostForm from "./post-form";
 
 import ForYouFeed from "./for-you-feed";
 import { User } from "@prisma/client";
+import { UserWithFollowersFollowing } from "@/types/db";
 
 type HomeTabsProps = {
-  user: User;
+  user: UserWithFollowersFollowing;
 };
 
 export default function HomeTabs({ user }: HomeTabsProps) {

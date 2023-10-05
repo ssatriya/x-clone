@@ -29,7 +29,8 @@ export default function Post({ post, currentUser, userPosted }: PostProps) {
 
   const postURL = `/${usernameWithoutAt}/status/${post.id}`;
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    console.log(e.target);
     router.push(postURL);
   };
 
