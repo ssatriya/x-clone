@@ -86,6 +86,8 @@ export async function POST(req: Request) {
     }
     const { content, imageUrl } = PostValidator.parse(body);
 
+    console.log(imageUrl);
+
     await db.post.create({
       data: {
         user_one_id: session.user.userId,

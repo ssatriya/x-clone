@@ -11,11 +11,12 @@ import {
   ExtendedPostWithoutUserTwo,
   UserWithFollowersFollowing,
 } from "@/types/db";
-import { formatTimeToNow, removeAtSymbol } from "@/lib/utils";
+import { cn, formatTimeToNow, removeAtSymbol } from "@/lib/utils";
 import UserTooltip from "../user-tooltip";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import PostActionButton from "./action-button/post-action-button";
+import AttachmentPost from "./attachment-post";
 
 type PostProps = {
   post: ExtendedPost | ExtendedPostWithoutUserTwo;
@@ -30,7 +31,6 @@ export default function Post({ post, currentUser, userPosted }: PostProps) {
   const postURL = `/${usernameWithoutAt}/status/${post.id}`;
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    console.log(e.target);
     router.push(postURL);
   };
 
@@ -73,14 +73,7 @@ export default function Post({ post, currentUser, userPosted }: PostProps) {
         <div className="flex flex-col space-y-3">
           <p>{post.content}</p>
           {post.image_url && (
-            <Image
-              as={NextImage}
-              src={post.image_url}
-              height={670}
-              width={512}
-              alt="img"
-              className="border object-contain"
-            />
+            <AttachmentPost imageUrl={post.image_url} post={post} />
           )}
         </div>
         <PostActionButton

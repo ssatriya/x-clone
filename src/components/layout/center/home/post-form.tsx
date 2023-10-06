@@ -15,6 +15,7 @@ import { User } from "@prisma/client";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { useMutation } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
+import { uploadFiles } from "@/lib/uploadthing";
 
 type TweetFormProps = {
   focusHandler: () => void;
@@ -38,6 +39,7 @@ export default function PostForm({
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<PostPayload>({
     defaultValues: {
@@ -76,7 +78,6 @@ export default function PostForm({
       content: data.content,
       imageUrl: data.imageUrl,
     };
-
     createPost(payload);
   };
 
@@ -87,13 +88,14 @@ export default function PostForm({
     name: string;
     extension: string;
     size: string;
+    file: File;
   };
 
   const [files, setFiles] = React.useState<Attachment[]>([]);
 
   const mediaRef = React.useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const newAttachments: Attachment[] = Array.from(e.target.files).map(
         (file) => ({
@@ -103,6 +105,7 @@ export default function PostForm({
           name: file.name,
           extension: file.name.split(".").pop() as string,
           size: file.size.toString(),
+          file: file,
         })
       );
 
@@ -136,6 +139,50 @@ export default function PostForm({
       prevFiles.filter((attachment) => attachment.url !== url)
     );
   };
+
+  const submitButton = async () => {
+    if (files) {
+      const allFiles: File[] = [];
+      files.map((file: Attachment) => {
+        allFiles.push(file.file);
+      });
+
+      const res = await uploadFiles({
+        files: allFiles,
+        endpoint: "imageUploader",
+        onUploadProgress: ({ file, progress }) => {
+          // console.log(file === files);
+          // calculateImageProgress(allFiles.length, file)
+        },
+      });
+
+      if (res) {
+        const urls: string[] = [];
+        res.map((r) => {
+          urls.push(r.url);
+        });
+        setValue("imageUrl", [...urls].toString());
+        handleSubmit(handlePostSubmit)();
+
+        setFiles([]);
+        return;
+      }
+    }
+
+    handleSubmit(handlePostSubmit)();
+  };
+
+  let disabledByContent: boolean = true;
+
+  if (content.length === 0 && files.length > 0) {
+    disabledByContent = false;
+  } else if (content.length > 0 && files.length === 0) {
+    disabledByContent = false;
+  } else if (content.length > 0 && files.length > 0) {
+    disabledByContent = false;
+  } else {
+    disabledByContent = true;
+  }
 
   return (
     <div className="flex justify-between py-2 px-4 gap-4 border-b">
@@ -199,6 +246,7 @@ export default function PostForm({
         )}
         <div className="flex justify-between items-center mt-4">
           <input
+            multiple
             type="file"
             className="hidden"
             ref={mediaRef}
@@ -250,10 +298,8 @@ export default function PostForm({
             </Button>
           </div>
           <Button
-            isDisabled={isSubmitting || content.length === 0}
-            onClick={() => {
-              handleSubmit(handlePostSubmit)();
-            }}
+            isDisabled={isSubmitting || disabledByContent}
+            onClick={submitButton}
             className="bg-blue hover:bg-blue/90 font-bold rounded-full"
           >
             Post

@@ -8,6 +8,7 @@ import PostActionButton from "./action-button/post-action-button";
 import Link from "next/link";
 import UserTooltip from "../user-tooltip";
 import * as React from "react";
+import AttachmentPost from "./attachment-post";
 
 type RepostProps = {
   post: ExtendedPost;
@@ -58,7 +59,7 @@ export default function Repost({
           </p>
         </div>
         <div className="flex flex-col space-y-3">
-          <div className="hover:bg-[#0e0e0e] transition-colors cursor-pointer flex h-fit overflow-hidden flex-col justify-between py-4 px-4 mt-2 border rounded-xl border-[#2f3336]">
+          <div className="hover:bg-[#0e0e0e] transition-colors cursor-pointer flex h-fit overflow-hidden flex-col justify-between pt-4 px-4 mt-2 border rounded-3xl border-[#2f3336]">
             <div className="flex gap-2 items-center mb-1">
               <UserTooltip user={postUserOwner} currentUser={currentUser}>
                 <Avatar
@@ -82,15 +83,12 @@ export default function Repost({
               </div>
             </div>
             <div className="flex flex-col">
-              <p>{post.content}</p>
+              <p className="mb-2">{post.content}</p>
               {post?.image_url && (
                 <div className="flex justify-center">
-                  {/* <Image
-              src={repost.image_url}
-              height={550}
-              alt="img"
-              className="object-contain rounded-2xl mt-2"
-            /> */}
+                  {post.image_url && (
+                    <AttachmentPost imageUrl={post.image_url} post={post} />
+                  )}
                 </div>
               )}
             </div>

@@ -1,3 +1,5 @@
+const webpack = require("webpack");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -7,6 +9,9 @@ const nextConfig = {
       },
       {
         hostname: "*.googleusercontent.com",
+      },
+      {
+        hostname: "utfs.io",
       },
     ],
   },

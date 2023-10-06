@@ -5,7 +5,7 @@ import { Button } from "@nextui-org/react";
 
 export default function TrendItem() {
   return (
-    <div className="flex flex-col gap-0 hover:bg-text/5 py-2">
+    <div className="flex flex-col gap-0 hover:bg-text/5 py-2 cursor-pointer">
       <div className="flex items-center justify-between px-5">
         <p className="text-[13px] text-gray">Trending in Indonesia</p>
         <div className="relative flex items-center justify-center group">

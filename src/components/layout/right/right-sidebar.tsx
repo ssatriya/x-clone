@@ -31,7 +31,14 @@ export default function RightSidebar() {
           <CardBody className="px-0">
             <div className="flex flex-col gap-[10px]">
               <p className="font-bold text-xl px-5">Trends for you</p>
-              <div>
+              <div className="sticky">
+                <TrendItem />
+                <TrendItem />
+                <TrendItem />
+                <TrendItem />
+                <TrendItem />
+                <TrendItem />
+                <TrendItem />
                 <TrendItem />
                 <TrendItem />
               </div>

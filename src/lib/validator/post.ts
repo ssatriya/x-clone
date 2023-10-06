@@ -4,7 +4,8 @@ export const PostValidator = z.object({
   content: z
     .string()
     .min(1)
-    .max(280, { message: "Post can't be more than 280 characters." }),
+    .max(280, { message: "Post can't be more than 280 characters." })
+    .optional(),
   imageUrl: z.string().optional(),
 });
 export type PostPayload = z.infer<typeof PostValidator>;
