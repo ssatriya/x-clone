@@ -6,15 +6,7 @@ import { Button } from "@nextui-org/react";
 import { Icons } from "@/components/icons";
 import { User } from "@prisma/client";
 import { removeAtSymbol } from "@/lib/utils";
-
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  useDisclosure,
-} from "@nextui-org/react";
+import { usePathname } from "next/navigation";
 
 type LeftSidebarProps = {
   currentUser: User;
@@ -22,8 +14,7 @@ type LeftSidebarProps = {
 
 export default function LeftSidebar({ currentUser }: LeftSidebarProps) {
   const username = removeAtSymbol(currentUser.username);
-
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const pathname = usePathname();
 
   return (
     <nav className="px-2 pt-1 w-[275px]">
@@ -37,7 +28,7 @@ export default function LeftSidebar({ currentUser }: LeftSidebarProps) {
         <Link href="/home" className="hover:bg-hover w-fit p-3 rounded-full">
           <div className="flex items-center justify-center">
             <Icons.home
-              className="w-[27px] h-[27px] stroke-neutral-100"
+              className="w-[27px] h-[27px] stroke-neutral-100 fill-neutral-100"
               strokeWidth={2}
             />
             <div className="text-xl pr-4 pl-5">Home</div>

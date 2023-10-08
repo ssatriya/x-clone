@@ -8,8 +8,10 @@ import { db } from "@/lib/db";
 
 export default async function HomeLayout({
   children,
+  photoModal,
 }: {
   children: React.ReactNode;
+  photoModal: React.ReactNode;
 }) {
   const session = await getCurrentSession();
 
@@ -45,6 +47,7 @@ export default async function HomeLayout({
             isOnboarded ? "border-x h-full w-[600px]" : "w-[600px]"
           )}
         >
+          {photoModal}
           {children}
         </div>
         {isOnboarded ? <RightSidebar /> : <div className="w-[348px] mr-6" />}

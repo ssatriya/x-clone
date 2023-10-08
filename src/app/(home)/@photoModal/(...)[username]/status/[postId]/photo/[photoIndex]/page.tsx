@@ -1,14 +1,6 @@
-import { redirect } from "next/navigation";
+"use client";
 
-type LightBoxPageProps = {
-  params: {
-    photoIndex: string;
-    postId: string;
-    username: string;
-  };
-};
-
-export default function LightBoxPage({ params }: LightBoxPageProps) {
+export default function ModalPage() {
   return (
     <div className="fixed inset-0 bg-black/80 z-20">
       <div className="container flex items-center h-full max-w-lg mx-auto">

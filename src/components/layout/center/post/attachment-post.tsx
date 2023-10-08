@@ -2,10 +2,17 @@
 
 import * as React from "react";
 import { cn, removeAtSymbol } from "@/lib/utils";
-import { useRouter } from "next/navigation";
 import { ExtendedPost, ExtendedPostWithoutUserTwo } from "@/types/db";
 import Image from "next/image";
 import Link from "next/link";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "@nextui-org/react";
+import { useRouter } from "next/navigation";
 
 type AttachmentPostProps = {
   post: ExtendedPost | ExtendedPostWithoutUserTwo;
@@ -16,6 +23,7 @@ export default function AttachmentPost({
   imageUrl,
   post,
 }: AttachmentPostProps) {
+  const router = useRouter();
   const scrollClickHandle = () => {
     const cleanUsername = removeAtSymbol(post.user_one.username);
     const singlePost = `/${cleanUsername}/status/${post.id}`;
@@ -78,17 +86,13 @@ export default function AttachmentPost({
                 }
               }}
               href={`/${cleanUsername}/status/${post.id}/photo/${i + 1}`}
+              scroll={false}
             >
               <Image
-                onClick={(e) => {
-                  // e.stopPropagation();
-                  // console.log(e);
-                  // clickHandle();
-                }}
                 src={image}
                 fill
                 sizes="(max-widht: 600px) 512px "
-                className={cn(borderImage, "h-full w-full object-cover")}
+                className={cn(borderImage, "h-full w-full object-cover border")}
                 alt="attachment"
                 priority
               />
