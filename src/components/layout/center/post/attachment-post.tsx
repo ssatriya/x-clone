@@ -3,15 +3,11 @@
 import * as React from "react";
 import { cn, removeAtSymbol } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import {
-  ExtendedPost,
-  ExtendedPostWithoutUserTwo,
-  UserWithFollowersFollowing,
-} from "@/types/db";
-import { Post } from "@prisma/client";
+import { ExtendedPost, ExtendedPostWithoutUserTwo } from "@/types/db";
+import Image from "next/image";
+import Link from "next/link";
 
 type AttachmentPostProps = {
-  // user: UserWithFollowersFollowing
   post: ExtendedPost | ExtendedPostWithoutUserTwo;
   imageUrl: string;
 };
@@ -20,12 +16,11 @@ export default function AttachmentPost({
   imageUrl,
   post,
 }: AttachmentPostProps) {
-  const router = useRouter();
-
-  const clickHandle = (photoIndex: number) => {
+  const scrollClickHandle = () => {
     const cleanUsername = removeAtSymbol(post.user_one.username);
-    const lightBoxUrl = `/${cleanUsername}/status/${post.id}/photo/${photoIndex}`;
-    router.push(lightBoxUrl);
+    const singlePost = `/${cleanUsername}/status/${post.id}`;
+
+    window.open(singlePost);
   };
 
   const imageUrlArray: string[] = imageUrl.split(",");
@@ -71,17 +66,33 @@ export default function AttachmentPost({
           });
         }
 
+        const cleanUsername = removeAtSymbol(post.user_one.username);
+
         return (
-          <div key={image + i} className={innerClassName}>
-            <img
-              onClick={(e) => {
-                e.stopPropagation();
-                clickHandle(Number(i) + 1);
+          <div key={image + i} className={cn(innerClassName)}>
+            <Link
+              onMouseDown={(e) => {
+                if (e.button === 1) {
+                  e.stopPropagation();
+                  scrollClickHandle();
+                }
               }}
-              className={cn(borderImage, "h-full w-full object-cover")}
-              alt="Attachment"
-              src={image}
-            />
+              href={`/${cleanUsername}/status/${post.id}/photo/${i + 1}`}
+            >
+              <Image
+                onClick={(e) => {
+                  // e.stopPropagation();
+                  // console.log(e);
+                  // clickHandle();
+                }}
+                src={image}
+                fill
+                sizes="(max-widht: 600px) 512px "
+                className={cn(borderImage, "h-full w-full object-cover")}
+                alt="attachment"
+                priority
+              />
+            </Link>
           </div>
         );
       })}

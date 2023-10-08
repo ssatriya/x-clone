@@ -10,3 +10,22 @@
     @apply bg-black text-text;
   }
 }
+
+.ql-container {
+  font-size: inherit !important;
+  position: relative;
+  border: none !important;
+}
+
+.ql-editor {
+  padding: 0px !important;
+  color: gainsboro !important;
+}
+.ql-editor.ql-blank::before {
+  width: 100% !important;
+  color: gray !important;
+  font-style: normal !important;
+  padding-left: 0px !important;
+  margin-left: 0px !important;
+  text-align: left !important;
+}

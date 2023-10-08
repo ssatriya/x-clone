@@ -79,14 +79,12 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const session = await getCurrentSession();
-    const body = await req.json();
+    const { content, imageUrl } = await req.json();
 
     if (!session?.user) {
       return new Response("Unauthorized.", { status: 401 });
     }
-    const { content, imageUrl } = PostValidator.parse(body);
-
-    console.log(imageUrl);
+    // const { content, imageUrl } = PostValidator.parse(body);
 
     await db.post.create({
       data: {

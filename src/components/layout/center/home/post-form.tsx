@@ -1,8 +1,8 @@
 "use client";
 
-import { Avatar, Textarea, Button, Image } from "@nextui-org/react";
+import { Avatar, Textarea, Button } from "@nextui-org/react";
 
-import React, { useMemo } from "react";
+import React from "react";
 import { Icons } from "@/components/icons";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -40,6 +40,7 @@ export default function PostForm({
     register,
     handleSubmit,
     setValue,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<PostPayload>({
     defaultValues: {
@@ -68,18 +69,9 @@ export default function PostForm({
       mutateInfiniteScroll();
       toast.success("Post has been created.");
       setContent("");
-      // router.push("/home");
       router.refresh();
     },
   });
-
-  const handlePostSubmit = async (data: PostPayload) => {
-    const payload: PostPayload = {
-      content: data.content,
-      imageUrl: data.imageUrl,
-    };
-    createPost(payload);
-  };
 
   type Attachment = {
     type: string;
@@ -140,7 +132,12 @@ export default function PostForm({
     );
   };
 
-  const submitButton = async () => {
+  const handlePostSubmit = async (data: PostPayload) => {
+    const payload: PostPayload = {
+      content: data.content,
+      imageUrl: data.imageUrl,
+    };
+
     if (files) {
       const allFiles: File[] = [];
       files.map((file: Attachment) => {
@@ -162,14 +159,20 @@ export default function PostForm({
           urls.push(r.url);
         });
         setValue("imageUrl", [...urls].toString());
-        handleSubmit(handlePostSubmit)();
 
+        let newData = {
+          ...data,
+          imageUrl: [...urls].toString(),
+        };
+
+        createPost(newData);
         setFiles([]);
+        reset();
         return;
       }
     }
 
-    handleSubmit(handlePostSubmit)();
+    createPost(payload);
   };
 
   let disabledByContent: boolean = true;
@@ -299,7 +302,7 @@ export default function PostForm({
           </div>
           <Button
             isDisabled={isSubmitting || disabledByContent}
-            onClick={submitButton}
+            onClick={() => handleSubmit(handlePostSubmit)()}
             className="bg-blue hover:bg-blue/90 font-bold rounded-full"
           >
             Post

@@ -5,8 +5,8 @@ import { Tab, Tabs } from "@nextui-org/react";
 import PostForm from "./post-form";
 
 import ForYouFeed from "./for-you-feed";
-import { User } from "@prisma/client";
 import { UserWithFollowersFollowing } from "@/types/db";
+import PostFormEditor from "../post-form-editor";
 
 type HomeTabsProps = {
   user: UserWithFollowersFollowing;
@@ -38,7 +38,12 @@ export default function HomeTabs({ user }: HomeTabsProps) {
         }}
       >
         <Tab key="for-you" title="For you">
-          <PostForm user={user} focusHandler={focusHandler} isFocus={isFocus} />
+          {/* <PostForm user={user} focusHandler={focusHandler} isFocus={isFocus} /> */}
+          <PostFormEditor
+            user={user}
+            focusHandler={focusHandler}
+            isFocus={isFocus}
+          />
           <ForYouFeed user={user} />
         </Tab>
         <Tab key="following" title="Following">

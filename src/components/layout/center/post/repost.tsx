@@ -1,7 +1,11 @@
 import { Avatar } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { ExtendedPost, UserWithFollowersFollowing } from "@/types/db";
+import {
+  ExtendedPost,
+  ExtendedPostWithoutUserTwo,
+  UserWithFollowersFollowing,
+} from "@/types/db";
 import { formatTimeToNow, removeAtSymbol } from "@/lib/utils";
 import { User } from "@prisma/client";
 import PostActionButton from "./action-button/post-action-button";
@@ -9,9 +13,10 @@ import Link from "next/link";
 import UserTooltip from "../user-tooltip";
 import * as React from "react";
 import AttachmentPost from "./attachment-post";
+import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 
 type RepostProps = {
-  post: ExtendedPost;
+  post: ExtendedPost | ExtendedPostWithoutUserTwo;
   userPosted: string;
   currentUser: UserWithFollowersFollowing;
   postUserOwner: UserWithFollowersFollowing;
@@ -24,9 +29,24 @@ export default function Repost({
   postUserOwner,
 }: RepostProps) {
   const usernameWithoutAt = removeAtSymbol(post.user_one.username);
+  const postURL = `/${usernameWithoutAt}/status/${post.id}`;
+  const originalPostURL = `/${usernameWithoutAt}/status/${post.originalPostId}`;
 
+  const cfg = {};
+
+  let html = "";
+  // @ts-ignore
+  if (post.content && post.content.ops) {
+    // @ts-ignore
+    const converter = new QuillDeltaToHtmlConverter(post.content.ops, cfg);
+    const converted = converter.convert();
+    if (converted !== "<p><br/></p>") {
+      html = converted;
+    }
+  }
   return (
-    <div className="hover:bg-hover/30 transition-colors cursor-pointer flex justify-between pt-2 px-4 gap-4 border-b">
+    <div className="hover:bg-hover/30 transition-colors cursor-pointer flex justify-between pt-2 px-4 gap-4 border-b relative">
+      <Link href={postURL} className="absolute inset-0" />
       <div className="h-fit">
         <UserTooltip user={post.user_one} currentUser={currentUser}>
           <Link href={`/${usernameWithoutAt}`}>
@@ -59,7 +79,8 @@ export default function Repost({
           </p>
         </div>
         <div className="flex flex-col space-y-3">
-          <div className="hover:bg-[#0e0e0e] transition-colors cursor-pointer flex h-fit overflow-hidden flex-col justify-between pt-4 px-4 mt-2 border rounded-3xl border-[#2f3336]">
+          <div className="hover:bg-[#0e0e0e] transition-colors cursor-pointer flex h-fit overflow-hidden flex-col justify-between pt-4 px-4 mt-2 border rounded-3xl border-[#2f3336]z-10 relative">
+            <Link href={originalPostURL} className="absolute inset-0" />
             <div className="flex gap-2 items-center mb-1">
               <UserTooltip user={postUserOwner} currentUser={currentUser}>
                 <Avatar
@@ -82,8 +103,12 @@ export default function Repost({
                 </p>
               </div>
             </div>
-            <div className="flex flex-col">
-              <p className="mb-2">{post.content}</p>
+            <div className="flex flex-col space-y-3">
+              <div>
+                {html.length > 0 && (
+                  <div dangerouslySetInnerHTML={{ __html: html }} />
+                )}
+              </div>
               {post?.image_url && (
                 <div className="flex justify-center">
                   {post.image_url && (
