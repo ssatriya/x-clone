@@ -1,3 +1,6 @@
+import PhotoModal from "@/components/layout/center/photo-modal";
+import { db } from "@/lib/db";
+import getCurrentSession from "@/lib/getCurrentSession";
 import { redirect } from "next/navigation";
 
 type LightBoxPageProps = {
@@ -8,15 +11,41 @@ type LightBoxPageProps = {
   };
 };
 
-export default function LightBoxPage({ params }: LightBoxPageProps) {
+export default async function LightBoxPage({ params }: LightBoxPageProps) {
+  const session = await getCurrentSession();
+
+  const post = await db.post.findUnique({
+    where: {
+      id: params.postId,
+    },
+    include: {
+      user_one: {
+        include: {
+          followers: true,
+          following: true,
+        },
+      },
+      user_two: {
+        include: {
+          followers: true,
+          following: true,
+        },
+      },
+      replys: true,
+      reposts: true,
+      likes: true,
+    },
+  });
+
+  if (!post) {
+    return redirect("/home");
+  }
+
   return (
-    <div className="fixed inset-0 bg-black/80 z-20">
-      <div className="container flex items-center h-full max-w-lg mx-auto">
-        <div className="relative bg-zinc-800 w-full h-fit py-20 px-2 rounded-lg">
-          <div className="absolute top-4 right-4">{/* <CloseModal /> */}</div>
-          {/* <SignUp /> */}
-        </div>
-      </div>
-    </div>
+    <PhotoModal
+      params={params}
+      post={post}
+      currentUserId={session?.user.userId}
+    />
   );
 }
