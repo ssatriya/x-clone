@@ -9,6 +9,7 @@ import { Loader2 } from "lucide-react";
 import { PostType, User } from "@prisma/client";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import Repost from "../post/repost";
+import ReplyItem from "../reply/reply-item";
 
 type ForYouFeedProps = {
   user: UserWithFollowersFollowing;
@@ -67,6 +68,18 @@ export default function ForYouFeed({ user }: ForYouFeedProps) {
                     />
                   </li>
                 );
+              } else if (post.post_type === PostType.REPLY) {
+                return (
+                  <li key={post.id} ref={ref}>
+                    <ReplyItem
+                      post={post}
+                      userPosted={post.user_one.avatar}
+                      currentUser={user}
+                      postUserOwner={post.user_two}
+                      disabledNote={false}
+                    />
+                  </li>
+                );
               }
             } else {
               if (post.post_type === "POST") {
@@ -86,6 +99,17 @@ export default function ForYouFeed({ user }: ForYouFeedProps) {
                     userPosted={post.user_one.avatar}
                     currentUser={user}
                     postUserOwner={post.user_two}
+                  />
+                );
+              } else if (post.post_type === PostType.REPLY) {
+                return (
+                  <ReplyItem
+                    key={post.id}
+                    post={post}
+                    userPosted={post.user_one.avatar}
+                    currentUser={user}
+                    postUserOwner={post.user_two}
+                    disabledNote={false}
                   />
                 );
               }

@@ -33,6 +33,7 @@ export default function PhotoModal({
 }: PhotoModalProps) {
   const router = useRouter();
   const [imageUrl, setImageUrl] = React.useState("");
+  const [open, setOpen] = React.useState(false);
 
   const handleClose = () => {
     router.back();
@@ -41,14 +42,29 @@ export default function PhotoModal({
   const imageArr = post.image_url!.split(",");
   const photoIndex = params.photoIndex;
 
+  const handleRight = (value: number) => {};
+
+  React.useEffect(() => {
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
+
   return (
-    <>
-      <div className="fixed inset-0 bg-black/80 z-50" onClick={handleClose}>
-        <div className="relative flex justify-between items-center">
+    <div
+      className="fixed inset-0 flex items-center justify-center z-50"
+      onClick={handleClose}
+    >
+      <div className="fixed inset-0 bg-black opacity-75"></div>
+
+      <div className="flex relative w-full h-full">
+        <div className="relative flex-1">
           <Button
             onClick={handleClose}
             isIconOnly
-            className="rounded-full absolute left-3 top-3 bg-transparent hover:bg-text/10"
+            className="rounded-full absolute left-3 top-3 z-50 bg-transparent hover:bg-text/10"
           >
             <Icons.close className="fill-text h-5 w-5" strokeWidth={2} />
           </Button>
@@ -58,51 +74,58 @@ export default function PhotoModal({
           >
             <Icons.hideIcon className="fill-text h-5 w-5" strokeWidth={2} />
           </Button>
-        </div>
-        <div className="flex items-center justify-between h-full mx-auto">
-          <div
-            className="mx-auto relative px-4 w-fit rounded-lg"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex flex-col justify-center items-center">
-              <div className="flex items-center gap-12">
-                <Button
-                  isIconOnly
-                  className="rounded-full bg-transparent hover:bg-text/10"
-                >
-                  <Icons.arrowLeft className="h-5 w-5 fill-text" />
-                </Button>
-                <Image
-                  src={imageArr.at(Number(photoIndex) - 1)!}
-                  alt=""
-                  classNames={{
-                    img: "max-w-6xl",
-                  }}
-                />
-                <Button
-                  isIconOnly
-                  className="rounded-full bg-transparent hover:bg-text/10"
-                >
-                  <Icons.arrowRight className="h-5 w-5 fill-text" />
-                </Button>
-              </div>
-            </div>
-            <div className="w-[700px]">
+
+          <div className="flex flex-col justify-center items-center h-full border">
+            <Image
+              onClick={(e) => e.stopPropagation()}
+              src={imageArr.at(Number(photoIndex) - 1)!}
+              alt=""
+              classNames={{
+                img: "max-w-6xl",
+              }}
+            />
+            <div className="z-50" onClick={(e) => e.stopPropagation()}>
               <PostActionButton
                 post={post}
                 reposts={post.reposts}
                 currentUserId={currentUserId}
+                customClass="fill-text"
               />
             </div>
           </div>
-          <div
-            className="bg-black w-[400px] h-full py-20 px-2"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {post.user_one.name}
+
+          <div className="absolute top-0 left-0 bottom-0 flex items-center justify-between w-full">
+            <Button
+              isIconOnly
+              className="rounded-full bg-transparent hover:bg-text/10"
+            >
+              <Icons.arrowLeft className="h-5 w-5 fill-text" />
+            </Button>
+            <Button
+              isIconOnly
+              className="rounded-full bg-transparent hover:bg-text/10"
+            >
+              <Icons.arrowRight className="h-5 w-5 fill-text" />
+            </Button>
+          </div>
+        </div>
+
+        <div
+          className="flex-none w-80 bg-black h-[1400px] p-4 overflow-y-auto"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="mb-4">
+            <h2 className="text-xl font-semibold">User 1</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+          </div>
+          <div className="mb-4">
+            <h2 className="text-xl font-semibold">User 2</h2>
+            <p>
+              Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </p>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

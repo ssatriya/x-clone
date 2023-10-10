@@ -45,7 +45,7 @@ export default function Repost({
     }
   }
   return (
-    <div className="hover:bg-hover/30 transition-colors cursor-pointer flex justify-between pt-2 px-4 gap-4 border-b relative">
+    <div className="hover:bg-hover/30 transition-colors cursor-pointer flex justify-between py-2 px-4 gap-4 border-b relative">
       <Link href={postURL} className="absolute inset-0" />
       <div className="h-fit">
         <UserTooltip user={post.user_one} currentUser={currentUser}>
@@ -106,7 +106,10 @@ export default function Repost({
             <div className="flex flex-col space-y-3">
               <div>
                 {html.length > 0 && (
-                  <div dangerouslySetInnerHTML={{ __html: html }} />
+                  <div
+                    className="pb-4"
+                    dangerouslySetInnerHTML={{ __html: html }}
+                  />
                 )}
               </div>
               {post?.image_url && (
@@ -121,7 +124,7 @@ export default function Repost({
         </div>
         <PostActionButton
           post={post}
-          currentUserId={currentUser.id}
+          currentUser={currentUser}
           reposts={post.reposts}
         />
       </div>

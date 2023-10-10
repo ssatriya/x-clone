@@ -22,7 +22,7 @@
   color: gainsboro !important;
 }
 .ql-editor.ql-blank::before {
-  width: 100% !important;
+  width: inherit !important;
   color: gray !important;
   font-style: normal !important;
   padding-left: 0px !important;

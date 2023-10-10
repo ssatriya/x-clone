@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { uploadFiles } from "@/lib/uploadthing";
 import dynamic from "next/dynamic";
 import { DeltaStatic } from "quill";
+import { AttachmentType } from "@/types/types";
 
 const QuillEditor = dynamic(() => import("./editor"), { ssr: false });
 
@@ -83,23 +84,13 @@ export default function PostFormEditor({
     },
   });
 
-  type Attachment = {
-    type: string;
-    url: string;
-    mime: string;
-    name: string;
-    extension: string;
-    size: string;
-    file: File;
-  };
-
-  const [files, setFiles] = React.useState<Attachment[]>([]);
+  const [files, setFiles] = React.useState<AttachmentType[]>([]);
 
   const mediaRef = React.useRef<HTMLInputElement>(null);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const newAttachments: Attachment[] = Array.from(e.target.files).map(
+      const newAttachments: AttachmentType[] = Array.from(e.target.files).map(
         (file) => ({
           type: "IMAGE",
           url: URL.createObjectURL(file),
@@ -150,7 +141,7 @@ export default function PostFormEditor({
 
     if (files) {
       const allFiles: File[] = [];
-      files.map((file: Attachment) => {
+      files.map((file: AttachmentType) => {
         allFiles.push(file.file);
       });
 
@@ -170,10 +161,10 @@ export default function PostFormEditor({
         });
         setValue("imageUrl", [...urls].toString());
 
-        let newData = {
-          ...data,
-          imageUrl: [...urls].toString(),
-        };
+        // let newData = {
+        //   ...data,
+        //   imageUrl: [...urls].toString(),
+        // };
 
         createPost({ content: editorValue, imageUrl: [...urls].toString() });
         setFiles([]);
@@ -312,24 +303,26 @@ export default function PostFormEditor({
                   maxValue={280}
                   color="primary"
                   classNames={{
-                    svg: "w-[32px] h-[32px]",
+                    svgWrapper:
+                      "w-[30px] h-[30px] flex justify-center items-center",
+                    svg: "w-[20px] h-[20px]",
                   }}
                   aria-label="Post length"
                 />
                 <div className="px-[2px] h-full py-[2px]">
-                  <Divider orientation="vertical" className="w-[2px]" />
+                  <Divider orientation="vertical" className="w-[1px]" />
                 </div>
-                <Button
+                {/* <Button
                   size="sm"
                   isIconOnly
-                  className="rounded-full data-[hover=true]:bg-blue/10"
-                  variant="bordered"
+                  className="rounded-full data-[hover=true]:bg-blue/10 h-[30px] w-[30px] border bg-black"
                 >
                   <Icons.plusIcon className="h-4 w-4 fill-blue p-0" />
-                </Button>
+                </Button> */}
               </>
             )}
             <Button
+              size="sm"
               isDisabled={isSubmitting || disabledByContent}
               onClick={() => handleSubmit(handlePostSubmit)()}
               className="bg-blue hover:bg-blue/90 font-bold rounded-full"

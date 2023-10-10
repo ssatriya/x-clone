@@ -75,7 +75,9 @@ export async function PATCH(req: Request) {
       data: {
         user_one_id: session.user.userId,
         user_two_id: originalPostOwnerId,
-        content: originalPost?.content,
+        content: {
+          toJSON: originalPost?.content,
+        },
         image_url: originalPost.image_url,
         post_type: PostType.REPOST,
         originalPostId: postId,

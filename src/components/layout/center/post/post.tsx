@@ -12,9 +12,10 @@ import AttachmentPost from "./attachment-post";
 import UserPostAvatar from "./user-post-avatar";
 import UserPostName from "./user-post-name";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
+import { Post } from "@prisma/client";
 
 type PostProps = {
-  post: ExtendedPost | ExtendedPostWithoutUserTwo;
+  post: ExtendedPostWithoutUserTwo;
   userPosted: string;
   currentUser: UserWithFollowersFollowing;
 };
@@ -55,7 +56,6 @@ export default function Post({ post, currentUser, userPosted }: PostProps) {
             <UserPostName
               currentUser={currentUser}
               post={post}
-              userPosted={userPosted}
               usernameWithoutAt={usernameWithoutAt}
             />
             <span className="text-gray">·</span>
@@ -75,7 +75,7 @@ export default function Post({ post, currentUser, userPosted }: PostProps) {
           </div>
           <PostActionButton
             post={post}
-            currentUserId={currentUser.id}
+            currentUser={currentUser}
             reposts={post.reposts}
           />
         </div>

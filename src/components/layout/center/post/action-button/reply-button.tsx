@@ -1,29 +1,50 @@
 import { Icons } from "@/components/icons";
 import ReplyModal from "@/components/modal/reply/reply-modal";
+import { cn } from "@/lib/utils";
 import { ExtendedPost, ExtendedPostWithoutUserTwo } from "@/types/db";
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  useDisclosure,
-} from "@nextui-org/react";
-import { Repost } from "@prisma/client";
+import { Button, useDisclosure } from "@nextui-org/react";
+import { Reply, User } from "@prisma/client";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import * as React from "react";
 
 type ReplyButtonProps = {
   post: ExtendedPost | ExtendedPostWithoutUserTwo;
-  currentUserId: string;
-  reposts: Repost[];
+  currentUser: User;
+  customClass?: string;
 };
 
 export default function ReplyButton({
   post,
-  currentUserId,
-  reposts,
+  currentUser,
+  customClass,
 }: ReplyButtonProps) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [replysAmount, setReplysAmount] = React.useState<Reply[]>(post.replys);
+
+  const queryClient = useQueryClient();
+
+  const { data: replyData } = useQuery({
+    queryKey: ["replyData", post],
+    queryFn: async () => {
+      const { data } = await axios.get("/api/post/reply", {
+        params: {
+          postId: post.id,
+        },
+      });
+      return data as Reply[];
+    },
+  });
+
+  React.useEffect(() => {
+    if (replyData) {
+      setReplysAmount(replyData);
+    }
+  }, [replyData]);
+
+  const isRepliedByCurrentUser = replysAmount.some(
+    (reply) => reply.user_id === currentUser.id && reply.post_id === post.id
+  );
 
   return (
     <div className="flex items-center group">
@@ -33,11 +54,29 @@ export default function ReplyButton({
         isIconOnly
         className="rounded-full bg-transparent flex items-center justify-center gap-2 group-hover:bg-blue/10"
       >
-        <Icons.reply className="fill-gray w-[18px] h-[18px] group-hover:fill-blue" />
+        <Icons.reply
+          className={cn(
+            customClass ? customClass : "fill-gray",
+            "w-[18px] h-[18px] group-hover:fill-blue"
+          )}
+        />
       </Button>
-      <p className="text-sm text-gray group-hover:text-blue">4</p>
+      <p
+        className={cn(
+          customClass ? customClass : "text-gray",
+          "text-sm group-hover:text-blue"
+        )}
+      >
+        {replysAmount.length}
+      </p>
 
-      <ReplyModal isOpen={isOpen} onOpenChange={onOpenChange} />
+      <ReplyModal
+        isOpen={isOpen}
+        onOpen={onOpen}
+        onOpenChange={onOpenChange}
+        post={post}
+        currentUser={currentUser}
+      />
     </div>
   );
 }

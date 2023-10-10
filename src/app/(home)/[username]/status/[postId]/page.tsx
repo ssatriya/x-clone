@@ -1,7 +1,9 @@
 import Header from "@/components/layout/center/header";
 import Post from "@/components/layout/center/post/post";
+import Reply from "@/components/layout/center/reply/reply";
 import { db } from "@/lib/db";
 import getCurrentSession from "@/lib/getCurrentSession";
+import * as React from "react";
 
 type PostPageProps = {
   params: {
@@ -76,6 +78,7 @@ export default async function PostPage({ params }: PostPageProps) {
         post={post}
         userPosted={post.user_one.avatar}
       />
+      <Reply postId={postId} currentUser={currentUser} />
     </div>
   );
 }

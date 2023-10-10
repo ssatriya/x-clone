@@ -66,7 +66,6 @@ model Post {
   user_one    User     @relation("userOne", fields: [user_one_id], references: [id], onDelete: Cascade)
   user_two_id String?
   user_two    User?    @relation("userTwo", fields: [user_two_id], references: [id], onDelete: Cascade)
-  // content     String?  @db.Text()
   content     Json?
   image_url   String?  @db.Text()
   views       Int      @default(0)

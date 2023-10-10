@@ -10,7 +10,7 @@ import {
   DropdownMenu,
   DropdownTrigger,
 } from "@nextui-org/react";
-import { RepostType, Repost, User } from "@prisma/client";
+import { RepostType, Repost, User, Post } from "@prisma/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import * as React from "react";
@@ -18,12 +18,12 @@ import { toast } from "sonner";
 
 type RepostButtonProps = {
   post: ExtendedPost | ExtendedPostWithoutUserTwo;
-  currentUserId: string;
+  currentUser: User;
   reposts: Repost[];
 };
 
 export default function RepostButton({
-  currentUserId,
+  currentUser,
   post,
   reposts,
 }: RepostButtonProps) {
@@ -68,7 +68,7 @@ export default function RepostButton({
 
       const repostIndex = repostsAmount.findIndex(
         (repost) =>
-          repost.post_id === post.id && repost.user_id === currentUserId
+          repost.post_id === post.id && repost.user_id === currentUser.id
       );
 
       if (repostIndex !== -1) {
@@ -80,7 +80,7 @@ export default function RepostButton({
       } else {
         setRepostsAmount((prevRepost) => [
           ...prevRepost,
-          { user_id: currentUserId, post_id: post.id, repost_type: "REPOST" },
+          { user_id: currentUser.id, post_id: post.id, repost_type: "REPOST" },
         ]);
         toast.success("Reposted");
       }
@@ -94,7 +94,7 @@ export default function RepostButton({
   });
 
   const isRepostedByCurrentUser = repostsAmount.some(
-    (repost) => repost.user_id === currentUserId && repost.post_id === post.id
+    (repost) => repost.user_id === currentUser.id && repost.post_id === post.id
   );
 
   return (

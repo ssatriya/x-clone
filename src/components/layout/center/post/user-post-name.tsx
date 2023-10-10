@@ -9,7 +9,6 @@ import {
 type UserPostNameProps = {
   post: ExtendedPost | ExtendedPostWithoutUserTwo;
   usernameWithoutAt: string;
-  userPosted: string;
   currentUser: UserWithFollowersFollowing;
 };
 

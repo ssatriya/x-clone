@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { LikePayload } from "@/lib/validator/like";
 import { ExtendedPost, ExtendedPostWithoutUserTwo } from "@/types/db";
 import { Button } from "@nextui-org/react";
-import { Like } from "@prisma/client";
+import { Like, PostType, User } from "@prisma/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import * as React from "react";
@@ -11,10 +11,10 @@ import { toast } from "sonner";
 
 type LikeButtonProps = {
   post: ExtendedPost | ExtendedPostWithoutUserTwo;
-  currentUserId: string;
+  currentUser: User;
 };
 
-export default function LikeButton({ post, currentUserId }: LikeButtonProps) {
+export default function LikeButton({ post, currentUser }: LikeButtonProps) {
   const [likesAmount, setLikesAmount] = React.useState<
     { post_id: string; user_id: string }[]
   >(post.likes);
@@ -46,13 +46,15 @@ export default function LikeButton({ post, currentUserId }: LikeButtonProps) {
         postId: post.id,
       };
       const { data } = await axios.patch("/api/post/like", payload);
+
+      return data as Like[];
     },
-    onError: (error) => {},
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ["likeData"] });
+      // const previousLikes = queryClient.getQueryData(['like'])
 
       const likedIndex = likesAmount.findIndex(
-        (like) => like.post_id === post.id && like.user_id === currentUserId
+        (like) => like.post_id === post.id && like.user_id === currentUser.id
       );
 
       if (likedIndex !== -1) {
@@ -63,13 +65,15 @@ export default function LikeButton({ post, currentUserId }: LikeButtonProps) {
           return newLikes;
         });
       } else {
-        // If the user hasn't liked the post, add it to likesAmount
         setLikesAmount((prevLikes) => [
           ...prevLikes,
-          { user_id: currentUserId, post_id: post.id },
+          { user_id: currentUser.id, post_id: post.id },
         ]);
         toast.success("Liked");
       }
+    },
+    onError: (_, __, context) => {
+      // queryClient.setQueryData(["likeData"], () => context?.previousLikes);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["likeData"] });
@@ -77,7 +81,7 @@ export default function LikeButton({ post, currentUserId }: LikeButtonProps) {
   });
 
   const isLikedByCurrentUser = likesAmount.some(
-    (like) => like.post_id === post.id && like.user_id === currentUserId
+    (like) => like.post_id === post.id && like.user_id === currentUser.id
   );
 
   return (
