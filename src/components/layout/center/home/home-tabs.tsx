@@ -7,6 +7,7 @@ import PostForm from "./post-form";
 import ForYouFeed from "./for-you-feed";
 import { UserWithFollowersFollowing } from "@/types/db";
 import PostFormEditor from "../post-form-editor";
+import Loading from "@/app/(home)/[username]/status/[postId]/photo/[photoIndex]/loading";
 
 type HomeTabsProps = {
   user: UserWithFollowersFollowing;
@@ -38,7 +39,6 @@ export default function HomeTabs({ user }: HomeTabsProps) {
         }}
       >
         <Tab key="for-you" title="For you">
-          {/* <PostForm user={user} focusHandler={focusHandler} isFocus={isFocus} /> */}
           <PostFormEditor
             user={user}
             focusHandler={focusHandler}
@@ -47,7 +47,11 @@ export default function HomeTabs({ user }: HomeTabsProps) {
           <ForYouFeed user={user} />
         </Tab>
         <Tab key="following" title="Following">
-          <PostForm user={user} focusHandler={focusHandler} isFocus={isFocus} />
+          <PostFormEditor
+            user={user}
+            focusHandler={focusHandler}
+            isFocus={isFocus}
+          />
         </Tab>
       </Tabs>
     </div>

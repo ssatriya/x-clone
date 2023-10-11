@@ -74,7 +74,7 @@ export default function UserTooltip({
   if (!currentUser) {
     isFollowed = false;
   } else {
-    isFollowed = !!followersAmt.find((user) => user.id === currentUser!.id);
+    // isFollowed = !!followersAmt.find((user) => user.id === currentUser!.id);
   }
 
   return (
@@ -90,7 +90,7 @@ export default function UserTooltip({
             <div className="flex flex-col gap-1">
               <Avatar showFallback src={user.avatar} size="lg" />
             </div>
-            {isMyProfile ? null : isFollowed ? (
+            {/* {isMyProfile ? null : isFollowed ? (
               <Button
                 onMouseEnter={(e) => console.log(e)}
                 onClick={() => handleFollow()}
@@ -109,7 +109,7 @@ export default function UserTooltip({
               >
                 Follow
               </Button>
-            )}
+            )} */}
           </div>
           <div className="my-2">
             <div className="font-bold text-white">{user.name}</div>
@@ -118,12 +118,12 @@ export default function UserTooltip({
           <div className="text-white text-sm">{user.bio}</div>
           <div className="flex w-[80%] justify-between mt-4">
             <div className="text-white">
-              <span className=" font-bold">{followingsAmt.length}</span>{" "}
+              {/* <span className=" font-bold">{followingsAmt.length}</span>{" "} */}
               <span className="font-normal">Following</span>
             </div>
 
             <div className="text-white">
-              <span className=" font-bold">{followersAmt.length}</span>{" "}
+              {/* <span className=" font-bold">{followersAmt.length}</span>{" "} */}
               <span className="font-normal">Followers</span>
             </div>
           </div>

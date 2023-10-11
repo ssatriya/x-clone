@@ -1,11 +1,8 @@
 import Link from "next/link";
 import UserTooltip from "../user-tooltip";
 import { Avatar } from "@nextui-org/react";
-import {
-  ExtendedPost,
-  ExtendedPostWithoutUserTwo,
-  UserWithFollowersFollowing,
-} from "@/types/db";
+import { UserWithFollowersFollowing } from "@/types/db";
+import NextImage from "next/image";
 
 type UserPostAvatarProps = {
   user: UserWithFollowersFollowing;

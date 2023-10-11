@@ -4,6 +4,8 @@ import OnboardingModal from "@/components/modal/onboarding/onboarding-modal";
 import { db } from "@/lib/db";
 import getCurrentSession from "@/lib/getCurrentSession";
 import { redirect } from "next/navigation";
+import * as React from "react";
+import Loading from "../loading";
 
 export default async function HomePage() {
   const session = await getCurrentSession();
@@ -40,7 +42,9 @@ export default async function HomePage() {
   return (
     <div className="">
       <Header title="Home" />
-      <HomeTabs user={user} />
+      <React.Suspense fallback={<Loading />}>
+        <HomeTabs user={user} />
+      </React.Suspense>
     </div>
   );
 }

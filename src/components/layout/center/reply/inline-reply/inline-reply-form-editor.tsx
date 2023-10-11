@@ -4,7 +4,7 @@ import * as React from "react";
 
 import { Icons } from "@/components/icons";
 import { cn } from "@/lib/utils";
-import { Avatar, Button, CircularProgress } from "@nextui-org/react";
+import { Avatar, Button, CircularProgress, Divider } from "@nextui-org/react";
 import { User } from "@prisma/client";
 import dynamic from "next/dynamic";
 import { DeltaStatic, Sources } from "quill";
@@ -18,19 +18,19 @@ import { uploadFiles } from "@/lib/uploadthing";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { toast } from "sonner";
 
-const ReplyQuillEditor = dynamic(() => import("./reply-editor"), {
+const ReplyQuillEditor = dynamic(() => import("../reply-editor"), {
   ssr: false,
 });
 
-type ReplyFormEditorProps = {
+type InlineReplyFormEditorProps = {
   post: ExtendedPost | ExtendedPostWithoutUserTwo;
   currentUser: User;
 };
 
-export default function ReplyFormEditor({
-  post,
+export default function InlineReplyFormEditor({
   currentUser,
-}: ReplyFormEditorProps) {
+  post,
+}: InlineReplyFormEditorProps) {
   const { mutate: mutateInfiniteScroll } = useInfiniteScroll();
   const [editorValue, setEditorValue] = React.useState<
     DeltaStatic | undefined
@@ -172,105 +172,91 @@ export default function ReplyFormEditor({
   }
 
   return (
-    <div className="pt-4 w-full h-full">
-      <div className="flex gap-3">
-        <div>
-          <Avatar src={currentUser.avatar} />
-        </div>
-        <div className="w-full h-24">
+    <div className="w-full flex justify-between pt-2 gap-4">
+      <div className="h-fit">
+        <Avatar showFallback src={currentUser.avatar} />
+      </div>
+      <div className="w-full flex flex-col">
+        <div className="w-full">
           <ReplyQuillEditor
             editorValue={editorValue}
             setCharLength={setCharLength}
             setEditorValue={setEditorValue}
           />
         </div>
-      </div>
-      <div className={cn(className)}>
-        {files.map((attachment, i) => (
-          <Attachment
-            url={attachment.url}
-            fill={files.length === 3 && i === 0}
-            onRemoveAttachment={handleRemoveImage}
-            key={i}
-          />
-        ))}
-      </div>
-      <div className="w-full flex justify-between items-center">
-        <input
-          multiple
-          type="file"
-          className="hidden"
-          ref={mediaRef}
-          onChange={handleFileChange}
-        />
-        <div className="flex">
-          <Button
-            onClick={handleMedia}
-            size="sm"
-            isIconOnly
-            className="bg-transparent w-9 h-9 rounded-full hover:bg-blue/10"
-          >
-            <Icons.media className="fill-blue w-5 h-5" />
-          </Button>
-          <Button
-            size="sm"
-            isIconOnly
-            className="bg-transparent w-9 h-9 rounded-full hover:bg-blue/10"
-          >
-            <Icons.gif className="fill-blue w-5 h-5" />
-          </Button>
-          <Button
-            size="sm"
-            isIconOnly
-            className="bg-transparent w-9 h-9 rounded-full hover:bg-blue/10"
-          >
-            <Icons.poll className="fill-blue w-5 h-5" />
-          </Button>
-          <Button
-            size="sm"
-            isIconOnly
-            className="bg-transparent w-9 h-9 rounded-full hover:bg-blue/10"
-          >
-            <Icons.emoji className="fill-blue w-5 h-5" />
-          </Button>
-          <Button
-            size="sm"
-            isIconOnly
-            className="bg-transparent w-9 h-9 rounded-full hover:bg-blue/10"
-          >
-            <Icons.schedule className="fill-blue w-5 h-5" />
-          </Button>
-          <Button
-            size="sm"
-            isIconOnly
-            className="bg-transparent w-9 h-9 rounded-full hover:bg-blue/10"
-          >
-            <Icons.tagLocation className="fill-blue w-5 h-5" />
-          </Button>
-        </div>
-        <div className="flex gap-2 items-center h-full">
-          {charLength > 0 && (
-            <CircularProgress
-              size="sm"
-              value={charLength}
-              maxValue={280}
-              color="primary"
-              classNames={{
-                svgWrapper:
-                  "w-[30px] h-[30px] flex justify-center items-center",
-                svg: "w-[20px] h-[20px]",
-              }}
-              aria-label="Reply length"
+        <div className={cn(className)}>
+          {files.map((attachment, i) => (
+            <Attachment
+              url={attachment.url}
+              fill={files.length === 3 && i === 0}
+              onRemoveAttachment={handleRemoveImage}
+              key={i}
             />
-          )}
-          <Button
-            onClick={handleReplySubmit}
-            size="sm"
-            isDisabled={disabledByContent}
-            className="hover:bg-blue/90 w-fit px-4 rounded-full bg-blue text-sm leading-4 text-white font-bold"
-          >
-            Reply
-          </Button>
+          ))}
+        </div>
+        <div className="flex justify-between items-center mt-4">
+          <input
+            multiple
+            type="file"
+            className="hidden"
+            ref={mediaRef}
+            onChange={handleFileChange}
+          />
+          <div className="flex">
+            <Button
+              onClick={handleMedia}
+              size="sm"
+              isIconOnly
+              className="bg-transparent w-9 h-9 rounded-full hover:bg-blue/10"
+            >
+              <Icons.media className="fill-blue w-5 h-5" />
+            </Button>
+            <Button
+              size="sm"
+              isIconOnly
+              className="bg-transparent w-9 h-9 rounded-full hover:bg-blue/10"
+            >
+              <Icons.gif className="fill-blue w-5 h-5" />
+            </Button>
+            <Button
+              size="sm"
+              isIconOnly
+              className="bg-transparent w-9 h-9 rounded-full hover:bg-blue/10"
+            >
+              <Icons.emoji className="fill-blue w-5 h-5" />
+            </Button>
+            <Button
+              size="sm"
+              isIconOnly
+              className="bg-transparent w-9 h-9 rounded-full hover:bg-blue/10"
+            >
+              <Icons.tagLocation className="fill-blue w-5 h-5" />
+            </Button>
+          </div>
+          <div className="flex gap-2 items-center h-full">
+            {charLength > 0 && (
+              <CircularProgress
+                size="sm"
+                value={charLength}
+                maxValue={280}
+                color="primary"
+                classNames={{
+                  svgWrapper:
+                    "w-[30px] h-[30px] flex justify-center items-center",
+                  svg: "w-[20px] h-[20px]",
+                }}
+                aria-label="Post length"
+              />
+            )}
+            <Button
+              onClick={handleReplySubmit}
+              size="sm"
+              isDisabled={disabledByContent}
+              className="hover:bg-blue/90 w-fit px-4 rounded-full bg-blue text-sm leading-4 text-white font-bold"
+            >
+              Reply
+            </Button>
+          </div>
         </div>
       </div>
     </div>

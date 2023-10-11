@@ -1,6 +1,6 @@
+import Loading from "@/app/(home)/loading";
 import Header from "@/components/layout/center/header";
-import Post from "@/components/layout/center/post/post";
-import Reply from "@/components/layout/center/reply/reply";
+import InlineReply from "@/components/layout/center/reply/inline-reply/inline-reply";
 import { db } from "@/lib/db";
 import getCurrentSession from "@/lib/getCurrentSession";
 import * as React from "react";
@@ -72,13 +72,7 @@ export default async function PostPage({ params }: PostPageProps) {
 
   return (
     <div>
-      <Header title="Post" backButton={true} />
-      <Post
-        currentUser={currentUser}
-        post={post}
-        userPosted={post.user_one.avatar}
-      />
-      <Reply postId={postId} currentUser={currentUser} />
+      <InlineReply currentUser={currentUser} post={post} />
     </div>
   );
 }

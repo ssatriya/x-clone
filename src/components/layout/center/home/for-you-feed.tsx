@@ -6,7 +6,6 @@ import { useIntersection } from "@mantine/hooks";
 
 import * as React from "react";
 import { Loader2 } from "lucide-react";
-import { PostType, User } from "@prisma/client";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import Repost from "../post/repost";
 import ReplyItem from "../reply/reply-item";
@@ -19,7 +18,7 @@ export default function ForYouFeed({ user }: ForYouFeedProps) {
   const lastPostRef = React.useRef();
   const { ref, entry } = useIntersection({
     root: lastPostRef.current,
-    threshold: 1,
+    threshold: 0.3,
   });
 
   const { data, isLoading, size, isValidating, setSize } = useInfiniteScroll();
@@ -54,10 +53,11 @@ export default function ForYouFeed({ user }: ForYouFeedProps) {
                       userPosted={post.user_one.avatar}
                       post={post}
                       currentUser={user}
+                      classNames="border-b"
                     />
                   </li>
                 );
-              } else if (post.post_type === PostType.REPOST) {
+              } else if (post.post_type === "REPOST") {
                 return (
                   <li key={post.id} ref={ref}>
                     <Repost
@@ -68,7 +68,7 @@ export default function ForYouFeed({ user }: ForYouFeedProps) {
                     />
                   </li>
                 );
-              } else if (post.post_type === PostType.REPLY) {
+              } else if (post.post_type === "REPLY") {
                 return (
                   <li key={post.id} ref={ref}>
                     <ReplyItem
@@ -89,9 +89,10 @@ export default function ForYouFeed({ user }: ForYouFeedProps) {
                     key={post.id}
                     post={post}
                     currentUser={user}
+                    classNames="border-b"
                   />
                 );
-              } else if (post.post_type === PostType.REPOST) {
+              } else if (post.post_type === "REPOST") {
                 return (
                   <Repost
                     key={post.id}
@@ -101,7 +102,7 @@ export default function ForYouFeed({ user }: ForYouFeedProps) {
                     postUserOwner={post.user_two}
                   />
                 );
-              } else if (post.post_type === PostType.REPLY) {
+              } else if (post.post_type === "REPLY") {
                 return (
                   <ReplyItem
                     key={post.id}

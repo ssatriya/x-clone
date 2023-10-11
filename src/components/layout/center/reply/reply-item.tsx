@@ -60,7 +60,6 @@ export default function ReplyItem({
             <UserPostName
               currentUser={currentUser}
               post={post}
-              userPosted={userPosted}
               usernameWithoutAt={usernameWithoutAt}
             />
             <span className="text-gray">·</span>

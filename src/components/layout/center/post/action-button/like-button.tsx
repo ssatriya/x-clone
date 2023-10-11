@@ -80,9 +80,13 @@ export default function LikeButton({ post, currentUser }: LikeButtonProps) {
     },
   });
 
-  const isLikedByCurrentUser = likesAmount.some(
-    (like) => like.post_id === post.id && like.user_id === currentUser.id
-  );
+  let isLikedByCurrentUser: boolean = false;
+
+  if (currentUser) {
+    isLikedByCurrentUser = likesAmount.some(
+      (like) => like.post_id === post.id && like.user_id === currentUser.id
+    );
+  }
 
   return (
     <div className="flex items-center group">
@@ -97,7 +101,7 @@ export default function LikeButton({ post, currentUser }: LikeButtonProps) {
           className={cn(
             isLikedByCurrentUser
               ? "fill-red-500"
-              : "fill-black stroke-gray group-hover:stroke-red-500",
+              : "fill-transparent stroke-gray group-hover:stroke-red-500",
             "w-[18px] h-[18px]"
           )}
         />

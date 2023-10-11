@@ -1,18 +1,17 @@
 "use client";
 
 import { Icons } from "@/components/icons";
-import { Reply, Repost, User } from "@prisma/client";
+import { Repost, User } from "@prisma/client";
 import { Button } from "@nextui-org/react";
 
 import * as React from "react";
-import { toast } from "sonner";
 import LikeButton from "./like-button";
 import RepostButton from "./repost-button";
 import { ExtendedPost, ExtendedPostWithoutUserTwo } from "@/types/db";
 import ReplyButton from "./reply-button";
 
 type PostActionButtonProps = {
-  post: ExtendedPost | ExtendedPostWithoutUserTwo;
+  post: ExtendedPostWithoutUserTwo;
   currentUser: User;
   reposts: Repost[];
   customClass?: string;
@@ -25,15 +24,13 @@ export default function PostActionButton({
   customClass,
 }: PostActionButtonProps) {
   return (
-    <div className="w-full flex justify-between items-center gap-4 pt-2">
+    <div className="w-full flex justify-between items-center gap-4 py-2">
       <ReplyButton
         currentUser={currentUser}
         post={post}
         customClass={customClass}
       />
-
       <RepostButton currentUser={currentUser} post={post} reposts={reposts} />
-
       <LikeButton currentUser={currentUser} post={post} />
 
       <div className="flex items-center group">

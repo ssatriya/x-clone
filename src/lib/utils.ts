@@ -124,3 +124,12 @@ export function formatJoinDate(inputDate: Date): string {
   // Use date-fns to format the date in the "MMMM yyyy" format
   return format(date, "MMMM yyyy");
 }
+
+export function formatSinglePostDate(mysqlDatetime: Date) {
+  const jsDate = new Date(mysqlDatetime);
+
+  // Format the date in the desired output format
+  const formattedDate = format(jsDate, "h:mm a · MMM d, yyyy");
+
+  return formattedDate;
+}

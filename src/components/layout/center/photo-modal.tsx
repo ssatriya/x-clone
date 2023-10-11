@@ -4,13 +4,10 @@ import { Icons } from "@/components/icons";
 import {
   ExtendedPost,
   ExtendedPostWithoutUserTwo,
-  RepostPost,
+  UserWithFollowersFollowing,
 } from "@/types/db";
+
 import { Button, Image } from "@nextui-org/react";
-import { Post } from "@prisma/client";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-// import Image from "next/image";
 
 import { useRouter } from "next/navigation";
 import * as React from "react";
@@ -23,13 +20,13 @@ type PhotoModalProps = {
     username: string;
   };
   post: ExtendedPost | ExtendedPostWithoutUserTwo;
-  currentUserId?: string;
+  currentUser: UserWithFollowersFollowing;
 };
 
 export default function PhotoModal({
   params,
   post,
-  currentUserId,
+  currentUser,
 }: PhotoModalProps) {
   const router = useRouter();
   const [imageUrl, setImageUrl] = React.useState("");
@@ -88,7 +85,7 @@ export default function PhotoModal({
               <PostActionButton
                 post={post}
                 reposts={post.reposts}
-                currentUserId={currentUserId}
+                currentUser={currentUser}
                 customClass="fill-text"
               />
             </div>

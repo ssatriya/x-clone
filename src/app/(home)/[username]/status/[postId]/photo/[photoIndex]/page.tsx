@@ -37,15 +37,26 @@ export default async function LightBoxPage({ params }: LightBoxPageProps) {
     },
   });
 
+  if (!session?.user) {
+    return redirect("/");
+  }
+
+  const user = await db.user.findUnique({
+    where: {
+      id: session.user.userId,
+    },
+    include: {
+      followers: true,
+      following: true,
+    },
+  });
+
   if (!post) {
     return redirect("/home");
   }
+  if (!user) {
+    return redirect("/");
+  }
 
-  return (
-    <PhotoModal
-      params={params}
-      post={post}
-      currentUserId={session?.user.userId}
-    />
-  );
+  return <PhotoModal params={params} post={post} currentUser={user} />;
 }

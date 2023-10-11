@@ -42,9 +42,13 @@ export default function ReplyButton({
     }
   }, [replyData]);
 
-  const isRepliedByCurrentUser = replysAmount.some(
-    (reply) => reply.user_id === currentUser.id && reply.post_id === post.id
-  );
+  let isRepliedByCurrentUser: boolean = false;
+
+  if (currentUser) {
+    isRepliedByCurrentUser = replysAmount.some(
+      (reply) => reply.user_id === currentUser.id && reply.post_id === post.id
+    );
+  }
 
   return (
     <div className="flex items-center group">
@@ -72,7 +76,6 @@ export default function ReplyButton({
 
       <ReplyModal
         isOpen={isOpen}
-        onOpen={onOpen}
         onOpenChange={onOpenChange}
         post={post}
         currentUser={currentUser}

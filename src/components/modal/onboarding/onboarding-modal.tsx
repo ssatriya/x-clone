@@ -20,9 +20,10 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { User } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
+import { UserWithFollowersFollowing } from "@/types/db";
 
 type OnboardingModalProps = {
-  user: User;
+  user: UserWithFollowersFollowing;
 };
 
 export default function OnboardingModal({ user }: OnboardingModalProps) {
