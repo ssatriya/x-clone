@@ -14,7 +14,6 @@ import AttachmentPost from "./attachment-post";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import UserPostAvatar from "./user-post-avatar";
 import { Icons } from "@/components/icons";
-import { Post } from "@prisma/client";
 
 type RepostProps = {
   post: ExtendedPost | ExtendedPostWithoutUserTwo;
@@ -31,19 +30,6 @@ export default function Repost({
 }: RepostProps) {
   const usernameWithoutAt = removeAtSymbol(postUserOwner.username);
   const originalPostURL = `/${usernameWithoutAt}/status/${post.originalPostId}`;
-
-  // const { data: originalPost } = useQuery({
-  //   queryKey: ["originalPost"],
-  //   queryFn: async () => {
-  //     const { data } = await axios.get("/api/post/repost", {
-  //       params: {
-  //         postId: post.originalPostId,
-  //       },
-  //     });
-  //     return data as ExtendedPost | ExtendedPostWithoutUserTwo;
-  //   },
-  // });
-  // console.log(originalPost);
 
   const cfg = {};
   let html = "";

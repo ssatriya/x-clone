@@ -3,6 +3,7 @@
 import { Icons } from "@/components/icons";
 import {
   ExtendedPost,
+  ExtendedPostWithoutOriginalPostUserTwo,
   ExtendedPostWithoutUserTwo,
   UserWithFollowersFollowing,
 } from "@/types/db";
@@ -12,6 +13,8 @@ import { Button, Image } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import * as React from "react";
 import PostActionButton from "./post/action-button/post-action-button";
+import Post from "./post/post";
+import LightboxPost from "./post/lightbox/lightbox-post";
 
 type PhotoModalProps = {
   params: {
@@ -19,7 +22,7 @@ type PhotoModalProps = {
     postId: string;
     username: string;
   };
-  post: ExtendedPost | ExtendedPostWithoutUserTwo;
+  post: ExtendedPostWithoutUserTwo;
   currentUser: UserWithFollowersFollowing;
 };
 
@@ -31,6 +34,8 @@ export default function PhotoModal({
   const router = useRouter();
   const [imageUrl, setImageUrl] = React.useState("");
   const [open, setOpen] = React.useState(false);
+
+  console.log(post);
 
   const handleClose = () => {
     router.back();
@@ -111,7 +116,12 @@ export default function PhotoModal({
           className="flex-none w-80 bg-black h-[1400px] p-4 overflow-y-auto"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="mb-4">
+          <LightboxPost
+            currentUser={currentUser}
+            post={post}
+            userPosted={post.user_one.avatar}
+          />
+          {/* <div className="mb-4">
             <h2 className="text-xl font-semibold">User 1</h2>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
           </div>
@@ -120,7 +130,7 @@ export default function PhotoModal({
             <p>
               Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

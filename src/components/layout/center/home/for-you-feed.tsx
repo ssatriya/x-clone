@@ -58,17 +58,6 @@ export default function ForYouFeed({ user }: ForYouFeedProps) {
                     />
                   </li>
                 );
-              } else if (post.post_type === "REPOST") {
-                return (
-                  <li key={post.id} ref={ref}>
-                    <Repost
-                      post={post}
-                      userPosted={post.user_one.avatar}
-                      currentUser={user}
-                      postUserOwner={post.user_two}
-                    />
-                  </li>
-                );
               } else if (post.post_type === "QUOTE") {
                 return (
                   <li key={post.id} ref={ref}>
@@ -77,18 +66,6 @@ export default function ForYouFeed({ user }: ForYouFeedProps) {
                       userPosted={post.user_one.avatar}
                       currentUser={user}
                       postUserOwner={post.user_two}
-                    />
-                  </li>
-                );
-              } else if (post.post_type === "REPLY") {
-                return (
-                  <li key={post.id} ref={ref}>
-                    <ReplyItem
-                      post={post}
-                      userPosted={post.user_one.avatar}
-                      currentUser={user}
-                      postUserOwner={post.user_two}
-                      disabledNote={false}
                     />
                   </li>
                 );
@@ -104,16 +81,6 @@ export default function ForYouFeed({ user }: ForYouFeedProps) {
                     classNames="border-b"
                   />
                 );
-              } else if (post.post_type === "REPOST") {
-                return (
-                  <Repost
-                    key={post.id}
-                    post={post}
-                    userPosted={post.user_one.avatar}
-                    currentUser={user}
-                    postUserOwner={post.user_two}
-                  />
-                );
               } else if (post.post_type === "QUOTE") {
                 return (
                   <QuoteItem
@@ -122,17 +89,6 @@ export default function ForYouFeed({ user }: ForYouFeedProps) {
                     userPosted={post.user_one.avatar}
                     currentUser={user}
                     postUserOwner={post.user_two}
-                  />
-                );
-              } else if (post.post_type === "REPLY") {
-                return (
-                  <ReplyItem
-                    key={post.id}
-                    post={post}
-                    userPosted={post.user_one.avatar}
-                    currentUser={user}
-                    postUserOwner={post.user_two}
-                    disabledNote={false}
                   />
                 );
               }

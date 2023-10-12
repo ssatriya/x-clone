@@ -5,17 +5,20 @@ import {
   ExtendedPostWithoutUserTwo,
   UserWithFollowersFollowing,
 } from "@/types/db";
+import { truncateString } from "@/lib/utils";
 
 type UserPostNameProps = {
   post: ExtendedPost | ExtendedPostWithoutUserTwo;
   usernameWithoutAt: string;
   currentUser: UserWithFollowersFollowing;
+  lightbox?: boolean;
 };
 
 export default function UserPostName({
   post,
   usernameWithoutAt,
   currentUser,
+  lightbox,
 }: UserPostNameProps) {
   return (
     <>
@@ -24,7 +27,9 @@ export default function UserPostName({
           href={`/${usernameWithoutAt}`}
           className="font-bold z-10 hover:underline focus-visible:ring-0"
         >
-          {post.user_one.name}
+          {lightbox
+            ? truncateString(post.user_one.name, 8)
+            : post.user_one.name}
         </Link>
       </UserTooltip>
       <UserTooltip user={post.user_one} currentUser={currentUser}>

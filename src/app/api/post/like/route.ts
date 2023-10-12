@@ -51,6 +51,7 @@ export async function PATCH(req: Request) {
         user_id: session.user.userId,
       },
     });
+
     return new Response("Ok");
   } catch (error) {
     return new Response(null, { status: 500 });

@@ -3,42 +3,41 @@ import { db } from "@/lib/db";
 export async function GET(req: Request) {
   try {
     const post = await db.post.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-      include: {
-        likes: true,
-      },
-    });
-    const like = await db.like.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-
-    const likedPostId = like.map((li) => li.post_id);
-    console.log(likedPostId);
-
-    const likedPost = await db.post.findMany({
       where: {
-        id: { in: likedPostId },
+        user_one_id: "mszbg1tyabukq856m8iiinwv",
+      },
+      orderBy: { createdAt: "desc" },
+      include: {
+        originalPost: true,
+        // user_one: true,
       },
     });
 
-    const llc = likedPost.map((ll) => {
-      return { ...ll, liked: true };
-    });
-
-    const merged = [...post, ...llc];
-    // console.log(post);
-    // console.log(likedPost);
-
-    const all = merged.sort(
-      (a, b) => +new Date(a.createdAt) - +new Date(b.createdAt)
-    );
-
-    return new Response(JSON.stringify([...post, ...all]));
+    return new Response(JSON.stringify(post));
   } catch (error) {
     return new Response("Error", { status: 500 });
   }
+}
+
+export async function DELETE(req: Request) {
+  // try {
+  const { searchParams } = new URL(req.url);
+
+  const postId = searchParams.get("postId");
+
+  await db.post.deleteMany({
+    where: {
+      originalPostId: "clnn4086u0001pozw6cmg1yqn",
+    },
+  });
+  await db.post.delete({
+    where: {
+      id: "clnn4086u0001pozw6cmg1yqn",
+    },
+  });
+
+  return new Response("Ok");
+  // } catch (error) {
+  //   return new Response("Error", { status: 500 });
+  // }
 }

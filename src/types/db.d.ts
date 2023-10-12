@@ -17,12 +17,18 @@ export type ExtendedPost = Post & {
     followers: Follower[];
     following: Following[];
   };
+  originalPost: Post | null;
   replys: Reply[];
   reposts: Repost[];
   likes: Like[];
 };
 
 export type ExtendedPostWithoutUserTwo = Omit<ExtendedPost, "user_two">;
+
+export type ExtendedPostWithoutOriginalPostUserTwo = Omit<
+  ExtendedPost,
+  "originalPost"
+>;
 
 export type RepostPost = Post & {
   user: User;

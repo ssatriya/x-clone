@@ -133,3 +133,11 @@ export function formatSinglePostDate(mysqlDatetime: Date) {
 
   return formattedDate;
 }
+
+export function truncateString(input: string, maxLength: number): string {
+  if (input.length <= maxLength) {
+    return input;
+  } else {
+    return input.substring(0, maxLength - 3) + "...";
+  }
+}

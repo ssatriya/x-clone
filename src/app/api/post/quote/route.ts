@@ -43,7 +43,7 @@ export async function POST(req: Request) {
         // @ts-ignore
         content: content,
         image_url: imageUrl,
-        post_type: PostType.REPOST,
+        post_type: repostType,
         originalPostId: postId,
       },
     });

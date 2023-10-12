@@ -73,7 +73,9 @@ model Post {
   is_deleted  Boolean  @default(false)
   createdAt   DateTime @default(now())
 
-  originalPostId String?
+  originalPostId     String?
+  originalPost       Post?   @relation("postOri", fields: [originalPostId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  originalPostParent Post[]  @relation("postOri")
 
   replys  Reply[]
   reposts Repost[]

@@ -2,8 +2,9 @@
 
 import { UserWithFollowersFollowing } from "@/types/db";
 import { Tab, Tabs } from "@nextui-org/react";
-import AllUserPosts from "./all-user-posts";
+import AllUserPosts from "./post/all-user-posts";
 import { User } from "@prisma/client";
+import AllUserLikes from "./post/all-user-likes";
 
 type ProfileTabsProps = {
   currentUser?: UserWithFollowersFollowing;
@@ -36,7 +37,12 @@ export default function ProfileTabs({
         <Tab key="replies" title="Replies"></Tab>
         <Tab key="highlights" title="Highlights"></Tab>
         <Tab key="media" title="Media"></Tab>
-        <Tab key="likes" title="Likes"></Tab>
+        <Tab key="likes" title="Likes">
+          <AllUserLikes
+            userByUsername={userByUsername}
+            currentUser={currentUser}
+          />
+        </Tab>
       </Tabs>
     </div>
   );

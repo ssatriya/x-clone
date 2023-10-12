@@ -28,13 +28,15 @@ type RepostButtonProps = {
   reposts: Repost[];
 };
 
+type RepostT = Omit<Repost, "createdAt">;
+
 export default function RepostButton({
   currentUser,
   post,
   reposts,
 }: RepostButtonProps) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [repostsAmount, setRepostsAmount] = React.useState<Repost[]>(reposts);
+  const [repostsAmount, setRepostsAmount] = React.useState<RepostT[]>(reposts);
 
   const { mutate: mutateInfiniteScroll } = useInfiniteScroll();
 
@@ -88,7 +90,11 @@ export default function RepostButton({
       } else {
         setRepostsAmount((prevRepost) => [
           ...prevRepost,
-          { user_id: currentUser.id, post_id: post.id, repost_type: "REPOST" },
+          {
+            user_id: currentUser.id,
+            post_id: post.id,
+            repost_type: "REPOST",
+          },
         ]);
         toast.success("Reposted");
       }

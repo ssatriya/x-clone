@@ -9,30 +9,35 @@ export async function GET(req: Request) {
       return new Response("User ID is missing.", { status: 401 });
     }
 
-    const allLikesByUser = await db.like.findMany({
+    const likedPost = await db.user.findUnique({
       where: {
-        user_id: userId,
-      },
-    });
-
-    if (!allLikesByUser) {
-      return new Response("No like found.", { status: 404 });
-    }
-
-    const likedPostId = allLikesByUser.map((like) => like.post_id);
-
-    const likedPost = await db.post.findMany({
-      where: {
-        id: { in: likedPostId },
+        id: userId,
       },
       include: {
-        likes: true,
+        likes: {
+          include: { post: true },
+        },
       },
     });
 
-    return new Response(JSON.stringify(likedPost));
+    // if (!likedPost) {
+    //   return new Response("No post liked.", { status: 401 });
+    // }
 
-    // return new Response(JSON.stringify(allUserPosts));
+    // const likedPostId = likedPost.likes.map((like) => like.post_id);
+
+    // const postDetail = await db.post.findMany({
+    //   where: {
+    //     id: {
+    //       in: likedPostId,
+    //     },
+    //   },
+    //   orderBy: {
+    //     createdAt: "desc",
+    //   },
+    // });
+
+    return new Response(JSON.stringify(likedPost));
   } catch (error) {
     return new Response("Internal server error.", { status: 500 });
   }

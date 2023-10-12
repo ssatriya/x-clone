@@ -3,6 +3,7 @@
 import { Icons } from "@/components/icons";
 import { Button } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 type HeaderProps = {
   title: string;

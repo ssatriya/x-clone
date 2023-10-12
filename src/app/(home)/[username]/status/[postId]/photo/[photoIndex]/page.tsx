@@ -25,15 +25,10 @@ export default async function LightBoxPage({ params }: LightBoxPageProps) {
           following: true,
         },
       },
-      user_two: {
-        include: {
-          followers: true,
-          following: true,
-        },
-      },
       replys: true,
       reposts: true,
       likes: true,
+      originalPost: true,
     },
   });
 

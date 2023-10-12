@@ -33,6 +33,7 @@ export async function GET(req: Request) {
           replys: true,
           reposts: true,
           likes: true,
+          originalPost: true,
         },
         take: 10,
         orderBy: {
@@ -57,6 +58,7 @@ export async function GET(req: Request) {
             following: true,
           },
         },
+        originalPost: true,
         replys: true,
         reposts: true,
         likes: true,

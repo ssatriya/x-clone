@@ -31,6 +31,10 @@ export default async function ProfilePage({ params }: ProfilePagesProps) {
     },
   });
 
+  if (!userByUsername) {
+    return notFound();
+  }
+
   const currentUser = await db.user.findUnique({
     where: {
       id: session.user.userId,
@@ -45,19 +49,35 @@ export default async function ProfilePage({ params }: ProfilePagesProps) {
     return <h1>Not login</h1>;
   }
 
-  if (!userByUsername) {
-    return notFound();
-  }
+  const postCount = await db.post.findMany({
+    where: {
+      user_one_id: userByUsername.id,
+    },
+  });
 
   return (
     <>
       {session.user ? (
-        <ProfileInfo
-          userByUsername={userByUsername}
-          currentUser={currentUser}
-        />
+        <>
+          <Header
+            title={userByUsername.name}
+            backButton={true}
+            subtitle={`${postCount.length} posts`}
+          />
+          <ProfileInfo
+            userByUsername={userByUsername}
+            currentUser={currentUser}
+          />
+        </>
       ) : (
-        <ProfileInfo userByUsername={userByUsername} />
+        <>
+          <Header
+            title={userByUsername.name}
+            backButton={true}
+            subtitle={`${postCount.length} posts`}
+          />
+          <ProfileInfo userByUsername={userByUsername} />
+        </>
       )}
       <ProfileTabs currentUser={currentUser} userByUsername={userByUsername} />
     </>
