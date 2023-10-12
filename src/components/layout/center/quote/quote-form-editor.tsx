@@ -22,86 +22,27 @@ const QuillEditor = dynamic(() => import("../editor"), {
   ssr: false,
 });
 
-type ReplyFormEditorProps = {
+type QuoteFormEditorProps = {
   post: ExtendedPost | ExtendedPostWithoutUserTwo;
   currentUser: User;
+  files: AttachmentType[];
+  editorValue: DeltaStatic | undefined;
+  setCharLength: (value: number) => void;
+  setEditorValue: (value: DeltaStatic) => void;
+  charLength: number;
+  handleRemoveImage: (url: string) => void;
 };
 
-export default function ReplyFormEditor({
+export default function QuoteFormEditor({
   post,
   currentUser,
-}: ReplyFormEditorProps) {
-  const { mutate: mutateInfiniteScroll } = useInfiniteScroll();
-  const [editorValue, setEditorValue] = React.useState<
-    DeltaStatic | undefined
-  >();
-  const [charLength, setCharLength] = React.useState(0);
-
-  const [files, setFiles] = React.useState<AttachmentType[]>([]);
-
-  const mediaRef = React.useRef<HTMLInputElement>(null);
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const newAttachments: AttachmentType[] = Array.from(e.target.files).map(
-        (file) => ({
-          type: "IMAGE",
-          url: URL.createObjectURL(file),
-          mime: file.type,
-          name: file.name,
-          extension: file.name.split(".").pop() as string,
-          size: file.size.toString(),
-          file: file,
-        })
-      );
-
-      setFiles((prevFiles) => [...prevFiles, ...newAttachments]);
-    }
-  };
-
-  const handleMedia = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (mediaRef && mediaRef.current) {
-      mediaRef.current.click();
-    }
-  };
-
-  const handleRemoveImage = (url: string) => {
-    setFiles((prevFiles) =>
-      prevFiles.filter((attachment) => attachment.url !== url)
-    );
-  };
-
-  const { mutate: createReply } = useMutation({
-    mutationKey: ["replyMutation"],
-    mutationFn: async ({
-      postRepliedToId,
-      originalPostOwnerId,
-      content,
-      imageUrl,
-    }: {
-      postRepliedToId: string;
-      originalPostOwnerId: string;
-      content: any;
-      imageUrl: string;
-    }) => {
-      const payload: ReplyPayload = {
-        postRepliedToId,
-        originalPostOwnerId,
-        content,
-        imageUrl,
-      };
-
-      const { data } = await axios.post("/api/post/reply", payload);
-      return data as string;
-    },
-    onSuccess: () => {
-      mutateInfiniteScroll();
-      setEditorValue(undefined);
-      setFiles([]);
-      toast.success("Reply has been created.");
-    },
-  });
-
+  files,
+  editorValue,
+  setCharLength,
+  setEditorValue,
+  charLength,
+  handleRemoveImage,
+}: QuoteFormEditorProps) {
   const className = cn(
     files.length > 0 ? "h-[300px] mb-4" : "",
     "grid gap-2 w-full",
@@ -113,64 +54,6 @@ export default function ReplyFormEditor({
     }
   );
 
-  const handleReplySubmit = async () => {
-    if (files) {
-      const allFiles: File[] = [];
-      files.map((file: AttachmentType) => {
-        allFiles.push(file.file);
-      });
-
-      const res = await uploadFiles({
-        files: allFiles,
-        endpoint: "imageUploader",
-        onUploadProgress: ({ file, progress }) => {
-          // console.log(file === files);
-          // calculateImageProgress(allFiles.length, file)
-        },
-      });
-
-      if (res) {
-        const urls: string[] = [];
-        res.map((r) => {
-          urls.push(r.url);
-        });
-
-        // const newData = {
-        //   ...data,
-        //   imageUrl: [...urls].toString()
-        // }
-
-        createReply({
-          postRepliedToId: post.id,
-          originalPostOwnerId: post.user_one.id,
-          content: editorValue,
-          imageUrl: [...urls].toString(),
-        });
-
-        return;
-      }
-    }
-
-    createReply({
-      postRepliedToId: post.id,
-      originalPostOwnerId: post.user_one.id,
-      content: editorValue,
-      imageUrl: "",
-    });
-  };
-
-  let disabledByContent: boolean = true;
-
-  if (charLength === 0 && files.length > 0) {
-    disabledByContent = false;
-  } else if (charLength > 0 && files.length === 0) {
-    disabledByContent = false;
-  } else if (charLength > 0 && files.length > 0) {
-    disabledByContent = false;
-  } else {
-    disabledByContent = true;
-  }
-
   return (
     <div className="pt-4 w-full h-full">
       <div className="flex gap-3">
@@ -178,6 +61,14 @@ export default function ReplyFormEditor({
           <Avatar src={currentUser.avatar} />
         </div>
         <div className="w-full h-24">
+          <Button
+            variant="bordered"
+            size="sm"
+            className="border border-gray hover:bg-blue/10 flex h-6 w-fit rounded-full px-3 text-sm leading-4 text-blue font-bold mb-4"
+          >
+            Everyone
+            <Icons.arrowDown className="fill-blue h-[15px] w-[15px]" />
+          </Button>
           <QuillEditor
             editorValue={editorValue}
             setCharLength={setCharLength}
@@ -197,7 +88,7 @@ export default function ReplyFormEditor({
           />
         ))}
       </div>
-      <div className="w-full flex justify-between items-center">
+      {/* <div className="w-full flex justify-between items-center">
         <input
           multiple
           type="file"
@@ -274,7 +165,7 @@ export default function ReplyFormEditor({
             Reply
           </Button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

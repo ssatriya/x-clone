@@ -6,6 +6,7 @@ import getCurrentSession from "@/lib/getCurrentSession";
 import { cn } from "@/lib/utils";
 import { db } from "@/lib/db";
 import Header from "@/components/layout/center/header";
+import MobileLeftSidebar from "@/components/layout/left/mobile-left-sidebar";
 
 export default async function HomeLayout({
   children,
@@ -42,16 +43,21 @@ export default async function HomeLayout({
   return (
     <div className="flex justify-center">
       <LeftSidebar currentUser={currentUser} />
+      <MobileLeftSidebar currentUser={currentUser} />
       <main className="min-h-screen flex gap-8">
         <div
           className={cn(
-            isOnboarded ? "border-x h-full w-[600px]" : "w-[600px]"
+            isOnboarded ? "border-x h-full w-[600px]" : "w-full lg:w-[600px]"
           )}
         >
           {photoModal}
           {children}
         </div>
-        {isOnboarded ? <RightSidebar /> : <div className="w-[348px] mr-6" />}
+        {isOnboarded ? (
+          <RightSidebar />
+        ) : (
+          <div className="hidden lg:w-[348px] lg:mr-6" />
+        )}
       </main>
     </div>
   );

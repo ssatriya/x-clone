@@ -159,12 +159,6 @@ export default function PostFormEditor({
         res.map((r) => {
           urls.push(r.url);
         });
-        setValue("imageUrl", [...urls].toString());
-
-        // let newData = {
-        //   ...data,
-        //   imageUrl: [...urls].toString(),
-        // };
 
         createPost({ content: editorValue, imageUrl: [...urls].toString() });
         setFiles([]);
@@ -213,6 +207,8 @@ export default function PostFormEditor({
               editorValue={editorValue}
               setCharLength={setCharLength}
               setEditorValue={setEditorValue}
+              className="max-w-4xl mx-auto relative py-2"
+              placeholder="Whats happening?"
             />
           </div>
           <div className={cn(className)}>

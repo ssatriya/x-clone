@@ -8,7 +8,7 @@ import TrendItem from "@/components/layout/right/trend-item";
 
 export default function RightSidebar() {
   return (
-    <aside className="pt-1 max-w-[348px] flex flex-col mr-6">
+    <aside className="pt-1 max-w-[348px] lg:flex lg:flex-col mr-6 hidden">
       <div className="space-y-6">
         <SearchBox />
         <Card>

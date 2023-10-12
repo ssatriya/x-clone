@@ -4,10 +4,12 @@ import { DeltaStatic, Sources } from "quill";
 import * as React from "react";
 
 type EditorProps = {
-  focusHandler: () => void;
+  focusHandler?: () => void;
   editorValue: DeltaStatic | undefined;
   setCharLength: (value: number) => void;
   setEditorValue: (value: DeltaStatic) => void;
+  className: string;
+  placeholder: string;
 };
 
 export default function Editor({
@@ -15,6 +17,8 @@ export default function Editor({
   editorValue,
   setCharLength,
   setEditorValue,
+  className,
+  placeholder,
 }: EditorProps) {
   const handleChange = (
     value: string,
@@ -59,7 +63,7 @@ export default function Editor({
   ];
 
   return (
-    <div className="max-w-4xl mx-auto relative py-2">
+    <div className={className}>
       <ReactQuill
         defaultValue={""}
         modules={modules}
@@ -67,7 +71,7 @@ export default function Editor({
         value={editorValue}
         formats={formats}
         onChange={handleChange}
-        placeholder="Whats happening?"
+        placeholder={placeholder}
         className="text-xl leading-6"
         onFocus={focusHandler}
       />

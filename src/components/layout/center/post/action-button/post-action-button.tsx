@@ -7,12 +7,16 @@ import { Button } from "@nextui-org/react";
 import * as React from "react";
 import LikeButton from "./like-button";
 import RepostButton from "./repost-button";
-import { ExtendedPost, ExtendedPostWithoutUserTwo } from "@/types/db";
+import {
+  ExtendedPost,
+  ExtendedPostWithoutUserTwo,
+  UserWithFollowersFollowing,
+} from "@/types/db";
 import ReplyButton from "./reply-button";
 
 type PostActionButtonProps = {
   post: ExtendedPostWithoutUserTwo;
-  currentUser: User;
+  currentUser: UserWithFollowersFollowing;
   reposts: Repost[];
   customClass?: string;
 };

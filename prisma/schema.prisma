@@ -89,6 +89,7 @@ enum PostType {
   POST
   REPOST
   REPLY
+  QUOTE
 }
 
 model Reply {
@@ -96,6 +97,8 @@ model Reply {
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
   post_id String
   post    Post   @relation(fields: [post_id], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
 
   @@id([user_id, post_id])
   @@map("reply")
@@ -113,6 +116,8 @@ model Repost {
   post        Post       @relation(fields: [post_id], references: [id], onDelete: Cascade)
   repost_type RepostType
 
+  createdAt DateTime @default(now())
+
   @@id([user_id, post_id])
   @@map("repost")
 }
@@ -122,6 +127,8 @@ model Like {
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
   post_id String
   post    Post   @relation(fields: [post_id], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
 
   @@id([user_id, post_id])
   @@map("like")

@@ -83,6 +83,14 @@ export async function PATCH(req: Request) {
       },
     });
 
+    // Sementara tambah semua data repost ke hasil repost untuk mendapatkan jumlah repost
+    // const allRepost = await db.repost.findMany({
+    //   where: {
+    //     post_id: postId,
+    //     repost_type: repostType,
+    //   },
+    // });
+
     return new Response("Ok");
   } catch (error) {
     return new Response(null, { status: 500 });

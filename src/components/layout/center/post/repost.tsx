@@ -1,4 +1,3 @@
-import { Avatar } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import {
@@ -44,7 +43,7 @@ export default function Repost({
   //     return data as ExtendedPost | ExtendedPostWithoutUserTwo;
   //   },
   // });
-  // console.log(post);
+  // console.log(originalPost);
 
   const cfg = {};
   let html = "";
@@ -112,6 +111,7 @@ export default function Repost({
             <AttachmentPost imageUrl={post.image_url} post={post} />
           )}
         </div>
+
         <PostActionButton
           post={post}
           currentUser={currentUser}

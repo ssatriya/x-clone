@@ -50,8 +50,7 @@ export default async function ProfilePage({ params }: ProfilePagesProps) {
   }
 
   return (
-    <div className="">
-      <Header title="Home" subtitle="1,210 posts" backButton={true} />
+    <>
       {session.user ? (
         <ProfileInfo
           userByUsername={userByUsername}
@@ -60,7 +59,7 @@ export default async function ProfilePage({ params }: ProfilePagesProps) {
       ) : (
         <ProfileInfo userByUsername={userByUsername} />
       )}
-      <ProfileTabs />
-    </div>
+      <ProfileTabs currentUser={currentUser} userByUsername={userByUsername} />
+    </>
   );
 }

@@ -18,7 +18,7 @@ import { uploadFiles } from "@/lib/uploadthing";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { toast } from "sonner";
 
-const ReplyQuillEditor = dynamic(() => import("../reply-editor"), {
+const QuillEditor = dynamic(() => import("../../editor"), {
   ssr: false,
 });
 
@@ -178,10 +178,12 @@ export default function InlineReplyFormEditor({
       </div>
       <div className="w-full flex flex-col">
         <div className="w-full">
-          <ReplyQuillEditor
+          <QuillEditor
             editorValue={editorValue}
             setCharLength={setCharLength}
             setEditorValue={setEditorValue}
+            className="w-full"
+            placeholder="Post your reply"
           />
         </div>
         <div className={cn(className)}>

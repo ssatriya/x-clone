@@ -9,6 +9,7 @@ import { Loader2 } from "lucide-react";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import Repost from "../post/repost";
 import ReplyItem from "../reply/reply-item";
+import QuoteItem from "../quote/quote-item";
 
 type ForYouFeedProps = {
   user: UserWithFollowersFollowing;
@@ -68,6 +69,17 @@ export default function ForYouFeed({ user }: ForYouFeedProps) {
                     />
                   </li>
                 );
+              } else if (post.post_type === "QUOTE") {
+                return (
+                  <li key={post.id} ref={ref}>
+                    <QuoteItem
+                      post={post}
+                      userPosted={post.user_one.avatar}
+                      currentUser={user}
+                      postUserOwner={post.user_two}
+                    />
+                  </li>
+                );
               } else if (post.post_type === "REPLY") {
                 return (
                   <li key={post.id} ref={ref}>
@@ -95,6 +107,16 @@ export default function ForYouFeed({ user }: ForYouFeedProps) {
               } else if (post.post_type === "REPOST") {
                 return (
                   <Repost
+                    key={post.id}
+                    post={post}
+                    userPosted={post.user_one.avatar}
+                    currentUser={user}
+                    postUserOwner={post.user_two}
+                  />
+                );
+              } else if (post.post_type === "QUOTE") {
+                return (
+                  <QuoteItem
                     key={post.id}
                     post={post}
                     userPosted={post.user_one.avatar}
