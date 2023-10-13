@@ -1,4 +1,4 @@
-import PhotoModal from "@/components/layout/center/photo-modal";
+import PhotoModal from "@/components/modal/lightbox/photo-modal";
 import { db } from "@/lib/db";
 import getCurrentSession from "@/lib/getCurrentSession";
 import { redirect } from "next/navigation";
@@ -28,7 +28,7 @@ export default async function ModalPage({ params }: ModalPageProps) {
       replys: true,
       reposts: true,
       likes: true,
-      originalPost: true,
+      original_repost: true,
     },
   });
 

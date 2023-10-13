@@ -22,8 +22,6 @@ export default function ReplyButton({
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [replysAmount, setReplysAmount] = React.useState<Reply[]>(post.replys);
 
-  const queryClient = useQueryClient();
-
   const { data: replyData } = useQuery({
     queryKey: ["replyData", post],
     queryFn: async () => {
@@ -78,6 +76,7 @@ export default function ReplyButton({
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         post={post}
+        onOpen={onOpen}
         currentUser={currentUser}
       />
     </div>

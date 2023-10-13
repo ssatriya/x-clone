@@ -21,17 +21,17 @@ type InlineReplyProps = {
 export default function InlineReply({ currentUser, post }: InlineReplyProps) {
   const queryClient = useQueryClient();
 
-  const isEnabled = post.originalPostId;
+  const isEnabled = post.original_replied_post_id;
 
   const { data: repliedToPost } = useQuery({
     queryKey: ["repliedToPost", post],
     queryFn: async () => {
-      if (!post.originalPostId) {
+      if (!post.original_replied_post_id) {
         return null;
       }
       const { data } = await axios.get("/api/post/reply/replied-to", {
         params: {
-          originalPostId: post.originalPostId,
+          originalPostId: post.original_replied_post_id,
         },
       });
       return data as ExtendedPost;
@@ -47,7 +47,7 @@ export default function InlineReply({ currentUser, post }: InlineReplyProps) {
 
   return (
     <>
-      {repliedToPost && post.originalPostId && (
+      {repliedToPost && post.original_replied_post_id && (
         <Post
           currentUser={currentUser}
           post={repliedToPost}

@@ -25,11 +25,15 @@ const QuillEditor = dynamic(() => import("../editor"), {
 type ReplyFormEditorProps = {
   post: ExtendedPost | ExtendedPostWithoutUserTwo;
   currentUser: User;
+  onOpen: () => void;
+  onOpenChange: () => void;
 };
 
 export default function ReplyFormEditor({
   post,
   currentUser,
+  onOpen,
+  onOpenChange,
 }: ReplyFormEditorProps) {
   const { mutate: mutateInfiniteScroll } = useInfiniteScroll();
   const [editorValue, setEditorValue] = React.useState<
@@ -71,7 +75,7 @@ export default function ReplyFormEditor({
     );
   };
 
-  const { mutate: createReply } = useMutation({
+  const { mutate: createReply, isLoading } = useMutation({
     mutationKey: ["replyMutation"],
     mutationFn: async ({
       postRepliedToId,
@@ -99,6 +103,7 @@ export default function ReplyFormEditor({
       setEditorValue(undefined);
       setFiles([]);
       toast.success("Reply has been created.");
+      onOpenChange();
     },
   });
 
@@ -266,6 +271,7 @@ export default function ReplyFormEditor({
             />
           )}
           <Button
+            disabled={charLength === 0 || isLoading}
             onClick={handleReplySubmit}
             size="sm"
             isDisabled={disabledByContent}

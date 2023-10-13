@@ -21,7 +21,7 @@ export async function POST(req: Request) {
         user_two_id: originalPostOwnerId,
         content: content,
         image_url: imageUrl,
-        originalPostId: postRepliedToId,
+        original_replied_post_id: postRepliedToId,
         post_type: PostType.REPLY,
       },
     });

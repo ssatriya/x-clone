@@ -21,6 +21,7 @@ type ReplyModal = {
   isOpen: boolean;
   onOpenChange: () => void;
   currentUser: User;
+  onOpen: () => void;
 };
 
 export default function ReplyModal({
@@ -28,6 +29,7 @@ export default function ReplyModal({
   onOpenChange,
   post,
   currentUser,
+  onOpen,
 }: ReplyModal) {
   const cfg = {};
   let html = "";
@@ -117,7 +119,12 @@ export default function ReplyModal({
                   </div>
                 </div>
                 {/* Editor */}
-                <ReplyFormEditor post={post} currentUser={currentUser} />
+                <ReplyFormEditor
+                  onOpen={onOpen}
+                  post={post}
+                  currentUser={currentUser}
+                  onOpenChange={onOpenChange}
+                />
               </div>
             </ModalBody>
           </>

@@ -73,9 +73,11 @@ model Post {
   is_deleted  Boolean  @default(false)
   createdAt   DateTime @default(now())
 
-  originalPostId     String?
-  originalPost       Post?   @relation("postOri", fields: [originalPostId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  originalPostParent Post[]  @relation("postOri")
+  original_repost_post_id String?
+  original_repost         Post?   @relation("originalRepostedPost", fields: [original_repost_post_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  original_repost_parent  Post[]  @relation("originalRepostedPost")
+
+  original_replied_post_id String?
 
   replys  Reply[]
   reposts Repost[]
@@ -95,14 +97,14 @@ enum PostType {
 }
 
 model Reply {
+  id      String @id @unique @default(cuid())
   user_id String
-  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user    User   @relation(fields: [user_id], references: [id])
   post_id String
-  post    Post   @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  post    Post   @relation(fields: [post_id], references: [id])
 
   createdAt DateTime @default(now())
 
-  @@id([user_id, post_id])
   @@map("reply")
 }
 

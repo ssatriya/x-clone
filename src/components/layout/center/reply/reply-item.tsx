@@ -61,6 +61,7 @@ export default function ReplyItem({
               currentUser={currentUser}
               post={post}
               usernameWithoutAt={usernameWithoutAt}
+              align="ROW"
             />
             <span className="text-gray">·</span>
             <p className="text-gray">

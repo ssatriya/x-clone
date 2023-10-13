@@ -8,13 +8,15 @@ import {
   UserWithFollowersFollowing,
 } from "@/types/db";
 
-import { Button, Image } from "@nextui-org/react";
+import { Button, Divider } from "@nextui-org/react";
+import Image from "next/image";
 
 import { useRouter } from "next/navigation";
 import * as React from "react";
-import PostActionButton from "./post/action-button/post-action-button";
-import Post from "./post/post";
-import LightboxPost from "./post/lightbox/lightbox-post";
+import PostActionButton from "../../layout/center/post/action-button/post-action-button";
+import Post from "../../layout/center/post/post";
+import LightboxPost from "../../layout/center/post/lightbox/lightbox-post";
+import Reply from "../../layout/center/reply/reply";
 
 type PhotoModalProps = {
   params: {
@@ -35,16 +37,23 @@ export default function PhotoModal({
   const [imageUrl, setImageUrl] = React.useState("");
   const [open, setOpen] = React.useState(false);
 
-  console.log(post);
-
   const handleClose = () => {
-    router.back();
+    router.push("/home");
   };
 
   const imageArr = post.image_url!.split(",");
   const photoIndex = params.photoIndex;
 
-  const handleRight = (value: number) => {};
+  const handleNext = () => {
+    router.push(
+      `/${params.username}/status/${params.postId}/photo/${+photoIndex + 1}`
+    );
+  };
+  const handlePrev = () => {
+    router.push(
+      `/${params.username}/status/${params.postId}/photo/${+photoIndex - 1}`
+    );
+  };
 
   React.useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -59,10 +68,10 @@ export default function PhotoModal({
       className="fixed inset-0 flex items-center justify-center z-50"
       onClick={handleClose}
     >
-      <div className="fixed inset-0 bg-black opacity-75"></div>
+      <div className="fixed inset-0 bg-black opacity-90"></div>
 
       <div className="flex relative w-full h-full">
-        <div className="relative flex-1">
+        <div className="relative flex-1 border-l">
           <Button
             onClick={handleClose}
             isIconOnly
@@ -77,15 +86,16 @@ export default function PhotoModal({
             <Icons.hideIcon className="fill-text h-5 w-5" strokeWidth={2} />
           </Button>
 
-          <div className="flex flex-col justify-center items-center h-full border">
-            <Image
-              onClick={(e) => e.stopPropagation()}
-              src={imageArr.at(Number(photoIndex) - 1)!}
-              alt=""
-              classNames={{
-                img: "max-w-6xl",
-              }}
-            />
+          <div className="flex flex-col justify-center items-center h-full">
+            <div className="w-full h-full relative">
+              <Image
+                onClick={(e) => e.stopPropagation()}
+                src={imageArr.at(Number(photoIndex) - 1)!}
+                alt=""
+                fill
+                objectFit="contain"
+              />
+            </div>
             <div className="z-50" onClick={(e) => e.stopPropagation()}>
               <PostActionButton
                 post={post}
@@ -98,12 +108,14 @@ export default function PhotoModal({
 
           <div className="absolute top-0 left-0 bottom-0 flex items-center justify-between w-full">
             <Button
+              onClick={handlePrev}
               isIconOnly
               className="rounded-full bg-transparent hover:bg-text/10"
             >
               <Icons.arrowLeft className="h-5 w-5 fill-text" />
             </Button>
             <Button
+              onClick={handleNext}
               isIconOnly
               className="rounded-full bg-transparent hover:bg-text/10"
             >
@@ -113,7 +125,7 @@ export default function PhotoModal({
         </div>
 
         <div
-          className="flex-none w-80 bg-black h-[1400px] p-4 overflow-y-auto"
+          className="flex-none w-[350px] bg-black border-l z-50 h-full pt-3 overflow-y-auto"
           onClick={(e) => e.stopPropagation()}
         >
           <LightboxPost
@@ -121,16 +133,11 @@ export default function PhotoModal({
             post={post}
             userPosted={post.user_one.avatar}
           />
-          {/* <div className="mb-4">
-            <h2 className="text-xl font-semibold">User 1</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-          </div>
-          <div className="mb-4">
-            <h2 className="text-xl font-semibold">User 2</h2>
-            <p>
-              Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            </p>
-          </div> */}
+          <Divider
+            orientation="horizontal"
+            className="mt-3 bg-border h-[1px]"
+          />
+          <Reply post={post} currentUser={currentUser} />
         </div>
       </div>
     </div>

@@ -14,7 +14,7 @@ export async function GET(req: Request) {
       where: {
         AND: {
           post_type: PostType.REPLY,
-          originalPostId: postId,
+          original_replied_post_id: postId,
         },
       },
       include: {

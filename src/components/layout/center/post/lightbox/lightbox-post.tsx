@@ -5,7 +5,12 @@ import {
   ExtendedPostWithoutUserTwo,
   UserWithFollowersFollowing,
 } from "@/types/db";
-import { cn, formatTimeToNow, removeAtSymbol } from "@/lib/utils";
+import {
+  cn,
+  formatSinglePostDate,
+  formatTimeToNow,
+  removeAtSymbol,
+} from "@/lib/utils";
 import Link from "next/link";
 
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
@@ -14,6 +19,10 @@ import UserPostAvatar from "../user-post-avatar";
 import UserPostName from "../user-post-name";
 import AttachmentPost from "../attachment-post";
 import PostActionButton from "../action-button/post-action-button";
+import { Button, Divider } from "@nextui-org/react";
+import InlineReply from "../../reply/inline-reply/inline-reply";
+import InlineReplyFormEditor from "../../reply/inline-reply/inline-reply-form-editor";
+import { Icons } from "@/components/icons";
 
 type LightboxPostProps = {
   post: ExtendedPostWithoutUserTwo;
@@ -47,44 +56,69 @@ export default function LightboxPost({
     <div
       className={cn(
         classNames,
-        "relative hover:bg-hover/30 transition-colors cursor-pointer flex justify-between pt-3 px-4 gap-4"
+        "relative hover:bg-hover/30 transition-colors cursor-pointer flex justify-between gap-2 px-4"
       )}
     >
       <Link href={postURL} className="absolute inset-0" />
-      <div className="h-fit">
-        <UserPostAvatar
-          currentUser={currentUser}
-          user={post.user_one}
-          userPosted={userPosted}
-          usernameWithoutAt={usernameWithoutAt}
-        />
-      </div>
+      <div className="h-fit"></div>
 
       <div className="w-full flex flex-col">
-        <div className="flex items-center gap-2">
-          <UserPostName
-            currentUser={currentUser}
-            post={post}
-            usernameWithoutAt={usernameWithoutAt}
-            lightbox={true}
-          />
-          <span className="text-gray">·</span>
-          <p className="text-gray">
-            {formatTimeToNow(new Date(post.createdAt))}
-          </p>
-        </div>
-        <div className="flex flex-col space-y-3">
-          <div>
-            {html.length > 0 && (
-              <div dangerouslySetInnerHTML={{ __html: html }} />
-            )}
+        <div className="flex items-center justify-between">
+          <div className="flex gap-3">
+            <UserPostAvatar
+              currentUser={currentUser}
+              user={post.user_one}
+              userPosted={userPosted}
+              usernameWithoutAt={usernameWithoutAt}
+            />
+            <UserPostName
+              currentUser={currentUser}
+              post={post}
+              usernameWithoutAt={usernameWithoutAt}
+              lightbox={true}
+              align="COLUMN"
+            />
+          </div>
+          <div className="flex items-center">
+            <Button
+              size="sm"
+              radius="full"
+              className="font-bold text-sm leading-4 bg-text text-black"
+            >
+              Subscribe
+            </Button>
+            <Button
+              isIconOnly
+              size="sm"
+              className="rounded-full bg-transparent hover:bg-blue/10 group"
+            >
+              <Icons.more className="h-4 w-4 fill-gray group-hover:fill-blue" />
+            </Button>
           </div>
         </div>
-        <PostActionButton
-          post={post}
-          currentUser={currentUser}
-          reposts={post.reposts}
-        />
+        <div className="flex flex-col space-y-3">
+          <div className="mt-3">
+            {html.length > 0 && (
+              <div
+                dangerouslySetInnerHTML={{ __html: html }}
+                className="text-[17px] leading-6"
+              />
+            )}
+          </div>
+          <div>
+            <p className="text-gray text-[15px] leading-5">
+              {formatSinglePostDate(post.createdAt)}
+            </p>
+          </div>
+          <Divider orientation="horizontal" className="bg-border h-[1px]" />
+          <PostActionButton
+            post={post}
+            currentUser={currentUser}
+            reposts={post.reposts}
+          />
+          <Divider orientation="horizontal" className="bg-border h-[1px]" />
+          <InlineReplyFormEditor currentUser={currentUser} post={post} />
+        </div>
       </div>
     </div>
   );

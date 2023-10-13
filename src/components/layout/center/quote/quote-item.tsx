@@ -21,7 +21,7 @@ export default function QuoteItem({
   postUserOwner,
 }: QuoteItemProps) {
   const usernameOriginalPost = removeAtSymbol(postUserOwner.username);
-  const originalPostURL = `/${usernameOriginalPost}/status/${post.originalPostId}`;
+  const originalPostURL = `/${usernameOriginalPost}/status/${post.original_repost_post_id}`;
 
   const username = removeAtSymbol(post.user_one.username);
   const postUrl = `/${username}/status/${post.id}`;
@@ -29,10 +29,10 @@ export default function QuoteItem({
   const cfg = {};
   let originalPostContent = "";
   // @ts-ignore
-  if (post.originalPost.content && post.originalPost.content.ops) {
+  if (post.original_repost.content && post.original_repost.content.ops) {
     const converter = new QuillDeltaToHtmlConverter(
       // @ts-ignore
-      post.originalPost.content.ops,
+      post.original_repost.content.ops,
       cfg
     );
     const converted = converter.convert();

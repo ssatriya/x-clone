@@ -17,7 +17,7 @@ export type ExtendedPost = Post & {
     followers: Follower[];
     following: Following[];
   };
-  originalPost: Post | null;
+  original_repost: Post | null;
   replys: Reply[];
   reposts: Repost[];
   likes: Like[];
@@ -27,7 +27,7 @@ export type ExtendedPostWithoutUserTwo = Omit<ExtendedPost, "user_two">;
 
 export type ExtendedPostWithoutOriginalPostUserTwo = Omit<
   ExtendedPost,
-  "originalPost"
+  "original_repost"
 >;
 
 export type RepostPost = Post & {
