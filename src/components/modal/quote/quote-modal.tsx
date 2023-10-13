@@ -119,6 +119,8 @@ export default function QuoteModal({
     },
   });
 
+  const [progress, setProgress] = React.useState(0);
+
   const handleReplySubmit = async () => {
     if (files) {
       const allFiles: File[] = [];

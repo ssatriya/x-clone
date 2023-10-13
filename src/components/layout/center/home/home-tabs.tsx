@@ -1,13 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { Tab, Tabs } from "@nextui-org/react";
+import { Progress, Tab, Tabs } from "@nextui-org/react";
 import PostForm from "./post-form";
 
 import ForYouFeed from "./for-you-feed";
 import { UserWithFollowersFollowing } from "@/types/db";
 import PostFormEditor from "../post-form-editor";
-import Loading from "@/app/(home)/[username]/status/[postId]/photo/[photoIndex]/loading";
 
 type HomeTabsProps = {
   user: UserWithFollowersFollowing;
@@ -27,6 +26,14 @@ export default function HomeTabs({ user }: HomeTabsProps) {
 
   return (
     <div className="flex w-full flex-col">
+      {/* <Progress
+        size="sm"
+        aria-label="Uploading..."
+        value={50}
+        classNames={{ indicator: "bg-[#1D9BF0]" }}
+        radius="none"
+        className="absolute top-[51px] right-0 z-50"
+      /> */}
       <Tabs
         aria-label="Options"
         variant="underlined"
@@ -38,7 +45,7 @@ export default function HomeTabs({ user }: HomeTabsProps) {
           panel: "px-0 pb-0",
         }}
       >
-        <Tab key="for-you" title="For you">
+        <Tab key="for-you" title="For you" className="">
           <PostFormEditor
             user={user}
             focusHandler={focusHandler}

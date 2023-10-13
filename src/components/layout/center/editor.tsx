@@ -2,6 +2,7 @@ import ReactQuill, { UnprivilegedEditor, ReactQuillProps } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { DeltaStatic, Sources } from "quill";
 import * as React from "react";
+import { Progress } from "@nextui-org/react";
 
 type EditorProps = {
   focusHandler?: () => void;
