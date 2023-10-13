@@ -47,18 +47,17 @@ export default function Post({
     <div
       className={cn(
         classNames,
-        "relative hover:bg-hover/30 transition-colors cursor-pointer flex justify-between pt-3 px-4 gap-4"
+        "relative hover:bg-hover/30 transition-colors cursor-pointer flex justify-between pt-3 px-4 gap-2"
       )}
     >
       <Link href={postURL} className="absolute inset-0" />
-      <div className="h-fit">
-        <UserPostAvatar
-          currentUser={currentUser}
-          user={post.user_one}
-          userPosted={userPosted}
-          usernameWithoutAt={usernameWithoutAt}
-        />
-      </div>
+
+      <UserPostAvatar
+        currentUser={currentUser}
+        user={post.user_one}
+        userPosted={userPosted}
+        usernameWithoutAt={usernameWithoutAt}
+      />
 
       <div className="w-full flex flex-col">
         <div className="flex items-center gap-2">

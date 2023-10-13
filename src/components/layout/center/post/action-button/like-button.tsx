@@ -3,10 +3,11 @@ import { cn } from "@/lib/utils";
 import { LikePayload } from "@/lib/validator/like";
 import { ExtendedPost, ExtendedPostWithoutUserTwo } from "@/types/db";
 import { Button } from "@nextui-org/react";
-import { Like, PostType, User } from "@prisma/client";
+import { Like, User } from "@prisma/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import * as React from "react";
+import { usePrevious } from "@mantine/hooks";
 import { toast } from "sonner";
 
 type LikeButtonProps = {
@@ -18,6 +19,8 @@ export default function LikeButton({ post, currentUser }: LikeButtonProps) {
   const [likesAmount, setLikesAmount] = React.useState<
     { post_id: string; user_id: string }[]
   >(post.likes);
+  const previousLikes =
+    usePrevious<{ post_id: string; user_id: string }[]>(likesAmount);
 
   const queryClient = useQueryClient();
 
@@ -51,14 +54,12 @@ export default function LikeButton({ post, currentUser }: LikeButtonProps) {
     },
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ["likeData"] });
-      // const previousLikes = queryClient.getQueryData(['like'])
 
       const likedIndex = likesAmount.findIndex(
         (like) => like.post_id === post.id && like.user_id === currentUser.id
       );
 
       if (likedIndex !== -1) {
-        // If the user has already liked the post, remove it from likesAmount
         setLikesAmount((prevLikes) => {
           const newLikes = [...prevLikes];
           newLikes.splice(likedIndex, 1);
@@ -72,8 +73,13 @@ export default function LikeButton({ post, currentUser }: LikeButtonProps) {
         toast.success("Liked");
       }
     },
-    onError: (_, __, context) => {
-      // queryClient.setQueryData(["likeData"], () => context?.previousLikes);
+    onError: (error) => {
+      if (error && previousLikes) {
+        setLikesAmount(previousLikes);
+        toast.error("Failed to like", {
+          description: "Something went wrong, please try again later.",
+        });
+      }
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["likeData"] });

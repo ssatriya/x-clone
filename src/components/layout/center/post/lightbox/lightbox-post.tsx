@@ -60,7 +60,6 @@ export default function LightboxPost({
       )}
     >
       <Link href={postURL} className="absolute inset-0" />
-      <div className="h-fit"></div>
 
       <div className="w-full flex flex-col">
         <div className="flex items-center justify-between">

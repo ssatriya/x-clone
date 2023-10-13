@@ -44,7 +44,7 @@ export default function ReplyItem({
   }
   return (
     <>
-      <div className="relative hover:bg-hover/30 transition-colors cursor-pointer flex justify-between pt-3 px-4 gap-4 border-b">
+      <div className="relative hover:bg-hover/30 transition-colors cursor-pointer flex justify-between pt-3 px-4 gap-1 border-b">
         <Link href={postURL} className="absolute inset-0" />
         <div className="h-fit">
           <UserPostAvatar
@@ -54,37 +54,38 @@ export default function ReplyItem({
             usernameWithoutAt={usernameWithoutAt}
           />
         </div>
-
-        <div className="w-full flex flex-col">
-          <div className="flex items-center gap-2">
-            <UserPostName
-              currentUser={currentUser}
-              post={post}
-              usernameWithoutAt={usernameWithoutAt}
-              align="ROW"
-            />
-            <span className="text-gray">·</span>
-            <p className="text-gray">
-              {formatTimeToNow(new Date(post.createdAt))}
-            </p>
-          </div>
-          <div className="text-[15px] leading-5">
-            {!disabledNote ? (
+        <div className="flex flex-col w-full">
+          <div className="w-full flex flex-col ml-2">
+            <div className="flex items-center gap-2">
+              <UserPostName
+                currentUser={currentUser}
+                post={post}
+                usernameWithoutAt={usernameWithoutAt}
+                align="ROW"
+              />
+              <span className="text-gray">·</span>
               <p className="text-gray">
-                Replying to{" "}
-                <span className="text-blue">{postUserOwner.username}</span>
+                {formatTimeToNow(new Date(post.createdAt))}
               </p>
-            ) : null}
-          </div>
-          <div className="flex flex-col space-y-3">
-            <div>
-              {html.length > 0 && (
-                <div dangerouslySetInnerHTML={{ __html: html }} />
+            </div>
+            <div className="text-[15px] leading-5">
+              {!disabledNote ? (
+                <p className="text-gray">
+                  Replying to{" "}
+                  <span className="text-blue">{postUserOwner.username}</span>
+                </p>
+              ) : null}
+            </div>
+            <div className="flex flex-col space-y-3">
+              <div>
+                {html.length > 0 && (
+                  <div dangerouslySetInnerHTML={{ __html: html }} />
+                )}
+              </div>
+              {post.image_url && (
+                <AttachmentPost imageUrl={post.image_url} post={post} />
               )}
             </div>
-            {post.image_url && (
-              <AttachmentPost imageUrl={post.image_url} post={post} />
-            )}
           </div>
           <PostActionButton
             post={post}

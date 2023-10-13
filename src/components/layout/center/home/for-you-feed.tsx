@@ -7,8 +7,6 @@ import { useIntersection } from "@mantine/hooks";
 import * as React from "react";
 import { Loader2 } from "lucide-react";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
-import Repost from "../post/repost";
-import ReplyItem from "../reply/reply-item";
 import QuoteItem from "../quote/quote-item";
 
 type ForYouFeedProps = {

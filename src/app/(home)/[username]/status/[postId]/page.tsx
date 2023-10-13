@@ -50,6 +50,7 @@ export default async function PostPage({ params }: PostPageProps) {
           following: true,
         },
       },
+      original_repost: true,
       replys: true,
       reposts: true,
       likes: true,

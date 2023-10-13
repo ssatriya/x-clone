@@ -11,7 +11,7 @@ import { DeltaStatic, Sources } from "quill";
 import { Attachment } from "@/components/layout/center/post-form-editor";
 import { AttachmentType } from "@/types/types";
 import { ExtendedPost, ExtendedPostWithoutUserTwo } from "@/types/db";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ReplyPayload } from "@/lib/validator/reply";
 import axios from "axios";
 import { uploadFiles } from "@/lib/uploadthing";
@@ -31,6 +31,7 @@ export default function InlineReplyFormEditor({
   currentUser,
   post,
 }: InlineReplyFormEditorProps) {
+  const queryClient = useQueryClient();
   const { mutate: mutateInfiniteScroll } = useInfiniteScroll();
   const [editorValue, setEditorValue] = React.useState<
     DeltaStatic | undefined
@@ -95,7 +96,7 @@ export default function InlineReplyFormEditor({
       return data as string;
     },
     onSuccess: () => {
-      mutateInfiniteScroll();
+      queryClient.invalidateQueries({ queryKey: ["repliedToPost"] });
       setEditorValue(undefined);
       setFiles([]);
       toast.success("Reply has been created.");
@@ -135,11 +136,6 @@ export default function InlineReplyFormEditor({
           urls.push(r.url);
         });
 
-        // const newData = {
-        //   ...data,
-        //   imageUrl: [...urls].toString()
-        // }
-
         createReply({
           postRepliedToId: post.id,
           originalPostOwnerId: post.user_one.id,
@@ -172,12 +168,12 @@ export default function InlineReplyFormEditor({
   }
 
   return (
-    <div className="w-full flex justify-between pt-2 gap-4">
+    <div className="w-full flex justify-between pt-2 gap-1">
       <div className="h-fit">
         <Avatar showFallback src={currentUser.avatar} />
       </div>
       <div className="w-full flex flex-col">
-        <div className="w-full">
+        <div className="w-full ml-3">
           <QuillEditor
             editorValue={editorValue}
             setCharLength={setCharLength}

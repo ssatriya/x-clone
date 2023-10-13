@@ -3,7 +3,7 @@
 import * as React from "react";
 
 import { Icons } from "@/components/icons";
-import { formatBirthdate, formatJoinDate, removeAtSymbol } from "@/lib/utils";
+import { formatBirthdate, formatJoinDate } from "@/lib/utils";
 import {
   Avatar,
   Button,
@@ -11,7 +11,6 @@ import {
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
-  DropdownSection,
   DropdownItem,
 } from "@nextui-org/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";

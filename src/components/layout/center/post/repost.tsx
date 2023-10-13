@@ -29,7 +29,7 @@ export default function Repost({
   postUserOwner,
 }: RepostProps) {
   const usernameWithoutAt = removeAtSymbol(postUserOwner.username);
-  const originalPostURL = `/${usernameWithoutAt}/status/${post.originalPostId}`;
+  const originalPostURL = `/${usernameWithoutAt}/status/${post.original_repost_post_id}`;
 
   const cfg = {};
   let html = "";

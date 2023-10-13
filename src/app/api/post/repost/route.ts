@@ -40,7 +40,7 @@ export async function PATCH(req: Request) {
         where: {
           AND: {
             user_two_id: originalPostOwnerId,
-            originalPostId: repostExist.post_id,
+            original_repost_post_id: repostExist.post_id,
             post_type: PostType.REPOST,
           },
         },

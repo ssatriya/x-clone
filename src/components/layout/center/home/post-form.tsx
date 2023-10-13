@@ -66,7 +66,7 @@ export default function PostForm({
       });
     },
     onSuccess: () => {
-      mutateInfiniteScroll();
+      // mutateInfiniteScroll();
       toast.success("Post has been created.");
       setContent("");
       router.refresh();
