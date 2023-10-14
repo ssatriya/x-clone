@@ -31,7 +31,7 @@ export default function InlineReply({ currentUser, post }: InlineReplyProps) {
       }
       const { data } = await axios.get("/api/post/reply/replied-to", {
         params: {
-          originalPostId: post.original_replied_post_id,
+          originalRepliedPostId: post.original_replied_post_id,
         },
       });
       return data as ExtendedPost;

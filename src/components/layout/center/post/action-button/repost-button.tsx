@@ -8,15 +8,19 @@ import {
   ExtendedPostWithoutUserTwo,
   UserWithFollowersFollowing,
 } from "@/types/db";
+import { useMediaQuery } from "@mantine/hooks";
 import {
   Button,
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Modal,
+  ModalBody,
+  ModalContent,
   useDisclosure,
 } from "@nextui-org/react";
-import { RepostType, Repost, User, Post, PostType } from "@prisma/client";
+import { RepostType, Repost } from "@prisma/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import * as React from "react";
@@ -35,6 +39,12 @@ export default function RepostButton({
   post,
   reposts,
 }: RepostButtonProps) {
+  const isMobile = useMediaQuery("(max-width: 420px)");
+  const {
+    isOpen: isOpenOption,
+    onOpen: onOpenOption,
+    onOpenChange: onOpenChangeOption,
+  } = useDisclosure();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [repostsAmount, setRepostsAmount] = React.useState<RepostT[]>(reposts);
 
@@ -74,8 +84,6 @@ export default function RepostButton({
     },
     onError: (error) => {},
     onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ["repostData"] });
-
       const repostIndex = repostsAmount.findIndex(
         (repost) =>
           repost.post_id === post.id && repost.user_id === currentUser.id
@@ -99,11 +107,10 @@ export default function RepostButton({
         toast.success("Reposted");
       }
     },
-    onSuccess: () => {
-      mutateInfiniteScroll();
-    },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["repostData"] });
+      mutateInfiniteScroll();
+      // disabled this query invalidation temporarely
+      // queryClient.invalidateQueries({ queryKey: ["repostData"] });
     },
   });
 
@@ -113,71 +120,29 @@ export default function RepostButton({
       (repost) =>
         repost.user_id === currentUser.id && repost.post_id === post.id
     );
+  }
 
+  // Modal
+
+  if (isMobile) {
     return (
       <>
         <div className="flex items-center group">
-          <Dropdown
-            className="p-0 rounded-xl"
-            classNames={{
-              base: "bg-black min-w-[110px] shadow-normal",
-            }}
+          <Button
+            onPress={onOpenOption}
+            size="sm"
+            isIconOnly
+            className="rounded-full bg-transparent flex items-center justify-center gap-2 group-hover:bg-green-600/10"
           >
-            <DropdownTrigger>
-              <Button
-                size="sm"
-                isIconOnly
-                className="rounded-full bg-transparent flex items-center justify-center gap-2 group-hover:bg-green-600/10"
-              >
-                <Icons.repost
-                  className={cn(
-                    isRepostedByCurrentUser
-                      ? "fill-green-600"
-                      : "fill-gray group-hover:fill-green-600",
-                    "w-[18px] h-[18px]"
-                  )}
-                />
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu aria-label="repost options" className="p-0">
-              {isRepostedByCurrentUser ? (
-                <DropdownItem
-                  onClick={() => repost()}
-                  startContent={
-                    <Icons.repost className="w-[18px] h-[18px] fill-white" />
-                  }
-                  key="repost"
-                  className="data-[hover=true]:bg-white/5 rounded-t-lg rounded-b-none px-4 py-3"
-                  textValue="Repost"
-                >
-                  <p className="font-bold">Undo repost</p>
-                </DropdownItem>
-              ) : (
-                <DropdownItem
-                  onClick={() => repost()}
-                  startContent={
-                    <Icons.repost className="w-[18px] h-[18px] fill-white" />
-                  }
-                  key="repost"
-                  className="data-[hover=true]:bg-white/5 rounded-t-lg rounded-b-none px-4 py-3"
-                  textValue="Repost"
-                >
-                  <p className="font-bold">Repost</p>
-                </DropdownItem>
+            <Icons.repost
+              className={cn(
+                isRepostedByCurrentUser
+                  ? "fill-green-600"
+                  : "fill-gray group-hover:fill-green-600",
+                "w-[18px] h-[18px]"
               )}
-              <DropdownItem
-                onPress={onOpen}
-                startContent={
-                  <Icons.quote className="w-[18px] h-[18px] fill-white" />
-                }
-                key="quote"
-                textValue="Quote"
-                className="data-[hover=true]:bg-white/5 rounded-b-lg rounded-t-none px-4 py-3"
-              >
-                <p className="font-bold">Quote</p>
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
+            />
+          </Button>
           <p
             className={cn(
               isRepostedByCurrentUser ? "text-green-600" : " text-gray ",
@@ -188,6 +153,77 @@ export default function RepostButton({
           </p>
         </div>
 
+        <Modal
+          hideCloseButton
+          size="4xl"
+          isOpen={isOpenOption}
+          placement="bottom"
+          onOpenChange={onOpenChangeOption}
+          classNames={{
+            base: "bg-black h-fit",
+            body: "px-0 pt-0 gap-0",
+            backdrop: "bg-backdrop",
+          }}
+          className="rounded-t-2xl m-0"
+          radius="none"
+        >
+          <ModalContent>
+            {(onCloseOption) => (
+              <ModalBody className="flex flex-col justify-between items-center">
+                <div className="w-full">
+                  {isRepostedByCurrentUser ? (
+                    <Button
+                      onPress={() => {
+                        repost();
+                        onCloseOption();
+                      }}
+                      disableAnimation
+                      className="bg-black w-full rounded-t-2xl rounded-b-none h-11 font-bold leading-5 text-base flex justify-start data-[pressed=true]:bg-hover"
+                    >
+                      <Icons.repost className="h-5 w-5 fill-text" />
+                      Undo repost
+                    </Button>
+                  ) : (
+                    <Button
+                      onPress={() => {
+                        repost();
+                        onCloseOption();
+                      }}
+                      disableAnimation
+                      className="bg-black w-full rounded-t-2xl rounded-b-none h-11 font-bold leading-5 text-base flex justify-start data-[pressed=true]:bg-hover"
+                    >
+                      <Icons.repost className="h-5 w-5 fill-text" />
+                      Repost
+                    </Button>
+                  )}
+                  <Button
+                    onPress={() => {
+                      // onOpenOption();
+                      onOpen();
+
+                      onCloseOption();
+                    }}
+                    disableAnimation
+                    className="bg-black w-full h-11 rounded-none font-bold leading-5 text-base flex justify-start data-[pressed=true]:bg-hover"
+                  >
+                    <Icons.quote className="h-5 w-5 fill-text" />
+                    Quote
+                  </Button>
+                </div>
+                <div className="px-4 py-3 w-full">
+                  <Button
+                    onPress={onCloseOption}
+                    disableAnimation
+                    className="w-full h-11 border-text/70 border-1 rounded-full font-bold leading-5 text-base bg-black data-[pressed=true]:bg-text/25"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </ModalBody>
+            )}
+          </ModalContent>
+        </Modal>
+
         <QuoteModal
           isOpen={isOpen}
           onOpenChange={onOpenChange}
@@ -197,4 +233,87 @@ export default function RepostButton({
       </>
     );
   }
+
+  return (
+    <>
+      <div className="flex items-center group">
+        <Dropdown
+          className="p-0 rounded-xl"
+          classNames={{
+            base: "bg-black min-w-[110px] shadow-normal",
+          }}
+        >
+          <DropdownTrigger>
+            <Button
+              size="sm"
+              isIconOnly
+              className="rounded-full bg-transparent flex items-center justify-center gap-2 group-hover:bg-green-600/10"
+            >
+              <Icons.repost
+                className={cn(
+                  isRepostedByCurrentUser
+                    ? "fill-green-600"
+                    : "fill-gray group-hover:fill-green-600",
+                  "w-[18px] h-[18px]"
+                )}
+              />
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu aria-label="repost options" className="p-0">
+            {isRepostedByCurrentUser ? (
+              <DropdownItem
+                onClick={() => repost()}
+                startContent={
+                  <Icons.repost className="w-[18px] h-[18px] fill-white" />
+                }
+                key="repost"
+                className="data-[hover=true]:bg-white/5 rounded-t-lg rounded-b-none px-4 py-3"
+                textValue="Repost"
+              >
+                <p className="font-bold">Undo repost</p>
+              </DropdownItem>
+            ) : (
+              <DropdownItem
+                onClick={() => repost()}
+                startContent={
+                  <Icons.repost className="w-[18px] h-[18px] fill-white" />
+                }
+                key="repost"
+                className="data-[hover=true]:bg-white/5 rounded-t-lg rounded-b-none px-4 py-3"
+                textValue="Repost"
+              >
+                <p className="font-bold">Repost</p>
+              </DropdownItem>
+            )}
+            <DropdownItem
+              onPress={onOpenOption}
+              startContent={
+                <Icons.quote className="w-[18px] h-[18px] fill-white" />
+              }
+              key="quote"
+              textValue="Quote"
+              className="data-[hover=true]:bg-white/5 rounded-b-lg rounded-t-none px-4 py-3"
+            >
+              <p className="font-bold">Quote</p>
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+        <p
+          className={cn(
+            isRepostedByCurrentUser ? "text-green-600" : " text-gray ",
+            "text-sm group-hover:text-green-600 tabular-nums"
+          )}
+        >
+          {repostsAmount.length}
+        </p>
+      </div>
+
+      <QuoteModal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        post={post}
+        currentUser={currentUser}
+      />
+    </>
+  );
 }

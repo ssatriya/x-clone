@@ -3,15 +3,15 @@ import { db } from "@/lib/db";
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
-    const originalPostId = searchParams.get("originalPostId");
+    const originalRepliedPostId = searchParams.get("originalRepliedPostId");
 
-    if (!originalPostId) {
+    if (!originalRepliedPostId) {
       return new Response("Original post ID is missing.", { status: 401 });
     }
 
     const originalPost = await db.post.findUnique({
       where: {
-        id: originalPostId,
+        id: originalRepliedPostId,
       },
       include: {
         user_one: {

@@ -23,7 +23,7 @@ export default function UserPostName({
   lightbox,
   align,
 }: UserPostNameProps) {
-  const isMobile = useMediaQuery("(min-width: 350px)");
+  const isMobile = useMediaQuery("(max-width: 420px)");
 
   if (align === "ROW") {
     return (

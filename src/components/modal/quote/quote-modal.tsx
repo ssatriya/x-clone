@@ -31,6 +31,7 @@ import { toast } from "sonner";
 import { uploadFiles } from "@/lib/uploadthing";
 import { DeltaStatic, Sources } from "quill";
 import { QuotePayload } from "@/lib/validator/quote";
+import { useMediaQuery } from "@mantine/hooks";
 
 type ReplyModal = {
   post: ExtendedPost | ExtendedPostWithoutUserTwo;
@@ -46,6 +47,7 @@ export default function QuoteModal({
   currentUser,
 }: ReplyModal) {
   const { mutate: mutateInfiniteScroll } = useInfiniteScroll();
+  const isMobile = useMediaQuery("(max-width: 420px)");
   const [editorValue, setEditorValue] = React.useState<
     DeltaStatic | undefined
   >();
@@ -195,9 +197,9 @@ export default function QuoteModal({
       placement="top"
       hideCloseButton
       disableAnimation
-      size="2xl"
+      size={isMobile ? "full" : "2xl"}
       classNames={{
-        base: "bg-black w-full w-[600px] h-fit rounded-xl px-0",
+        base: "bg-black w-full max-sm:h-full w-[600px] lg:h-fit rounded-xl px-0",
         backdrop: "bg-backdrop",
       }}
       backdrop="opaque"
@@ -207,7 +209,10 @@ export default function QuoteModal({
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalHeader className="flex flex-col gap-1 px-4 h-[54px]">
+            <ModalHeader
+              className="flex flex-col gap-1 px-4 h-[54px]"
+              onClick={(e) => e.stopPropagation()}
+            >
               <div className="flex w-full justify-between">
                 <Button
                   onClick={onClose}
@@ -225,8 +230,8 @@ export default function QuoteModal({
                 </Button>
               </div>
             </ModalHeader>
-            <ModalBody>
-              <div className="">
+            <ModalBody onClick={(e) => e.stopPropagation()}>
+              <div>
                 <QuoteFormEditor
                   currentUser={currentUser}
                   post={post}

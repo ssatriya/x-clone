@@ -79,7 +79,7 @@ export async function PATCH(req: Request) {
         content: originalPost?.content,
         image_url: originalPost.image_url,
         post_type: PostType.REPOST,
-        originalPostId: postId,
+        original_repost_post_id: postId,
       },
     });
 

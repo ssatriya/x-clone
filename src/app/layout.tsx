@@ -1,22 +1,12 @@
 import Providers from "@/components/providers";
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import localFont from "next/font/local";
+import { IBM_Plex_Sans } from "next/font/google";
 import { Toaster } from "sonner";
 
-const inter = Inter({ subsets: ["latin"] });
-
-const hubotSans = localFont({
-  src: "../../assets/fonts/Hubot-Sans.woff2",
-  variable: "--hubot-sans",
-  preload: true,
-});
-
-const monaSans = localFont({
-  src: "../../assets/fonts/Mona-Sans.woff2",
-  variable: "--mona-sans",
-  preload: true,
+const sans = IBM_Plex_Sans({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -32,7 +22,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark antialiased">
-      <body className={hubotSans.className}>
+      <body className={sans.className}>
         <Providers>
           <div id="reply-container" />
           <main className="min-h-screen w-full">

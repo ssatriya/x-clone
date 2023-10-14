@@ -91,7 +91,7 @@ export default function AttachmentPost({
               <Image
                 src={image}
                 fill
-                sizes="(max-widht: 600px) 512px "
+                sizes="(max-widht: 600px) 512px"
                 className={cn(borderImage, "h-full w-full object-cover border")}
                 alt="attachment"
                 priority
