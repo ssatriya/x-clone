@@ -10,7 +10,7 @@ export default async function Home() {
   }
 
   return (
-    <div className="p-4 flex flex-col h-screen justify-between">
+    <div className="px-4 pb-4 md:p-4 flex flex-col h-screen justify-between">
       <AuthWrapper />
     </div>
   );

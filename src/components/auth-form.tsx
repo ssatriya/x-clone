@@ -34,9 +34,9 @@ export default function AuthForm() {
         </Link>
         <p className="text-[11px] text-zinc-500">
           By signing up, you agree to the{" "}
-          <span className="text-twitter">Terms of Service</span> and{" "}
-          <span className="text-twitter">Privacy Policy</span>, including{" "}
-          <span className="text-twitter">Cookie Use.</span>
+          <span className="text-blue">Terms of Service</span> and{" "}
+          <span className="text-blue">Privacy Policy</span>, including{" "}
+          <span className="text-blue">Cookie Use.</span>
         </p>
 
         <div className="mt-12">
