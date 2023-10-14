@@ -10,6 +10,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: {
+        mobile: "350px",
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
@@ -23,6 +26,7 @@ const config: Config = {
         gray: "#6E767D",
         border: "#2F3336",
         trends: "#202327",
+        backdrop: "rgba(91, 112, 131, 0.4)",
       },
       boxShadow: {
         normal: "0 0 15px rgba(255,255,255,0.2)",

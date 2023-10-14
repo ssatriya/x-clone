@@ -30,3 +30,6 @@
   left: 0 !important;
   right: 0 !important;
 }
+* {
+  -webkit-tap-highlight-color: transparent;
+}

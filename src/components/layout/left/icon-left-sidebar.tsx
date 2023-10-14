@@ -12,14 +12,14 @@ type MobileLeftSidebarProps = {
   currentUser: User;
 };
 
-export default function MobileLeftSidebar({
+export default function IconLeftSidebar({
   currentUser,
 }: MobileLeftSidebarProps) {
   const username = removeAtSymbol(currentUser.username);
   const pathname = usePathname();
 
   return (
-    <nav className="px-2 pt-1 w-20 lg:hidden">
+    <nav className="px-2 pt-1 w-20 md:block xl:hidden hidden">
       <div className="gap-2 flex flex-col fixed">
         <Link
           href="/home"

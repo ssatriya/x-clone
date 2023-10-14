@@ -2,9 +2,22 @@ import Providers from "@/components/providers";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
+
+const hubotSans = localFont({
+  src: "../../assets/fonts/Hubot-Sans.woff2",
+  variable: "--hubot-sans",
+  preload: true,
+});
+
+const monaSans = localFont({
+  src: "../../assets/fonts/Mona-Sans.woff2",
+  variable: "--mona-sans",
+  preload: true,
+});
 
 export const metadata: Metadata = {
   title: "Home / X",
@@ -19,10 +32,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark antialiased">
-      <body className={inter.className}>
+      <body className={hubotSans.className}>
         <Providers>
           <div id="reply-container" />
-          <main className="min-h-screen">
+          <main className="min-h-screen w-full">
             <Toaster richColors />
             {children}
           </main>

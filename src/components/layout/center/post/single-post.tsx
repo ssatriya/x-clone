@@ -23,10 +23,6 @@ import PostActionButton from "./action-button/post-action-button";
 import dynamic from "next/dynamic";
 import InlineReplyFormEditor from "../reply/inline-reply/inline-reply-form-editor";
 
-const ReplyQuillEditor = dynamic(() => import("../reply/reply-form-editor"), {
-  ssr: false,
-});
-
 type SinglePostProps = {
   currentUser: UserWithFollowersFollowing;
   post: ExtendedPostWithoutUserTwo;

@@ -6,7 +6,7 @@ import getCurrentSession from "@/lib/getCurrentSession";
 import { cn } from "@/lib/utils";
 import { db } from "@/lib/db";
 import Header from "@/components/layout/center/header";
-import MobileLeftSidebar from "@/components/layout/left/mobile-left-sidebar";
+import IconLeftSidebar from "@/components/layout/left/icon-left-sidebar";
 
 export default async function HomeLayout({
   children,
@@ -41,13 +41,15 @@ export default async function HomeLayout({
   }
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center w-full">
       <LeftSidebar currentUser={currentUser} />
-      <MobileLeftSidebar currentUser={currentUser} />
-      <main className="min-h-screen flex gap-8">
+      <IconLeftSidebar currentUser={currentUser} />
+      <main className="min-h-screen flex gap-8 max-sm:w-full">
         <div
           className={cn(
-            isOnboarded ? "border-x h-full w-[600px]" : "w-full lg:w-[600px]"
+            isOnboarded
+              ? "border-x w-full h-full sm:w-[600px]"
+              : "w-full sm:w-[600px]"
           )}
         >
           {photoModal}

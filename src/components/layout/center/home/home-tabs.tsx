@@ -26,14 +26,6 @@ export default function HomeTabs({ user }: HomeTabsProps) {
 
   return (
     <div className="flex w-full flex-col">
-      {/* <Progress
-        size="sm"
-        aria-label="Uploading..."
-        value={50}
-        classNames={{ indicator: "bg-[#1D9BF0]" }}
-        radius="none"
-        className="absolute top-[51px] right-0 z-50"
-      /> */}
       <Tabs
         aria-label="Options"
         variant="underlined"
@@ -45,7 +37,7 @@ export default function HomeTabs({ user }: HomeTabsProps) {
           panel: "px-0 pb-0",
         }}
       >
-        <Tab key="for-you" title="For you" className="">
+        <Tab key="for-you" title="For you">
           <PostFormEditor
             user={user}
             focusHandler={focusHandler}

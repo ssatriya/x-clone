@@ -25,6 +25,7 @@ import { uploadFiles, useUploadThing } from "@/lib/uploadthing";
 import dynamic from "next/dynamic";
 import { DeltaStatic } from "quill";
 import { AttachmentType } from "@/types/types";
+import Image from "next/image";
 
 const QuillEditor = dynamic(() => import("./editor"), { ssr: false });
 
@@ -232,9 +233,14 @@ export default function PostFormEditor({
           )}
         />
 
-        <div className="h-fit">
-          <Avatar showFallback src={user.avatar} />
-        </div>
+        <Image
+          src={user.avatar}
+          height={40}
+          width={40}
+          alt={user.name}
+          priority
+          className="rounded-full h-10 w-10"
+        />
         <div className="w-full flex flex-col">
           {isFocus && !isUploading && !isSubmitting && (
             <Button

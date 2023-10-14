@@ -17,7 +17,7 @@ export default function LeftSidebar({ currentUser }: LeftSidebarProps) {
   const pathname = usePathname();
 
   return (
-    <nav className="px-2 pt-1 w-[275px] hidden lg:block">
+    <nav className="px-2 pt-1 w-[275px] hidden xl:block">
       <div className="gap-2 flex flex-col fixed">
         <Link
           href="/home"

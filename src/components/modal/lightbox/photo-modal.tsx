@@ -68,20 +68,20 @@ export default function PhotoModal({
       className="fixed inset-0 flex items-center justify-center z-50"
       onClick={handleClose}
     >
-      <div className="fixed inset-0 bg-black opacity-90"></div>
+      <div className="fixed inset-0 bg-black lg:opacity-90"></div>
 
       <div className="flex relative w-full h-full">
         <div className="relative flex-1 border-l">
           <Button
             onClick={handleClose}
             isIconOnly
-            className="rounded-full absolute left-3 top-3 z-50 bg-transparent hover:bg-text/10"
+            className="rounded-full absolute left-3 top-3 z-50 bg-transparent lg:hover:bg-text/10"
           >
             <Icons.close className="fill-text h-5 w-5" strokeWidth={2} />
           </Button>
           <Button
             isIconOnly
-            className="rounded-full absolute right-3 z-50 top-3 bg-transparent hover:bg-text/10"
+            className="rounded-full  right-3 z-50 top-3 bg-transparent hover:bg-text/10 hidden lg:absolute"
           >
             <Icons.hideIcon className="fill-text h-5 w-5" strokeWidth={2} />
           </Button>
@@ -125,7 +125,7 @@ export default function PhotoModal({
         </div>
 
         <div
-          className="flex-none w-[350px] bg-black border-l z-50 h-full pt-3 overflow-y-auto"
+          className="flex-none w-[350px] bg-black border-l z-50 h-full pt-3 overflow-y-auto hidden lg:block"
           onClick={(e) => e.stopPropagation()}
         >
           <LightboxPost

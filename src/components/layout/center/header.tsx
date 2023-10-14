@@ -15,7 +15,7 @@ export default function Header({ title, subtitle, backButton }: HeaderProps) {
   const router = useRouter();
 
   return (
-    <div className="h-[53px] w-full flex items-center px-4">
+    <div className="h-[53px] w-full items-center px-4 flex">
       {backButton && (
         <Button
           onClick={() => router.back()}

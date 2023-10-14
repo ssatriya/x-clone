@@ -72,7 +72,7 @@ export default function OnboardingModal({ user }: OnboardingModalProps) {
       size="2xl"
       classNames={{
         base: "bg-black w-full w-[600px] h-[600px] rounded-xl",
-        backdrop: "bg-blue/10",
+        backdrop: "bg-backdrop",
       }}
       backdrop="blur"
     >

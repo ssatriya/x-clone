@@ -15,6 +15,8 @@ import {
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import { User } from "@prisma/client";
 import { formatTimeToNow } from "@/lib/utils";
+import { useMediaQuery } from "@mantine/hooks";
+import { usePress } from "react-aria";
 
 type ReplyModal = {
   post: ExtendedPost | ExtendedPostWithoutUserTwo;
@@ -31,6 +33,13 @@ export default function ReplyModal({
   currentUser,
   onOpen,
 }: ReplyModal) {
+  const isMobile = useMediaQuery("(max-width: 420px)");
+  const { pressProps, isPressed } = usePress({
+    onPress: (e) => {
+      // onOpenChange();
+    },
+  });
+
   const cfg = {};
   let html = "";
   // @ts-ignore
@@ -50,10 +59,10 @@ export default function ReplyModal({
       placement="top"
       hideCloseButton
       disableAnimation
-      size="2xl"
+      size={isMobile ? "full" : "2xl"}
       classNames={{
-        base: "bg-black w-full w-[600px] h-fit rounded-xl px-0",
-        backdrop: "bg-blue/10",
+        base: "bg-black w-full max-sm:h-full w-[600px] lg:h-fit rounded-xl px-0",
+        backdrop: "bg-backdrop",
       }}
       backdrop="opaque"
       isOpen={isOpen}
@@ -62,7 +71,10 @@ export default function ReplyModal({
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalHeader className="flex flex-col gap-1 px-4 pt-2 h-[54px]">
+            <ModalHeader
+              className="flex flex-col gap-1 px-4 pt-2 h-[54px]"
+              onClick={(e) => e.stopPropagation()}
+            >
               <div className="flex w-full justify-between">
                 <Button
                   onClick={onClose}
@@ -80,7 +92,7 @@ export default function ReplyModal({
                 </Button>
               </div>
             </ModalHeader>
-            <ModalBody>
+            <ModalBody onClick={(e) => e.stopPropagation()}>
               <div className="pt-4">
                 <div className="flex gap-3">
                   <div className="flex flex-col h-full">
@@ -126,6 +138,7 @@ export default function ReplyModal({
                   onOpenChange={onOpenChange}
                 />
               </div>
+              {isMobile && <div className="h-full" {...pressProps} />}
             </ModalBody>
           </>
         )}

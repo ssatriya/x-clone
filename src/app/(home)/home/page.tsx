@@ -6,6 +6,7 @@ import getCurrentSession from "@/lib/getCurrentSession";
 import { redirect } from "next/navigation";
 import * as React from "react";
 import Loading from "../loading";
+import MobileHeader from "@/components/layout/center/mobile-header";
 
 export default async function HomePage() {
   const session = await getCurrentSession();
@@ -32,19 +33,20 @@ export default async function HomePage() {
 
   if (!isOnboarded) {
     return (
-      <div className="">
+      <>
         <Header title="Home" />
         <OnboardingModal user={user} />
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="">
-      <Header title="Home" />
-      <React.Suspense fallback={<Loading />}>
-        <HomeTabs user={user} />
-      </React.Suspense>
-    </div>
+    <>
+      <div className="hidden md:flex">
+        <Header title="Home" />
+      </div>
+      <MobileHeader currentUser={user} />
+      <HomeTabs user={user} />
+    </>
   );
 }

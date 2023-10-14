@@ -198,7 +198,7 @@ export default function QuoteModal({
       size="2xl"
       classNames={{
         base: "bg-black w-full w-[600px] h-fit rounded-xl px-0",
-        backdrop: "bg-blue/10",
+        backdrop: "bg-backdrop",
       }}
       backdrop="opaque"
       isOpen={isOpen}

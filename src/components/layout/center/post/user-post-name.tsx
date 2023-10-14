@@ -6,6 +6,7 @@ import {
   UserWithFollowersFollowing,
 } from "@/types/db";
 import { truncateString } from "@/lib/utils";
+import { useMediaQuery } from "@mantine/hooks";
 
 type UserPostNameProps = {
   post: ExtendedPost | ExtendedPostWithoutUserTwo;
@@ -22,25 +23,29 @@ export default function UserPostName({
   lightbox,
   align,
 }: UserPostNameProps) {
+  const isMobile = useMediaQuery("(min-width: 350px)");
+
   if (align === "ROW") {
     return (
       <>
         <UserTooltip user={post.user_one} currentUser={currentUser}>
           <Link
             href={`/${usernameWithoutAt}`}
-            className="font-bold z-10 hover:underline focus-visible:ring-0"
+            className="font-bold z-10 hover:underline focus-visible:ring-0 mobile:text-[15px] mobile:leading-5"
           >
-            {lightbox
-              ? truncateString(post.user_one.name, 8)
+            {isMobile
+              ? truncateString(post.user_one.name, 13)
               : post.user_one.name}
           </Link>
         </UserTooltip>
         <UserTooltip user={post.user_one} currentUser={currentUser}>
           <Link
             href={`/${usernameWithoutAt}`}
-            className="text-gray focus-visible:ring-0 z-10"
+            className="text-gray focus-visible:ring-0 z-10 mobile:text-[15px] mobile:leading-5"
           >
-            {post.user_one.username}
+            {isMobile
+              ? truncateString(post.user_one.username, 13)
+              : post.user_one.username}
           </Link>
         </UserTooltip>
       </>

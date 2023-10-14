@@ -31,6 +31,7 @@
     "next": "latest",
     "quill-delta-to-html": "^0.12.1",
     "react": "latest",
+    "react-aria": "^3.29.0",
     "react-dom": "latest",
     "react-hook-form": "^7.46.2",
     "react-quill": "^2.0.0",
