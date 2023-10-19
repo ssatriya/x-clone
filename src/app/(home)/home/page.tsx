@@ -7,6 +7,8 @@ import { redirect } from "next/navigation";
 import * as React from "react";
 import MobileHeader from "@/components/layout/center/mobile-header";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const session = await getCurrentSession();
 

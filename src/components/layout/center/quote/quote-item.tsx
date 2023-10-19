@@ -2,10 +2,12 @@ import { ExtendedPost, UserWithFollowersFollowing } from "@/types/db";
 import Link from "next/link";
 import UserTooltip from "../user-tooltip";
 import { Avatar } from "@nextui-org/react";
-import { formatTimeToNow, removeAtSymbol } from "@/lib/utils";
+import { formatTimeToNow, removeAtSymbol, truncateString } from "@/lib/utils";
 import AttachmentPost from "../post/attachment-post";
 import PostActionButton from "../post/action-button/post-action-button";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
+import UserPostName from "../post/user-post-name";
+import { useMediaQuery } from "@mantine/hooks";
 
 type QuoteItemProps = {
   post: ExtendedPost;
@@ -20,11 +22,13 @@ export default function QuoteItem({
   currentUser,
   postUserOwner,
 }: QuoteItemProps) {
+  const isMobile = useMediaQuery("(max-width: 420px)");
+
   const usernameOriginalPost = removeAtSymbol(postUserOwner.username);
   const originalPostURL = `/${usernameOriginalPost}/status/${post.original_repost_post_id}`;
 
-  const username = removeAtSymbol(post.user_one.username);
-  const postUrl = `/${username}/status/${post.id}`;
+  const usernameWithoutAt = removeAtSymbol(post.user_one.username);
+  const postUrl = `/${usernameWithoutAt}/status/${post.id}`;
 
   const cfg = {};
   let originalPostContent = "";
@@ -60,7 +64,7 @@ export default function QuoteItem({
       <Link href={postUrl} className="absolute inset-0" />
       <div className="h-fit">
         <UserTooltip user={post.user_one} currentUser={currentUser}>
-          <Link href={`/${username}`}>
+          <Link href={`/${usernameWithoutAt}`}>
             <Avatar showFallback src={userPosted} />
           </Link>
         </UserTooltip>
@@ -68,7 +72,7 @@ export default function QuoteItem({
 
       <div className="w-full flex flex-col">
         <div className="flex items-center gap-2">
-          <UserTooltip user={post.user_one} currentUser={currentUser}>
+          {/* <UserTooltip user={post.user_one} currentUser={currentUser}>
             <Link
               href={`/${username}`}
               className="font-bold hover:underline focus-visible:ring-0"
@@ -83,7 +87,14 @@ export default function QuoteItem({
             >
               {post.user_one.username}
             </Link>
-          </UserTooltip>
+          </UserTooltip> */}
+          <UserPostName
+            currentUser={currentUser}
+            post={post}
+            usernameWithoutAt={usernameWithoutAt}
+            align="ROW"
+            truncate={true}
+          />
           <span className="text-gray">·</span>
           <p className="text-gray">
             {formatTimeToNow(new Date(post.createdAt))}
@@ -115,10 +126,18 @@ export default function QuoteItem({
               </UserTooltip>
               <div className="flex items-center gap-2">
                 <UserTooltip user={postUserOwner} currentUser={currentUser}>
-                  <p className="font-bold">{postUserOwner.name}</p>
+                  <p className="font-bold">
+                    {isMobile
+                      ? truncateString(postUserOwner.name, 11)
+                      : postUserOwner.name}
+                  </p>
                 </UserTooltip>
                 <UserTooltip user={postUserOwner} currentUser={currentUser}>
-                  <p className="text-[#555b61]">{postUserOwner.username}</p>
+                  <p className="text-[#555b61]">
+                    {isMobile
+                      ? truncateString(postUserOwner.username, 11)
+                      : postUserOwner.username}
+                  </p>
                 </UserTooltip>
                 <span className="text-gray">·</span>
                 <p className="text-[#555b61]">

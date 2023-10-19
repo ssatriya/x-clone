@@ -36,8 +36,8 @@ export default function PhotoModal({
   const router = useRouter();
 
   const handleClose = () => {
-    // router.push("/home");
-
+    router.push("/home");
+    // router.refresh();
     // Could not go back to /home with router
     // Temporary fix
     window.location.href = "/home";

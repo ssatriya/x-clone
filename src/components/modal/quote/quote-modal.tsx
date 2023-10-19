@@ -15,13 +15,14 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
+  Progress,
 } from "@nextui-org/react";
 import { RepostType, User } from "@prisma/client";
 import * as React from "react";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import UserTooltip from "@/components/layout/center/user-tooltip";
 import Link from "next/link";
-import { formatTimeToNow } from "@/lib/utils";
+import { formatTimeToNow, truncateString } from "@/lib/utils";
 import AttachmentPost from "@/components/layout/center/post/attachment-post";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
@@ -87,7 +88,7 @@ export default function QuoteModal({
     );
   };
 
-  const { mutate: createReply } = useMutation({
+  const { mutate: createReply, isLoading } = useMutation({
     mutationKey: ["replyMutation"],
     mutationFn: async ({
       originalPostOwnerId,
@@ -118,6 +119,7 @@ export default function QuoteModal({
       setEditorValue(undefined);
       setFiles([]);
       toast.success("Reply has been created.");
+      onOpenChange();
     },
   });
 
@@ -208,7 +210,19 @@ export default function QuoteModal({
     >
       <ModalContent>
         {(onClose) => (
-          <>
+          <div className="relative">
+            {isLoading && (
+              <Progress
+                size="sm"
+                aria-label="Posting..."
+                isIndeterminate
+                classNames={{
+                  indicator: "bg-[#1D9BF0]",
+                }}
+                radius="none"
+                className="absolute top-0 right-0 bg-black z-50"
+              />
+            )}
             <ModalHeader
               className="flex flex-col gap-1 px-4 h-[54px]"
               onClick={(e) => e.stopPropagation()}
@@ -256,9 +270,17 @@ export default function QuoteModal({
                     />
 
                     <div className="flex items-center gap-2">
-                      <p className="font-bold">{post.user_one.name}</p>
+                      <p className="font-bold">
+                        {isMobile
+                          ? truncateString(post.user_one.name, 14)
+                          : post.user_one.name}
+                      </p>
 
-                      <p className="text-[#555b61]">{post.user_one.username}</p>
+                      <p className="text-[#555b61]">
+                        {isMobile
+                          ? truncateString(post.user_one.username, 14)
+                          : post.user_one.username}
+                      </p>
 
                       <span className="text-gray">·</span>
                       <p className="text-[#555b61]">
@@ -370,7 +392,7 @@ export default function QuoteModal({
                 </div>
               </div>
             </ModalFooter>
-          </>
+          </div>
         )}
       </ModalContent>
     </Modal>
