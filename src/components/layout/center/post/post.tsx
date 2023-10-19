@@ -56,16 +56,18 @@ export default function Post({
     >
       <Link href={postURL} className="absolute inset-0" />
 
-      <UserPostAvatar
-        currentUser={currentUser}
-        user={post.user_one}
-        userPosted={userPosted}
-        usernameWithoutAt={usernameWithoutAt}
-      />
+      <div className="z-20 h-fit">
+        <UserPostAvatar
+          currentUser={currentUser}
+          user={post.user_one}
+          userPosted={userPosted}
+          usernameWithoutAt={usernameWithoutAt}
+        />
+      </div>
 
       <div className="w-full flex flex-col">
         <div className="flex w-full justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 z-20">
             <UserPostName
               currentUser={currentUser}
               post={post}

@@ -113,7 +113,7 @@ export default function QuoteItem({
           )}
         </div>
         <div className="flex flex-col space-y-3">
-          <div className="hover:bg-[#0e0e0e] transition-colors cursor-pointer flex h-fit overflow-hidden flex-col justify-between pt-4 px-4 mt-2 border rounded-xl border-[#2f3336]z-10 relative">
+          <div className="hover:bg-[#0e0e0e] transition-colors cursor-pointer flex h-fit overflow-hidden flex-col justify-between pt-4 px-4 mt-2 border rounded-xl border-[#2f3336] z-10 relative">
             <Link href={originalPostURL} className="absolute inset-0" />
             <div className="flex gap-2 items-center mb-1">
               <UserTooltip user={postUserOwner} currentUser={currentUser}>
@@ -128,14 +128,14 @@ export default function QuoteItem({
                 <UserTooltip user={postUserOwner} currentUser={currentUser}>
                   <p className="font-bold">
                     {isMobile
-                      ? truncateString(postUserOwner.name, 11)
+                      ? truncateString(postUserOwner.name, 10)
                       : postUserOwner.name}
                   </p>
                 </UserTooltip>
                 <UserTooltip user={postUserOwner} currentUser={currentUser}>
                   <p className="text-[#555b61]">
                     {isMobile
-                      ? truncateString(postUserOwner.username, 11)
+                      ? truncateString(postUserOwner.username, 10)
                       : postUserOwner.username}
                   </p>
                 </UserTooltip>
