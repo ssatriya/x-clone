@@ -14,6 +14,7 @@ type UserPostNameProps = {
   currentUser: UserWithFollowersFollowing;
   lightbox?: boolean;
   align: "ROW" | "COLUMN";
+  truncate?: boolean;
 };
 
 export default function UserPostName({
@@ -22,6 +23,7 @@ export default function UserPostName({
   currentUser,
   lightbox,
   align,
+  truncate = false,
 }: UserPostNameProps) {
   const isMobile = useMediaQuery("(max-width: 420px)");
 
@@ -33,8 +35,8 @@ export default function UserPostName({
             href={`/${usernameWithoutAt}`}
             className="font-bold z-10 hover:underline focus-visible:ring-0 mobile:text-[15px] mobile:leading-5"
           >
-            {isMobile
-              ? truncateString(post.user_one.name, 13)
+            {truncate || isMobile
+              ? truncateString(post.user_one.name, 12)
               : post.user_one.name}
           </Link>
         </UserTooltip>
@@ -43,7 +45,7 @@ export default function UserPostName({
             href={`/${usernameWithoutAt}`}
             className="text-gray focus-visible:ring-0 z-10 mobile:text-[15px] mobile:leading-5"
           >
-            {isMobile
+            {truncate || isMobile
               ? truncateString(post.user_one.username, 13)
               : post.user_one.username}
           </Link>

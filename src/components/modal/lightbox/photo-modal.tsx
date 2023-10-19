@@ -34,11 +34,13 @@ export default function PhotoModal({
   currentUser,
 }: PhotoModalProps) {
   const router = useRouter();
-  const [imageUrl, setImageUrl] = React.useState("");
-  const [open, setOpen] = React.useState(false);
 
   const handleClose = () => {
-    router.push("/home");
+    // router.push("/home");
+
+    // Could not go back to /home with router
+    // Temporary fix
+    window.location.href = "/home";
   };
 
   const imageArr = post.image_url!.split(",");
@@ -65,7 +67,7 @@ export default function PhotoModal({
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center z-50"
+      className="fixed inset-0 flex items-center justify-center z-40"
       onClick={handleClose}
     >
       <div className="fixed inset-0 bg-black lg:opacity-90"></div>
@@ -86,17 +88,20 @@ export default function PhotoModal({
             <Icons.hideIcon className="fill-text h-5 w-5" strokeWidth={2} />
           </Button>
 
-          <div className="flex flex-col justify-center items-center h-full">
-            <div className="w-full h-full relative">
+          <div className="flex flex-col justify-center items-center h-full relative">
+            <div className="w-full h-[94%] absolute right-[50%] left-[50%] translate-x-[-50%] top-0">
               <Image
                 onClick={(e) => e.stopPropagation()}
                 src={imageArr.at(Number(photoIndex) - 1)!}
                 alt=""
                 fill
-                objectFit="contain"
+                className="object-contain z-50 "
               />
             </div>
-            <div className="z-50" onClick={(e) => e.stopPropagation()}>
+            <div
+              className="z-50 absolute bottom-1"
+              onClick={(e) => e.stopPropagation()}
+            >
               <PostActionButton
                 post={post}
                 reposts={post.reposts}

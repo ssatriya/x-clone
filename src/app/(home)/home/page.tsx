@@ -5,7 +5,6 @@ import { db } from "@/lib/db";
 import getCurrentSession from "@/lib/getCurrentSession";
 import { redirect } from "next/navigation";
 import * as React from "react";
-import Loading from "../loading";
 import MobileHeader from "@/components/layout/center/mobile-header";
 
 export default async function HomePage() {
