@@ -55,7 +55,6 @@ export default function Post({
       onClick={(e) => e.stopPropagation()}
     >
       <Link href={postURL} className="absolute inset-0" />
-
       <div className="z-20 h-fit">
         <UserPostAvatar
           currentUser={currentUser}
@@ -75,7 +74,7 @@ export default function Post({
               align="ROW"
             />
             <span className="text-gray">·</span>
-            <p className="text-gray">
+            <p className="text-gray w-fit">
               {formatTimeToNow(new Date(post.createdAt))}
             </p>
           </div>

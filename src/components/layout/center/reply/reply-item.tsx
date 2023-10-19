@@ -10,6 +10,8 @@ import { formatTimeToNow, removeAtSymbol } from "@/lib/utils";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import AttachmentPost from "../post/attachment-post";
 import PostActionButton from "../post/action-button/post-action-button";
+import { Button } from "@nextui-org/react";
+import { Icons } from "@/components/icons";
 
 type ReplyItemProps = {
   post: ExtendedPost;

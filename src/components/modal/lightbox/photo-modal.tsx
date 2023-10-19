@@ -36,11 +36,7 @@ export default function PhotoModal({
   const router = useRouter();
 
   const handleClose = () => {
-    router.push("/home");
-    // router.refresh();
-    // Could not go back to /home with router
-    // Temporary fix
-    window.location.href = "/home";
+    router.back();
   };
 
   const imageArr = post.image_url!.split(",");
@@ -112,20 +108,24 @@ export default function PhotoModal({
           </div>
 
           <div className="absolute top-0 left-0 bottom-0 flex items-center justify-between w-full">
-            <Button
-              onClick={handlePrev}
-              isIconOnly
-              className="rounded-full bg-transparent hover:bg-text/10"
-            >
-              <Icons.arrowLeft className="h-5 w-5 fill-text" />
-            </Button>
-            <Button
-              onClick={handleNext}
-              isIconOnly
-              className="rounded-full bg-transparent hover:bg-text/10"
-            >
-              <Icons.arrowRight className="h-5 w-5 fill-text" />
-            </Button>
+            {imageArr.length !== 1 && (
+              <Button
+                onClick={handlePrev}
+                isIconOnly
+                className="rounded-full bg-transparent hover:bg-text/10"
+              >
+                <Icons.arrowLeft className="h-5 w-5 fill-text" />
+              </Button>
+            )}
+            {imageArr.length !== 1 && (
+              <Button
+                onClick={handleNext}
+                isIconOnly
+                className="rounded-full bg-transparent hover:bg-text/10"
+              >
+                <Icons.arrowRight className="h-5 w-5 fill-text" />
+              </Button>
+            )}
           </div>
         </div>
 

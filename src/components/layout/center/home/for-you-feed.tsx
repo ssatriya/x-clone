@@ -17,7 +17,7 @@ export default function ForYouFeed({ user }: ForYouFeedProps) {
   const lastPostRef = React.useRef();
   const { ref, entry } = useIntersection({
     root: lastPostRef.current,
-    threshold: 0.3,
+    threshold: 1,
   });
 
   const { data, isLoading, size, isValidating, setSize } = useInfiniteScroll();
@@ -33,6 +33,7 @@ export default function ForYouFeed({ user }: ForYouFeedProps) {
     if (entry?.isIntersecting && !isReachingEnd && !isRefreshing) {
       setSize(size + 1);
     }
+    console.log(entry?.isIntersecting);
   }, [entry?.isIntersecting, isRefreshing]);
 
   return (

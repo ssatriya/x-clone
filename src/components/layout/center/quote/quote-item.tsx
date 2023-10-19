@@ -93,7 +93,7 @@ export default function QuoteItem({
             post={post}
             usernameWithoutAt={usernameWithoutAt}
             align="ROW"
-            truncate={true}
+            truncate={false}
           />
           <span className="text-gray">·</span>
           <p className="text-gray">
