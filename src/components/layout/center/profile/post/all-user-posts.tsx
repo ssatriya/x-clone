@@ -20,7 +20,7 @@ export default function AllUserPosts({
   const lastPostRef = React.useRef();
   const { ref, entry } = useIntersection({
     root: lastPostRef.current,
-    threshold: 0.3,
+    threshold: 0.5,
   });
 
   const { data, isLoading, size, isValidating, setSize } = useProfilePost(
@@ -39,6 +39,7 @@ export default function AllUserPosts({
     if (entry?.isIntersecting && !isReachingEnd && !isRefreshing) {
       setSize(size + 1);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entry?.isIntersecting, isRefreshing]);
 
   return (
@@ -123,6 +124,16 @@ export default function AllUserPosts({
           })
         )}
       </ul>
+      {isLoadingMore && !isLoading && (
+        <li className="pb-6 h-full flex justify-center items-start mt-6">
+          <Loader2 className="h-9 w-9 animate-spin stroke-blue" />
+        </li>
+      )}
+      {isReachingEnd && (
+        <li className="pb-6 h-full flex justify-center items-start mt-6">
+          <p>No more posts</p>
+        </li>
+      )}
     </>
   );
 }

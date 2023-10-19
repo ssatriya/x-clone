@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "../../../../../../config/config";
 
 export async function GET(req: Request) {
   try {
@@ -15,6 +16,9 @@ export async function GET(req: Request) {
       const allUserPosts = await db.post.findMany({
         where: {
           user_one_id: userId,
+          post_type: {
+            not: "QUOTE",
+          },
         },
         include: {
           user_one: {
@@ -33,7 +37,7 @@ export async function GET(req: Request) {
           reposts: true,
           likes: true,
         },
-        take: 10,
+        take: INFINITE_SCROLLING_PAGINATION_RESULTS,
         orderBy: {
           createdAt: "desc",
         },
@@ -44,6 +48,9 @@ export async function GET(req: Request) {
     const allUserPosts = await db.post.findMany({
       where: {
         user_one_id: userId,
+        post_type: {
+          not: "QUOTE",
+        },
       },
       include: {
         user_one: {

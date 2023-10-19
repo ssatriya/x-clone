@@ -17,7 +17,7 @@ export default function ForYouFeed({ user }: ForYouFeedProps) {
   const lastPostRef = React.useRef();
   const { ref, entry } = useIntersection({
     root: lastPostRef.current,
-    threshold: 1,
+    threshold: 0.5,
   });
 
   const { data, isLoading, size, isValidating, setSize } = useInfiniteScroll();
@@ -33,7 +33,7 @@ export default function ForYouFeed({ user }: ForYouFeedProps) {
     if (entry?.isIntersecting && !isReachingEnd && !isRefreshing) {
       setSize(size + 1);
     }
-    console.log(entry?.isIntersecting);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entry?.isIntersecting, isRefreshing]);
 
   return (
@@ -96,8 +96,13 @@ export default function ForYouFeed({ user }: ForYouFeedProps) {
         )}
       </ul>
       {isLoadingMore && !isLoading && (
-        <li className="h-full flex justify-center items-start mt-6">
+        <li className="pb-6 h-full flex justify-center items-start mt-6">
           <Loader2 className="h-9 w-9 animate-spin stroke-blue" />
+        </li>
+      )}
+      {isReachingEnd && (
+        <li className="pb-6 h-full flex justify-center items-start mt-6">
+          <p>No more posts</p>
         </li>
       )}
     </>
