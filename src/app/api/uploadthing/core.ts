@@ -16,6 +16,16 @@ export const ourFileRouter = {
       return { userId: session.user.userId };
     })
     .onUploadComplete(async ({ metadata, file }) => {}),
+  userPhoto: f({ blob: { maxFileCount: 1, maxFileSize: "8MB" } })
+    .middleware(async (req) => {
+      const session = await getCurrentSession();
+
+      if (!session?.user) {
+        throw new Error("Unauthorized");
+      }
+      return { userId: session.user.userId };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {}),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;

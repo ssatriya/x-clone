@@ -1,4 +1,4 @@
-import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "@/config";
+import { INFINITE_SCROLLING_PAGINATION_RESULTS } from "../../config/config";
 import useSWRInfinite from "swr/infinite";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());

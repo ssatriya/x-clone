@@ -1,13 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@nextui-org/react";
+import {
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@nextui-org/react";
 
 import { Icons } from "@/components/icons";
 import { User } from "@prisma/client";
-import { removeAtSymbol } from "@/lib/utils";
+import { cn, removeAtSymbol } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import axios from "axios";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 type LeftSidebarProps = {
   currentUser: User;
@@ -15,11 +23,15 @@ type LeftSidebarProps = {
 
 export default function LeftSidebar({ currentUser }: LeftSidebarProps) {
   const username = removeAtSymbol(currentUser.username);
-  const pathname = usePathname();
+  const path = usePathname();
+  const router = useRouter();
 
   const handleClick = async () => {
     const { data } = await axios.post("/api/logout");
-    console.log(data.status);
+
+    if (data.response.status === 301) {
+      router.push("/");
+    }
   };
 
   return (
@@ -34,11 +46,22 @@ export default function LeftSidebar({ currentUser }: LeftSidebarProps) {
           </Link>
           <Link href="/home" className="hover:bg-hover w-fit p-3 rounded-full">
             <div className="flex items-center justify-center">
-              <Icons.home
-                className="w-[27px] h-[27px] stroke-neutral-100 fill-neutral-100"
-                strokeWidth={2}
-              />
-              <div className="text-xl pr-4 pl-5">Home</div>
+              {path === "/home" ? (
+                <Icons.home className="w-[27px] h-[27px] stroke-neutral-100 fill-neutral-100" />
+              ) : (
+                <Icons.home
+                  strokeWidth={2}
+                  className="w-[27px] h-[27px] stroke-neutral-100 "
+                />
+              )}
+              <div
+                className={cn(
+                  path === "/home" ? "font-bold" : "font-normal",
+                  "text-xl pr-4 pl-5"
+                )}
+              >
+                Home
+              </div>
             </div>
           </Link>
           <Link
@@ -100,8 +123,22 @@ export default function LeftSidebar({ currentUser }: LeftSidebarProps) {
             className="hover:bg-hover w-fit p-3 rounded-full"
           >
             <div className="flex items-center justify-center">
-              <Icons.profile className="w-[27px] h-[27px] fill-neutral-100" />
-              <div className="text-xl pr-4 pl-5">Profile</div>
+              {path === `/${username}` ? (
+                <Icons.profile className="w-[27px] h-[27px] fill-neutral-100" />
+              ) : (
+                <Icons.profile
+                  strokeWidth={2}
+                  className="w-[27px] h-[27px] stroke-neutral-100"
+                />
+              )}
+              <div
+                className={cn(
+                  path === `/${username}` ? "font-bold" : "font-normal",
+                  "text-xl pr-4 pl-5"
+                )}
+              >
+                Profile
+              </div>
             </div>
           </Link>
           <Link
@@ -117,15 +154,52 @@ export default function LeftSidebar({ currentUser }: LeftSidebarProps) {
             Post
           </Button>
         </div>
-
-        {/* <Link href="/api/logout" className="w-full"> */}
-        <Button
-          onClick={handleClick}
-          className="bg-black w-full hover:bg-text/10 border-1 mb-8 font-bold rounded-full py-6 text-lg mt-4"
+      </div>
+      <div className="fixed w-[275px] pr-4 bottom-4">
+        <Dropdown
+          showArrow
+          classNames={{
+            base: "px-0 w-[300px] bg-black shadow-normal",
+          }}
         >
-          Logout
-        </Button>
-        {/* </Link> */}
+          <DropdownTrigger>
+            <Button className="bg-black w-full hover:bg-text/10 h-[65px] font-bold rounded-full p-3 text-lg mt-4 flex justify-between items-center">
+              <div className="flex gap-2">
+                <Image
+                  src={currentUser.avatar}
+                  alt={currentUser.username}
+                  height={40}
+                  width={40}
+                  className="rounded-full"
+                />
+                <div className="flex flex-col items-start">
+                  <p className="text-[15px] font-bold leading-5">
+                    {currentUser.name}
+                  </p>
+                  <p className="text-[15px] leading-5 text-gray">
+                    {currentUser.username}
+                  </p>
+                </div>
+              </div>
+              <Icons.more className="fill-text w-5 h-5" />
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu aria-label="User menu" className="px-0 py-3">
+            <DropdownItem className="rounded-none py-3 px-4 data-[hover=true]:bg-hover">
+              <p className="font-bold text-[15px] leading-5">
+                Add an existing account
+              </p>
+            </DropdownItem>
+            <DropdownItem
+              onClick={handleClick}
+              className="rounded-none py-3 px-4 data-[hover=true]:bg-hover"
+            >
+              <p className="font-bold text-[15px] leading-5">
+                Logged out {currentUser.username}
+              </p>
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
       </div>
     </nav>
   );

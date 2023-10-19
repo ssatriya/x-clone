@@ -21,7 +21,7 @@ import { User } from "@prisma/client";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { useMutation } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
-import { uploadFiles, useUploadThing } from "@/lib/uploadthing";
+import { useUploadThing } from "@/lib/uploadthing";
 import dynamic from "next/dynamic";
 import { DeltaStatic } from "quill";
 import { AttachmentType } from "@/types/types";
@@ -93,7 +93,7 @@ export default function PostFormEditor({
 
   const mediaRef = React.useRef<HTMLInputElement>(null);
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const newAttachments: AttachmentType[] = Array.from(e.target.files).map(
         (file) => ({

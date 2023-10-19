@@ -7,11 +7,11 @@ import { formatBirthdate, formatJoinDate } from "@/lib/utils";
 import {
   Avatar,
   Button,
-  Image,
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
+  useDisclosure,
 } from "@nextui-org/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FollowPayload } from "@/lib/validator/follow";
@@ -19,6 +19,8 @@ import axios from "axios";
 import { toast } from "sonner";
 import { Followers, Following, UserWithFollowersFollowing } from "@/types/db";
 import { User } from "@prisma/client";
+import EditProfileModal from "@/components/modal/profile/edit-profile-modal";
+import Image from "next/image";
 
 type ProfileInfoProps = {
   userByUsername: UserWithFollowersFollowing;
@@ -29,6 +31,7 @@ export default function ProfileInfo({
   userByUsername,
   currentUser,
 }: ProfileInfoProps) {
+  const { isOpen, onClose, onOpen, onOpenChange } = useDisclosure();
   const queryClient = useQueryClient();
 
   const [followersAmt, setFollowersAmt] = React.useState<User[]>(
@@ -154,8 +157,9 @@ export default function ProfileInfo({
         <div className="max-h-[200px] overflow-hidden">
           <Image
             width={600}
+            height={200}
             alt="NextUI hero Image"
-            src="https://nextui-docs-v2.vercel.app/images/hero-card-complete.jpeg"
+            src={userByUsername.background_photo!}
             // fallbackSrc="https://via.placeholder.com/600x200"
             className="object-contain"
           />
@@ -167,12 +171,21 @@ export default function ProfileInfo({
           className="absolute ml-4 -translate-y-[50%] h-[134px] w-[134px]"
         />
         {isMyProfile ? (
-          <Button
-            className="absolute right-4 mt-3 border rounded-full text-[15px] leading-5 font-bold hover:bg-white/10"
-            variant="bordered"
-          >
-            Edit profile
-          </Button>
+          <>
+            <Button
+              onPress={onOpen}
+              className="absolute right-4 mt-3 border rounded-full text-[15px] leading-5 font-bold hover:bg-white/10"
+              variant="bordered"
+            >
+              Edit profile
+            </Button>
+            <EditProfileModal
+              isOpen={isOpen}
+              onOpen={onOpen}
+              onOpenChange={onOpenChange}
+              currentUser={currentUser}
+            />
+          </>
         ) : (
           <div className="absolute right-4 mt-3">
             {isFollowed ? (

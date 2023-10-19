@@ -5,13 +5,6 @@ import { cn, removeAtSymbol } from "@/lib/utils";
 import { ExtendedPost, ExtendedPostWithoutUserTwo } from "@/types/db";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 
 type AttachmentPostProps = {
