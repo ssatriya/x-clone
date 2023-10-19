@@ -22,6 +22,8 @@ import { User } from "@prisma/client";
 import EditProfileModal from "@/components/modal/profile/edit-profile-modal";
 import Image from "next/image";
 
+import defaultImage from "../../../../../public/background-placeholder.png";
+
 type ProfileInfoProps = {
   userByUsername: UserWithFollowersFollowing;
   currentUser?: UserWithFollowersFollowing;
@@ -159,7 +161,11 @@ export default function ProfileInfo({
             width={600}
             height={200}
             alt="NextUI hero Image"
-            src={userByUsername.background_photo!}
+            src={
+              userByUsername.background_photo
+                ? userByUsername.background_photo
+                : defaultImage
+            }
             // fallbackSrc="https://via.placeholder.com/600x200"
             className="object-contain"
           />
