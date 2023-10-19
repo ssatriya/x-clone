@@ -23,10 +23,11 @@ import BackgroundEditor from "./background-editor";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UserPhotoFile } from "@/types/types";
-import { uploadFiles, useUploadThing } from "@/lib/uploadthing";
+import { uploadFiles } from "@/lib/uploadthing";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import { useRouter } from "next/navigation";
+import { removeAtSymbol } from "@/lib/utils";
 
 type EditProfileModalProps = {
   isOpen: boolean;
@@ -49,7 +50,10 @@ export default function EditProfileModal({
   onOpenChange,
   currentUser,
 }: EditProfileModalProps) {
+  const router = useRouter();
   const isMobile = useMediaQuery("(max-width: 420px)");
+  const userWithoutAt = removeAtSymbol(currentUser.username);
+
   const avatarRef = React.useRef<HTMLInputElement>(null);
   const backgroundRef = React.useRef<HTMLInputElement>(null);
   const [currentView, setCurrentView] = React.useState<
@@ -141,8 +145,6 @@ export default function EditProfileModal({
 
       if (croppedAvatar) {
         setAvatarUrl(croppedAvatar);
-        console.log(croppedAvatar);
-
         axios.get(croppedAvatar, { responseType: "blob" }).then((res) => {
           const f = new File([res.data], avatarName, {
             type: res.data.type,
@@ -199,6 +201,27 @@ export default function EditProfileModal({
       );
       return data;
     },
+    onError: () => {},
+    onSuccess: () => {
+      onOpenChange();
+
+      setBackgroundFile(undefined);
+      setBackgroundName("");
+      setBackgroundUrl("");
+      setZoomBackground(1);
+      setCroppedBackgroundPixels({ width: 0, height: 0, x: 0, y: 0 });
+      setCropBackground({ x: 0, y: 0 });
+
+      setAvatarFile(undefined);
+      setAvatarName("");
+      setAvatarUrl("");
+      setZoomAvatar(1);
+      setCroppedAvatarPixels({ width: 0, height: 0, x: 0, y: 0 });
+      setCropAvatar({ x: 0, y: 0 });
+
+      router.push(`/${userWithoutAt}`);
+      router.refresh();
+    },
   });
 
   // Forms
@@ -217,9 +240,6 @@ export default function EditProfileModal({
   });
 
   const handleProfileEdit = async (data: FormSchema) => {
-    if (!avatarFile && !backgroundFile) {
-      return;
-    }
     if (avatarFile) {
       const res = await uploadFiles({
         endpoint: "userPhoto",
@@ -249,23 +269,6 @@ export default function EditProfileModal({
       });
       return;
     }
-    // if (avatarFile && backgroundFile) {
-    //   const avatarRes = await uploadFiles({
-    //     endpoint: "userPhoto",
-    //     files: [avatarFile.file],
-    //   });
-    //   const backgroundRes = await uploadFiles({
-    //     endpoint: "userPhoto",
-    //     files: [backgroundFile.file],
-    //   });
-    //   updateProfile({
-    //     bio: data.bio || "",
-    //     name: data.name || "",
-    //     backgroundPhoto: backgroundRes[0].url,
-    //     avatar: avatarRes[0].url,
-    //   });
-    //   return;
-    // }
 
     updateProfile({
       bio: data.bio || "",
@@ -295,7 +298,11 @@ export default function EditProfileModal({
               <div className="flex justify-between items-center w-full">
                 <div className="flex items-center gap-6">
                   {currentView === "main" ? (
-                    <Button isIconOnly size="sm" className="rounded-full">
+                    <Button
+                      isIconOnly
+                      size="sm"
+                      className="rounded-full bg-black hover:bg-hover"
+                    >
                       <Icons.close className="h-5 w-5 fill-text" />
                     </Button>
                   ) : (
@@ -303,7 +310,7 @@ export default function EditProfileModal({
                       size="sm"
                       isIconOnly
                       onClick={handleBack}
-                      className="rounded-full"
+                      className="rounded-full bg-black hover:bg-hover"
                     >
                       <Icons.arrowLeft className="h-5 w-5 fill-text" />
                     </Button>
@@ -312,6 +319,7 @@ export default function EditProfileModal({
                 </div>
                 {currentView === "main" ? (
                   <Button
+                    disabled={isSubmitting}
                     isLoading={isSubmitting}
                     onClick={() => handleSubmit(handleProfileEdit)()}
                     size="sm"
@@ -321,7 +329,7 @@ export default function EditProfileModal({
                   </Button>
                 ) : (
                   <Button
-                    // onClick={applyAvatarHandler}
+                    onClick={handleBack}
                     size="sm"
                     className="bg-text rounded-full text-sm leading-4 text-black font-bold hover:bg-text/90"
                   >
@@ -430,6 +438,7 @@ export default function EditProfileModal({
                       {...register("name")}
                       variant="bordered"
                       // value={currentUser.name}
+                      defaultValue={currentUser.name}
                       label="Name"
                       type="text"
                       classNames={{
@@ -443,8 +452,7 @@ export default function EditProfileModal({
                     <Textarea
                       {...register("bio")}
                       maxLength={160}
-                      //   onChange={handleChange}
-                      value={currentUser.bio || ""}
+                      defaultValue={currentUser.bio || ""}
                       label="Bio"
                       minRows={2}
                       variant="bordered"
@@ -452,6 +460,7 @@ export default function EditProfileModal({
                         inputWrapper:
                           "rounded-md group-data-[focus=true]:border-blue",
                         label: "group-data-[focus=true]:text-blue text-[15px]",
+                        input: "text-[17px]",
                       }}
                     />
                     <Input
