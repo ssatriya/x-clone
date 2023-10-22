@@ -2,8 +2,6 @@
 
 import { Icons } from "@/components/icons";
 import {
-  ExtendedPost,
-  ExtendedPostWithoutOriginalPostUserTwo,
   ExtendedPostWithoutUserTwo,
   UserWithFollowersFollowing,
 } from "@/types/db";
@@ -14,7 +12,6 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import * as React from "react";
 import PostActionButton from "../../layout/center/post/action-button/post-action-button";
-import Post from "../../layout/center/post/post";
 import LightboxPost from "../../layout/center/post/lightbox/lightbox-post";
 import Reply from "../../layout/center/reply/reply";
 

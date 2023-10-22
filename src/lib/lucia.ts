@@ -28,7 +28,6 @@ export const googleAuth = google(auth, {
   clientId: process.env.GOOGLE_CLIENT_ID ?? "",
   clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
   redirectUri: `${process.env.APPLICATION_URL}api/login/google/callback`,
-  // redirectUri: `http://localhost:3000/api/login/google/callback`,
   scope: ["email"],
 });
 
