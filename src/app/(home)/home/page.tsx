@@ -43,9 +43,10 @@ export default async function HomePage() {
 
   return (
     <>
-      <div className="hidden md:flex">
+      {/* Commented for now if found new alternatif way */}
+      {/* <div className="hidden md:flex">
         <Header title="Home" />
-      </div>
+      </div> */}
       <MobileHeader currentUser={user} />
       <HomeTabs user={user} />
     </>
