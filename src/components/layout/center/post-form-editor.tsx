@@ -219,9 +219,9 @@ export default function PostFormEditor({
             size="sm"
             aria-label="Posting..."
             isIndeterminate
-            classNames={{ indicator: "bg-[#1D9BF0]" }}
+            classNames={{ indicator: "bg-blueProgress" }}
             radius="none"
-            className="absolute -top-4 right-0 bg-black z-50"
+            className="absolute md:-top-3 -top-4 right-0 bg-black z-50"
           />
         ))}
       <div className="flex relative justify-between py-2 px-4 gap-2 border-b">

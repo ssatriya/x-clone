@@ -20,6 +20,7 @@ const config: Config = {
       },
       colors: {
         blue: "#1D9BF0",
+        blueProgress: "#1D9BF0",
         black: "#000000",
         text: "#D9D9D9",
         hover: "#161616",
