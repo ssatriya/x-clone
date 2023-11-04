@@ -53,7 +53,7 @@ export default function HomeTabs({ user }: HomeTabsProps) {
         }}
       >
         <Tab key="for-you" title="For you">
-          <div className="mt-[6.4rem]">
+          <div className="md:mt-[6.4rem]">
             <PostFormEditor
               user={user}
               focusHandler={focusHandler}
