@@ -109,6 +109,15 @@ export default function IconLeftSidebar({
             <Icons.moreCircle className="w-[27px] h-[27px] fill-neutral-100" />
           </div>
         </Link>
+        <a
+          href="https://github.com/ssatriya/x-clone"
+          target="__blank"
+          className="hover:bg-hover w-fit p-3 rounded-full"
+        >
+          <div className="flex items-center justify-center">
+            <Icons.github className="w-[27px] h-[27px] fill-neutral-100" />
+          </div>
+        </a>
         <Button
           isIconOnly
           className="bg-blue hover:bg-blue/90 font-bold rounded-full h-[50px] w-[50px] text-lg mt-4"

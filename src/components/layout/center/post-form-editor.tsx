@@ -202,15 +202,6 @@ export default function PostFormEditor({
     disabledByContent = true;
   }
 
-  let maxValue = 100;
-  if (files.length === 2) {
-    maxValue = 200;
-  } else if (files.length === 3) {
-    maxValue = 300;
-  } else if (files.length === 4) {
-    maxValue === 400;
-  }
-
   return (
     <div className="w-full relative">
       {isSubmitting ||

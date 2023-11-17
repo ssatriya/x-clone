@@ -150,6 +150,16 @@ export default function LeftSidebar({ currentUser }: LeftSidebarProps) {
               <div className="text-xl pr-4 pl-5">More</div>
             </div>
           </Link>
+          <a
+            href="https://github.com/ssatriya/x-clone"
+            target="__blank"
+            className="hover:bg-hover w-fit p-3 rounded-full"
+          >
+            <div className="flex items-center justify-center">
+              <Icons.github className="w-[27px] h-[27px] fill-neutral-100" />
+              <div className="text-xl pr-4 pl-5">Repository</div>
+            </div>
+          </a>
           <Button className="bg-blue hover:bg-blue/90 font-bold rounded-full py-6 text-lg mt-4">
             Post
           </Button>
