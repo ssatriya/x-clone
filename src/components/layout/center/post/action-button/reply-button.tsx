@@ -49,7 +49,7 @@ export default function ReplyButton({
   }
 
   return (
-    <div className="flex items-center group">
+    <div className="flex relative items-center group right-2">
       <Button
         onPress={onOpen}
         size="sm"

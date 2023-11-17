@@ -60,7 +60,7 @@ export default function PhotoModal({
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center z-40"
+      className="fixed inset-0 flex items-center justify-center z-50"
       onClick={handleClose}
     >
       <div className="fixed inset-0 bg-black lg:opacity-90"></div>

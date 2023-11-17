@@ -1,12 +1,12 @@
 "use client";
 
+import * as React from "react";
+
 import {
-  ExtendedPost,
   ExtendedPostWithoutUserTwo,
   UserWithFollowersFollowing,
 } from "@/types/db";
 import { cn, formatTimeToNow, removeAtSymbol } from "@/lib/utils";
-import Link from "next/link";
 import PostActionButton from "./action-button/post-action-button";
 import AttachmentPost from "./attachment-post";
 import UserPostAvatar from "./user-post-avatar";
@@ -16,6 +16,7 @@ import { Post } from "@prisma/client";
 import { useMediaQuery } from "@mantine/hooks";
 import { Button } from "@nextui-org/react";
 import { Icons } from "@/components/icons";
+import Link from "next/link";
 
 type PostProps = {
   post: ExtendedPostWithoutUserTwo;
@@ -63,8 +64,7 @@ export default function Post({
           usernameWithoutAt={usernameWithoutAt}
         />
       </div>
-
-      <div className="w-full flex flex-col">
+      <div className="w-full flex flex-col h-full">
         <div className="flex w-full justify-between">
           <div className="flex items-center gap-2 z-20">
             <UserPostName
@@ -78,14 +78,16 @@ export default function Post({
               {formatTimeToNow(new Date(post.createdAt))}
             </p>
           </div>
-          <Button
-            onClick={(e) => console.log("click")}
-            isIconOnly
-            size="sm"
-            className="rounded-full bg-transparent data-[hover=true]:bg-blue/10 group"
-          >
-            <Icons.more className="h-4 w-4 fill-gray group-data-[hover=true]:fill-blue" />
-          </Button>
+          <div className="relative right-8 bottom-1">
+            <Button
+              onClick={(e) => console.log("click")}
+              isIconOnly
+              size="sm"
+              className="absolute rounded-full bg-transparent data-[hover=true]:bg-blue/10 group"
+            >
+              <Icons.more className="h-4 w-4 fill-gray group-data-[hover=true]:fill-blue" />
+            </Button>
+          </div>
         </div>
         <div className="flex flex-col space-y-3">
           <div>
@@ -100,11 +102,13 @@ export default function Post({
             <AttachmentPost imageUrl={post.image_url} post={post} />
           )}
         </div>
-        <PostActionButton
-          post={post}
-          currentUser={currentUser}
-          reposts={post.reposts}
-        />
+        <div>
+          <PostActionButton
+            post={post}
+            currentUser={currentUser}
+            reposts={post.reposts}
+          />
+        </div>
       </div>
     </div>
   );
