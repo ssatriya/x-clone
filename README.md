@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+---
+title: "X Clone App 🐦"
+tags: [React, Zustand, Next.js, MySQL, Planetscale, Twitter-clone, X-clone]
+---
 
-## Getting Started
+# Twitter Clone App 🚀
 
-First, run the development server:
+Welcome to the X Clone App (formerly known as Twitter) repository! This project aims to replicate the core functionalities of X, providing users with a platform to share their thoughts, follow others, and engage in meaningful conversations.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Features 🌟
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **User Authentication:** Secure user authentication and authorization system to ensure a personalized experience. Using SSO via Gmail to make authentication easier.
+- **Posting:** Post your thought, including text and multimedia content (Image), with real-time updates accross user.
+- **Follow and Unfollow:** Build a network by following and unfollowing other users.
+- **Responsive Design:** Ensure a seamless experience across devices.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Tech Stack 🛠️
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- **Frontend:** React, Zustand for state management, NextUI for styling with Tailwind CSS.
+- **Backend:** Next.js for connection between the frontend.
+- **Database:** MySQL for efficient data storage, via Planescale service.
+- **Real-Time Updates:** Using UseSWR and Tanstack Query package to give a real-time user experience.
 
-## Learn More
+## TODO 📝
 
-To learn more about Next.js, take a look at the following resources:
+- [ ] Improve code, use refactor component to make it more reuseable, readable and easy to understand.
+- [ ] Implement user authentication using email and password.
+- [ ] Add real-time updates for notifications.
+- [ ] Add upload video functionality.
+- [ ] Add Direct Message functionality using socket.io.
+- [ ] Implement S3 as media storage (currently using Uploadthing.io).
+- [ ] Implement unit and integration testing (as part of my learning).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Getting Started 🚀
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+1.  Clone the repository:
 
-## Deploy on Vercel
+    ```bash
+    git clone https://github.com/ssatriya/x-clone
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+    ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+2.  Open the project:
+
+    ```bash
+    cd twitter-clone
+    npm install
+    ```
+
+3.  Create the .env file
+4.  Start the project
+    ```bash
+    npm run dev
+    ```
