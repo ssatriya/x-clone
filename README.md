@@ -24,10 +24,9 @@ Welcome to the X Clone App (formerly known as Twitter) repository! This project 
 ## TODO 📝
 
 - [ ] Improve code, use refactor component to make it more reuseable, readable and easy to understand.
-- [ ] Implement user authentication using email and password.
+- [ ] Implement followed only homepage.
 - [ ] Add real-time updates for notifications.
 - [ ] Add upload video functionality.
-- [ ] Add Direct Message functionality using socket.io.
 - [ ] Implement S3 as media storage (currently using Uploadthing.io).
 - [ ] Implement unit and integration testing (as part of my learning).
 
