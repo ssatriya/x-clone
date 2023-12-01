@@ -4,7 +4,7 @@ Welcome to the X Clone App (formerly known as Twitter) repository! This project 
 
 ## Features 🌟
 
-- **Authentication:** User authentication using Gmail with [Lucia Auth](https://lucia-auth.com/){:target="\_blank"}.
+- **Authentication:** User authentication using Gmail with [Lucia Auth](https://github.com/your-username/your-repository).
 - **Posting:** Post your thought, including text and multimedia content (image), with real-time updates accross user.
 - **Follow and Unfollow:** Build a network by following and unfollowing other users.
 - **Like, Quote and Repost:** Real-time update for like, quote and repost that also appear in your profile
