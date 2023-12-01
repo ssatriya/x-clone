@@ -4,7 +4,7 @@ Welcome to the X Clone App (formerly known as Twitter) repository! This project 
 
 ## Features 🌟
 
-- **Authentication:** User authentication using Gmail with [Lucia Auth](https://github.com/your-username/your-repository).
+- **Authentication:** User authentication using Gmail with [Lucia Auth](https://lucia-auth.com/).
 - **Posting:** Post your thought, including text and multimedia content (image), with real-time updates accross user.
 - **Follow and Unfollow:** Build a network by following and unfollowing other users.
 - **Like, Quote and Repost:** Real-time update for like, quote and repost that also appear in your profile
@@ -13,10 +13,10 @@ Welcome to the X Clone App (formerly known as Twitter) repository! This project 
 
 ## Tech Stack 🛠️
 
-- **Frontend:** React, Zustand for state management, NextUI for styling with Tailwind CSS.
-- **Backend:** Next.js for all the process that require to display data in the frontend.
-- **Database:** MySQL for data storage, via Planescale service.
-- **Real-Time Updates:** Using UseSWR and Tanstack Query package to give a real-time user experience.
+- **Frontend:** React, [Zustand](https://zustand-demo.pmnd.rs/) for state management, [NextUI](https://nextui.org/) for styling with [Tailwind CSS](https://tailwindcss.com/).
+- **Backend:** [Next.js](https://nextjs.org/) for all the process that require to display data in the frontend.
+- **Database:** MySQL for data storage, via [PlaneScale](https://planetscale.com/) service.
+- **Real-Time Updates:** Using [UseSWR](https://swr.vercel.app/) and [Tanstack Query](https://tanstack.com/) package to give a real-time user experience.
 
 ## TODO 📝
 
@@ -25,7 +25,7 @@ Welcome to the X Clone App (formerly known as Twitter) repository! This project 
 - [ ] Display following and followed page.
 - [ ] Add real-time updates for notifications.
 - [ ] Add upload and display video & gif functionality.
-- [ ] Implement S3 as media storage (currently using Uploadthing.io).
+- [ ] Implement S3 as media storage (currently using [uploadthing](https://uploadthing.com/)).
 - [ ] Implement unit and integration testing (as part of my learning).
 
 ## Getting Started 🚀
