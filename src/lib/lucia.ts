@@ -30,7 +30,7 @@ export const googleAuth = google(auth, {
   redirectUri:
     process.env.NODE_ENV === "development"
       ? `http://localhost:3000/api/login/google/callback`
-      : `${process.env.APPLICATION_URL}api/login/google/callback`,
+      : `${process.env.APPLICATION_URL}/api/login/google/callback`,
   scope: ["email"],
 });
 
