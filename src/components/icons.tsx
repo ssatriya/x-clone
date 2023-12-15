@@ -2,7 +2,11 @@
 
 import type { LucideProps } from "lucide-react";
 
-export const Icons = {
+type IconsType = {
+  [key: string]: (props: LucideProps) => JSX.Element;
+};
+
+export const Icons: IconsType = {
   x: (props: LucideProps) => (
     <svg viewBox="0 0 24 24" {...props}>
       <g>

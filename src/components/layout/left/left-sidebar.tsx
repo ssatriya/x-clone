@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import {
   Button,
   Dropdown,
@@ -8,14 +7,15 @@ import {
   DropdownMenu,
   DropdownTrigger,
 } from "@nextui-org/react";
-
-import { Icons } from "@/components/icons";
-import { User } from "@prisma/client";
-import { cn, removeAtSymbol } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { User } from "@prisma/client";
+
+import { Icons } from "@/components/icons";
+import { removeAtSymbol } from "@/lib/utils";
+import SidebarItem from "./sidebar-item";
 
 type LeftSidebarProps = {
   currentUser: User;
@@ -23,19 +23,76 @@ type LeftSidebarProps = {
 
 export default function LeftSidebar({ currentUser }: LeftSidebarProps) {
   const username = removeAtSymbol(currentUser.username);
-  const path = usePathname();
   const router = useRouter();
 
   const handleClick = async () => {
     await axios.post("/api/logout");
     router.refresh();
   };
+  const path = usePathname();
 
   const handleHome = () => {
     if (path !== "/home") {
       router.push("/home");
     }
   };
+
+  const routes = [
+    {
+      label: "Home",
+      icon: "home",
+      href: "/home",
+      disabled: false,
+    },
+    {
+      label: "Explore",
+      icon: "explore",
+      href: "/explore",
+      disabled: true,
+    },
+    {
+      label: "Notifications",
+      icon: "notifications",
+      href: "/notifications",
+      disabled: true,
+    },
+    {
+      label: "Messages",
+      icon: "messages",
+      href: "/messages",
+      disabled: true,
+    },
+    {
+      label: "Lists",
+      icon: "lists",
+      href: "/lists",
+      disabled: true,
+    },
+    {
+      label: "Communities",
+      icon: "communities",
+      href: "/communities",
+      disabled: true,
+    },
+    {
+      label: "Verified",
+      icon: "verified",
+      href: "/verified",
+      disabled: true,
+    },
+    {
+      label: "Profile",
+      icon: "profile",
+      href: `/${username}`,
+      disabled: false,
+    },
+    {
+      label: "More",
+      icon: "moreCircle",
+      href: "/more",
+      disabled: true,
+    },
+  ];
 
   return (
     <nav className="px-2 pt-1 w-[275px] hidden xl:block min-h-screen">
@@ -48,124 +105,26 @@ export default function LeftSidebar({ currentUser }: LeftSidebarProps) {
           >
             <Icons.x className="w-8 h-8 stroke-neutral-100 fill-neutral-100" />
           </div>
-          <div
-            role="button"
-            onClick={handleHome}
-            className="hover:bg-hover w-fit p-3 rounded-full"
-          >
-            <div className="flex items-center justify-center">
-              {path === "/home" ? (
-                <Icons.home className="w-[27px] h-[27px] stroke-neutral-100 fill-neutral-100" />
-              ) : (
-                <Icons.home
-                  strokeWidth={2}
-                  className="w-[27px] h-[27px] stroke-neutral-100 "
-                />
-              )}
-              <div
-                className={cn(
-                  path === "/home" ? "font-bold" : "font-normal",
-                  "text-xl pr-4 pl-5"
-                )}
-              >
-                Home
-              </div>
-            </div>
-          </div>
-          <Link
-            href="#"
-            className="hover:bg-hover w-fit p-3 rounded-full cursor-not-allowed"
-          >
-            <div className="flex items-center justify-center">
-              <Icons.explore className="w-[27px] h-[27px] fill-neutral-100" />
-              <div className="text-xl pr-4 pl-5">Explore</div>
-            </div>
-          </Link>
-          <Link
-            href="#"
-            className="hover:bg-hover w-fit p-3 rounded-full cursor-not-allowed"
-          >
-            <div className="flex items-center justify-center">
-              <Icons.notifications className="w-[27px] h-[27px] fill-neutral-100" />
-              <div className="text-xl pr-4 pl-5">Notifications</div>
-            </div>
-          </Link>
-          <Link
-            href="#"
-            className="hover:bg-hover w-fit p-3 rounded-full cursor-not-allowed"
-          >
-            <div className="flex items-center justify-center">
-              <Icons.messages className="w-[27px] h-[27px] fill-neutral-100" />
-              <div className="text-xl pr-4 pl-5">Messages</div>
-            </div>
-          </Link>
-          <Link
-            href="#"
-            className="hover:bg-hover w-fit p-3 rounded-full cursor-not-allowed"
-          >
-            <div className="flex items-center justify-center">
-              <Icons.lists className="w-[27px] h-[27px] fill-neutral-100" />
-              <div className="text-xl pr-4 pl-5">Lists</div>
-            </div>
-          </Link>
-          <Link
-            href="#"
-            className="hover:bg-hover w-fit p-3 rounded-full cursor-not-allowed"
-          >
-            <div className="flex items-center justify-center">
-              <Icons.communities className="w-[27px] h-[27px] fill-neutral-100" />
-              <div className="text-xl pr-4 pl-5">Communities</div>
-            </div>
-          </Link>
-          <Link
-            href="#"
-            className="hover:bg-hover w-fit p-3 rounded-full cursor-not-allowed"
-          >
-            <div className="flex items-center justify-center">
-              <Icons.verified className="w-[27px] h-[27px] fill-neutral-100" />
-              <div className="text-xl pr-4 pl-5">Verified</div>
-            </div>
-          </Link>
-          <Link
-            href={`/${username}`}
-            className="hover:bg-hover w-fit p-3 rounded-full"
-          >
-            <div className="flex items-center justify-center">
-              {path === `/${username}` ? (
-                <Icons.profile className="w-[27px] h-[27px] fill-neutral-100" />
-              ) : (
-                <Icons.profile
-                  strokeWidth={2}
-                  className="w-[27px] h-[27px] stroke-neutral-100"
-                />
-              )}
-              <div
-                className={cn(
-                  path === `/${username}` ? "font-bold" : "font-normal",
-                  "text-xl pr-4 pl-5"
-                )}
-              >
-                Profile
-              </div>
-            </div>
-          </Link>
-          <Link
-            href="/explore"
-            className="hover:bg-hover w-fit p-3 rounded-full cursor-not-allowed"
-          >
-            <div className="flex items-center justify-center">
-              <Icons.moreCircle className="w-[27px] h-[27px] fill-neutral-100" />
-              <div className="text-xl pr-4 pl-5">More</div>
-            </div>
-          </Link>
+          {routes.map((link) => (
+            <SidebarItem
+              key={link.label}
+              label={link.label}
+              icon={link.icon}
+              href={link.href}
+              disabled={link.disabled}
+              currentUser={currentUser}
+            />
+          ))}
           <a
             href="https://github.com/ssatriya/x-clone"
             target="__blank"
-            className="hover:bg-hover w-fit p-3 rounded-full"
+            className="hover:bg-neutral-100/90 w-fit p-3 rounded-full bg-neutral-100"
           >
             <div className="flex items-center justify-center">
-              <Icons.github className="w-[27px] h-[27px] fill-neutral-100" />
-              <div className="text-xl pr-4 pl-5">Repository</div>
+              <Icons.github className="w-[27px] h-[27px] fill-neutral-800" />
+              <div className="text-xl pr-4 pl-5 text-neutral-800">
+                Repository
+              </div>
             </div>
           </a>
           <Button className="bg-blue hover:bg-blue/90 font-bold rounded-full py-6 text-lg mt-4">
