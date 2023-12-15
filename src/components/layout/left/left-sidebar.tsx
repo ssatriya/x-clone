@@ -27,15 +27,14 @@ export default function LeftSidebar({ currentUser }: LeftSidebarProps) {
   const router = useRouter();
 
   const handleClick = async () => {
-    const { data } = await axios.post("/api/logout");
-
-    if (data.response.status === 301) {
-      window.location.href = "/";
-    }
+    await axios.post("/api/logout");
+    router.refresh();
   };
 
   const handleHome = () => {
-    router.replace("/home");
+    if (path !== "/home") {
+      router.push("/home");
+    }
   };
 
   return (

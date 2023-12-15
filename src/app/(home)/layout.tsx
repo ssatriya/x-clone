@@ -5,7 +5,6 @@ import RightSidebar from "@/components/layout/right/right-sidebar";
 import getCurrentSession from "@/lib/getCurrentSession";
 import { cn } from "@/lib/utils";
 import { db } from "@/lib/db";
-import Header from "@/components/layout/center/header";
 import IconLeftSidebar from "@/components/layout/left/icon-left-sidebar";
 
 export default async function HomeLayout({

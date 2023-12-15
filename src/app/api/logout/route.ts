@@ -1,5 +1,5 @@
 import { auth } from "@/lib/lucia";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import * as context from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -9,18 +9,23 @@ export async function POST(req: NextRequest) {
 
     const session = await authRequest.validate();
     if (!session) {
-      return new Response(null, {
+      return new NextResponse(null, {
         status: 401,
       });
     }
 
     await auth.invalidateSession(session.sessionId);
-    authRequest.setSession(null);
 
-    return new Response(null, {
-      status: 301,
+    const sessionCookie = auth.createSessionCookie(null);
+
+    return new NextResponse(null, {
+      headers: {
+        Location: "/",
+        "Set-Cookie": sessionCookie.serialize(),
+      },
+      status: 302,
     });
   } catch (error) {
-    return new Response("Internal server error.", { status: 500 });
+    return new NextResponse("Internal server error.", { status: 500 });
   }
 }
