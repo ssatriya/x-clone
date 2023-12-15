@@ -11,11 +11,10 @@ import {
 
 import { Icons } from "@/components/icons";
 import { User } from "@prisma/client";
-import { cn, removeAtSymbol } from "@/lib/utils";
+import { removeAtSymbol } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import axios from "axios";
-import { leftSidebarLinks } from "../../../../config/left-sidebar";
 
 type MobileLeftSidebarProps = {
   currentUser: User;
