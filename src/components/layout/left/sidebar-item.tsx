@@ -24,7 +24,7 @@ export default function SidebarItem({
 
   const Icon = Icons[icon];
 
-  if (path === "/home") {
+  if (href === "/home") {
     <div
       onClick={() => router.replace("/home")}
       className="hover:bg-hover w-fit p-3 rounded-full"
