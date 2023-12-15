@@ -151,7 +151,7 @@ export default function LeftSidebar({ currentUser }: LeftSidebarProps) {
           </Link>
           <Link
             href="/explore"
-            className="hover:bg-hover w-fit p-3 rounded-full"
+            className="hover:bg-hover w-fit p-3 rounded-full cursor-not-allowed"
           >
             <div className="flex items-center justify-center">
               <Icons.moreCircle className="w-[27px] h-[27px] fill-neutral-100" />
