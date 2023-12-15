@@ -1,6 +1,7 @@
 "use client";
 
 import { Icons } from "@/components/icons";
+import { usePrevPath } from "@/hooks/usePrevPath";
 import { Button } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
@@ -14,11 +15,21 @@ type HeaderProps = {
 export default function Header({ title, subtitle, backButton }: HeaderProps) {
   const router = useRouter();
 
+  const prevPath = usePrevPath((state) => state.path);
+
+  const handleBack = () => {
+    if (prevPath) {
+      router.push(prevPath, { scroll: false });
+    } else {
+      router.push("/", { scroll: false });
+    }
+  };
+
   return (
     <div className="h-[53px] w-full items-center px-4 flex">
       {backButton && (
         <Button
-          onClick={() => router.back()}
+          onClick={handleBack}
           isIconOnly
           size="sm"
           className="bg-black rounded-full hover:bg-hover mr-9"

@@ -9,7 +9,7 @@ import {
 import { Button, Divider } from "@nextui-org/react";
 import Image from "next/image";
 
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import * as React from "react";
 import PostActionButton from "../../layout/center/post/action-button/post-action-button";
 import LightboxPost from "../../layout/center/post/lightbox/lightbox-post";
@@ -33,13 +33,17 @@ export default function PhotoModal({
 }: PhotoModalProps) {
   const router = useRouter();
 
+  const prevPath = usePrevPath((state) => state.path);
+
   const handleClose = () => {
-    router.back();
+    if (prevPath) {
+      // router.replace(prevPath, { scroll: false });
+      // window.location.href = prevPath;
+      router.push(prevPath);
+    } else {
+      router.back();
+    }
   };
-
-  const pathname = usePrevPath((state) => state.path);
-
-  console.log(pathname);
 
   const imageArr = post.image_url!.split(",");
   const photoIndex = params.photoIndex;

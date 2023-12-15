@@ -6,6 +6,7 @@ import getCurrentSession from "@/lib/getCurrentSession";
 import { redirect } from "next/navigation";
 import * as React from "react";
 import MobileHeader from "@/components/layout/center/mobile-header";
+import ForceRefresh from "@/components/force-refresh";
 
 export const dynamic = "force-dynamic";
 
@@ -13,8 +14,7 @@ export default async function HomePage() {
   const session = await getCurrentSession();
 
   if (!session?.user) {
-    // return redirect("/");
-    return <h1>Not Login</h1>;
+    return redirect("/");
   }
 
   const user = await db.user.findUnique({
@@ -50,6 +50,7 @@ export default async function HomePage() {
       </div> */}
       <MobileHeader currentUser={user} />
       <HomeTabs user={user} />
+      <ForceRefresh />
     </>
   );
 }

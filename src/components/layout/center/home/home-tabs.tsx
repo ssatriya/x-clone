@@ -8,6 +8,8 @@ import { UserWithFollowersFollowing } from "@/types/db";
 import PostFormEditor from "../post-form-editor";
 import { ViewContext } from "@/store/viewContext";
 import Header from "../header";
+import { useRouter } from "next/navigation";
+import ForceRefresh from "@/components/force-refresh";
 
 type HomeTabsProps = {
   user: UserWithFollowersFollowing;
@@ -16,6 +18,8 @@ type HomeTabsProps = {
 export default function HomeTabs({ user }: HomeTabsProps) {
   const [activeTab, setActiveTab] = React.useState("for-you");
   const [isFocus, setIsFocus] = React.useState<boolean>(false);
+
+  const router = useRouter();
 
   const viewContext = React.useContext(ViewContext);
 
@@ -26,9 +30,9 @@ export default function HomeTabs({ user }: HomeTabsProps) {
   const tabHandler = (label: string) => {
     setActiveTab(label);
   };
-
   return (
     <div className="flex w-full flex-col relative">
+      <ForceRefresh />
       <div className="hidden md:flex md:fixed md:w-[599px] bg-black/90 z-40 border-r backdrop-blur-sm">
         <Header title="Home" />
       </div>
@@ -63,11 +67,13 @@ export default function HomeTabs({ user }: HomeTabsProps) {
           </div>
         </Tab>
         <Tab key="following" title="Following">
-          <PostFormEditor
-            user={user}
-            focusHandler={focusHandler}
-            isFocus={isFocus}
-          />
+          <div className="md:mt-[6.4rem]">
+            <PostFormEditor
+              user={user}
+              focusHandler={focusHandler}
+              isFocus={isFocus}
+            />
+          </div>
         </Tab>
       </Tabs>
     </div>

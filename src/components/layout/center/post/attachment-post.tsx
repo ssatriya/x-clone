@@ -18,12 +18,6 @@ export default function AttachmentPost({
   post,
 }: AttachmentPostProps) {
   const path = usePathname();
-  const [prevPath, setPrevPath] = React.useState(path);
-  React.useEffect(() => {
-    setPrevPath(prevPath);
-  }, [prevPath]);
-
-  usePrevPath((state) => state.prevPath(prevPath));
 
   const scrollClickHandle = () => {
     const cleanUsername = removeAtSymbol(post.user_one.username);
@@ -44,6 +38,11 @@ export default function AttachmentPost({
       "grid-cols-2": imageUrlArray.length > 1,
     }
   );
+
+  const { prevPath } = usePrevPath((state) => state);
+  const onAttachmentClick = () => {
+    prevPath(path);
+  };
 
   return (
     <div className={cn(className)}>
@@ -88,6 +87,7 @@ export default function AttachmentPost({
               }}
               href={`/${cleanUsername}/status/${post.id}/photo/${i + 1}`}
               scroll={false}
+              onClick={onAttachmentClick}
             >
               <Image
                 src={image}

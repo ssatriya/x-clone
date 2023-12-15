@@ -63,9 +63,18 @@ export default function Editor({
     // "video"
   ];
 
+  const quillRef = React.useRef(null);
+
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    setIsLoading(false);
+  }, []);
+
   return (
     <div className={className}>
       <ReactQuill
+        ref={quillRef}
         defaultValue={""}
         modules={modules}
         theme="snow"

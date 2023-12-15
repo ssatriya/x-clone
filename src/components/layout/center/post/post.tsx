@@ -17,6 +17,8 @@ import { useMediaQuery } from "@mantine/hooks";
 import { Button } from "@nextui-org/react";
 import { Icons } from "@/components/icons";
 import Link from "next/link";
+import { usePrevPath } from "@/hooks/usePrevPath";
+import { usePathname } from "next/navigation";
 
 type PostProps = {
   post: ExtendedPostWithoutUserTwo;
@@ -31,6 +33,7 @@ export default function Post({
   userPosted,
   classNames,
 }: PostProps) {
+  const path = usePathname();
   const usernameWithoutAt = removeAtSymbol(post.user_one.username);
 
   const postURL = `/${usernameWithoutAt}/status/${post.id}`;
@@ -47,6 +50,12 @@ export default function Post({
       html = converted;
     }
   }
+
+  const { prevPath } = usePrevPath((state) => state);
+  const onPostClick = () => {
+    prevPath(path);
+  };
+
   return (
     <div
       className={cn(
@@ -55,7 +64,7 @@ export default function Post({
       )}
       onClick={(e) => e.stopPropagation()}
     >
-      <Link href={postURL} className="absolute inset-0" />
+      <Link href={postURL} onClick={onPostClick} className="absolute inset-0" />
       <div className="z-20 h-fit">
         <UserPostAvatar
           currentUser={currentUser}

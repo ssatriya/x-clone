@@ -1,7 +1,10 @@
+import ForceRefresh from "@/components/force-refresh";
 import PhotoModal from "@/components/modal/lightbox/photo-modal";
 import { db } from "@/lib/db";
 import getCurrentSession from "@/lib/getCurrentSession";
 import { redirect } from "next/navigation";
+
+export const dynamic = "force-dynamic";
 
 type ModalPageProps = {
   params: {
@@ -53,5 +56,9 @@ export default async function ModalPage({ params }: ModalPageProps) {
     return redirect("/");
   }
 
-  return <PhotoModal params={params} post={post} currentUser={user} />;
+  return (
+    <>
+      <PhotoModal params={params} post={post} currentUser={user} />;
+    </>
+  );
 }

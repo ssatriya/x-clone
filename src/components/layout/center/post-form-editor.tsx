@@ -244,7 +244,7 @@ export default function PostFormEditor({
             </Button>
           )}
           <div className="ml-3">
-            <div className="w-full">
+            <div className="w-full h-11">
               <QuillEditor
                 focusHandler={focusHandler}
                 editorValue={editorValue}

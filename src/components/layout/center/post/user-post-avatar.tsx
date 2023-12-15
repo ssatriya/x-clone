@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import UserTooltip from "../user-tooltip";
-import { Avatar } from "@nextui-org/react";
 import { UserWithFollowersFollowing } from "@/types/db";
 import * as React from "react";
 import Image from "next/image";
