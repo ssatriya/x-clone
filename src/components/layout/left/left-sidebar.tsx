@@ -30,7 +30,7 @@ export default function LeftSidebar({ currentUser }: LeftSidebarProps) {
     const { data } = await axios.post("/api/logout");
 
     if (data.response.status === 301) {
-      router.push("/");
+      window.location.href = "/";
     }
   };
 
