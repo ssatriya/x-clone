@@ -34,17 +34,26 @@ export default function LeftSidebar({ currentUser }: LeftSidebarProps) {
     }
   };
 
+  const handleHome = () => {
+    router.replace("/home");
+  };
+
   return (
     <nav className="px-2 pt-1 w-[275px] hidden xl:block min-h-screen">
       <div className="flex flex-col justify-between fixed h-full">
         <div className="gap-2 flex flex-col">
-          <Link
-            href="/home"
+          <div
+            role="button"
+            onClick={handleHome}
             className="mb-2 h-[50px] w-[50px] rounded-full flex items-center justify-center"
           >
             <Icons.x className="w-8 h-8 stroke-neutral-100 fill-neutral-100" />
-          </Link>
-          <Link href="/home" className="hover:bg-hover w-fit p-3 rounded-full">
+          </div>
+          <div
+            role="button"
+            onClick={handleHome}
+            className="hover:bg-hover w-fit p-3 rounded-full"
+          >
             <div className="flex items-center justify-center">
               {path === "/home" ? (
                 <Icons.home className="w-[27px] h-[27px] stroke-neutral-100 fill-neutral-100" />
@@ -63,10 +72,10 @@ export default function LeftSidebar({ currentUser }: LeftSidebarProps) {
                 Home
               </div>
             </div>
-          </Link>
+          </div>
           <Link
-            href="/explore"
-            className="hover:bg-hover w-fit p-3 rounded-full"
+            href="#"
+            className="hover:bg-hover w-fit p-3 rounded-full cursor-not-allowed"
           >
             <div className="flex items-center justify-center">
               <Icons.explore className="w-[27px] h-[27px] fill-neutral-100" />
@@ -74,8 +83,8 @@ export default function LeftSidebar({ currentUser }: LeftSidebarProps) {
             </div>
           </Link>
           <Link
-            href="/explore"
-            className="hover:bg-hover w-fit p-3 rounded-full"
+            href="#"
+            className="hover:bg-hover w-fit p-3 rounded-full cursor-not-allowed"
           >
             <div className="flex items-center justify-center">
               <Icons.notifications className="w-[27px] h-[27px] fill-neutral-100" />
@@ -83,8 +92,8 @@ export default function LeftSidebar({ currentUser }: LeftSidebarProps) {
             </div>
           </Link>
           <Link
-            href="/explore"
-            className="hover:bg-hover w-fit p-3 rounded-full"
+            href="#"
+            className="hover:bg-hover w-fit p-3 rounded-full cursor-not-allowed"
           >
             <div className="flex items-center justify-center">
               <Icons.messages className="w-[27px] h-[27px] fill-neutral-100" />
@@ -92,8 +101,8 @@ export default function LeftSidebar({ currentUser }: LeftSidebarProps) {
             </div>
           </Link>
           <Link
-            href="/explore"
-            className="hover:bg-hover w-fit p-3 rounded-full"
+            href="#"
+            className="hover:bg-hover w-fit p-3 rounded-full cursor-not-allowed"
           >
             <div className="flex items-center justify-center">
               <Icons.lists className="w-[27px] h-[27px] fill-neutral-100" />
@@ -101,8 +110,8 @@ export default function LeftSidebar({ currentUser }: LeftSidebarProps) {
             </div>
           </Link>
           <Link
-            href="/explore"
-            className="hover:bg-hover w-fit p-3 rounded-full"
+            href="#"
+            className="hover:bg-hover w-fit p-3 rounded-full cursor-not-allowed"
           >
             <div className="flex items-center justify-center">
               <Icons.communities className="w-[27px] h-[27px] fill-neutral-100" />
@@ -110,8 +119,8 @@ export default function LeftSidebar({ currentUser }: LeftSidebarProps) {
             </div>
           </Link>
           <Link
-            href="/explore"
-            className="hover:bg-hover w-fit p-3 rounded-full"
+            href="#"
+            className="hover:bg-hover w-fit p-3 rounded-full cursor-not-allowed"
           >
             <div className="flex items-center justify-center">
               <Icons.verified className="w-[27px] h-[27px] fill-neutral-100" />
@@ -201,7 +210,7 @@ export default function LeftSidebar({ currentUser }: LeftSidebarProps) {
               </p>
             </DropdownItem>
             <DropdownItem
-              // onClick={handleClick}
+              onClick={handleClick}
               className="rounded-none py-3 px-4 data-[hover=true]:bg-hover"
             >
               <p className="font-bold text-[15px] leading-5">
