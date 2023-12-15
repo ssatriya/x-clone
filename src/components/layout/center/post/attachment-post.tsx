@@ -5,7 +5,8 @@ import { cn, removeAtSymbol } from "@/lib/utils";
 import { ExtendedPost, ExtendedPostWithoutUserTwo } from "@/types/db";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { usePrevPath } from "@/hooks/usePrevPath";
 
 type AttachmentPostProps = {
   post: ExtendedPost | ExtendedPostWithoutUserTwo;
@@ -16,7 +17,14 @@ export default function AttachmentPost({
   imageUrl,
   post,
 }: AttachmentPostProps) {
-  const router = useRouter();
+  const path = usePathname();
+  const [prevPath, setPrevPath] = React.useState(path);
+  React.useEffect(() => {
+    setPrevPath(prevPath);
+  }, [prevPath]);
+
+  usePrevPath((state) => state.prevPath(prevPath));
+
   const scrollClickHandle = () => {
     const cleanUsername = removeAtSymbol(post.user_one.username);
     const singlePost = `/${cleanUsername}/status/${post.id}`;

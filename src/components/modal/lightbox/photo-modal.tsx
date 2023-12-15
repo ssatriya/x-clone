@@ -9,11 +9,12 @@ import {
 import { Button, Divider } from "@nextui-org/react";
 import Image from "next/image";
 
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import * as React from "react";
 import PostActionButton from "../../layout/center/post/action-button/post-action-button";
 import LightboxPost from "../../layout/center/post/lightbox/lightbox-post";
 import Reply from "../../layout/center/reply/reply";
+import { usePrevPath } from "@/hooks/usePrevPath";
 
 type PhotoModalProps = {
   params: {
@@ -36,18 +37,29 @@ export default function PhotoModal({
     router.back();
   };
 
+  const pathname = usePrevPath((state) => state.path);
+
+  console.log(pathname);
+
   const imageArr = post.image_url!.split(",");
   const photoIndex = params.photoIndex;
 
+  const canGoNext = +photoIndex <= imageArr.length - 1;
+  const canGoPrev = +photoIndex >= imageArr.length;
+
   const handleNext = () => {
-    router.push(
-      `/${params.username}/status/${params.postId}/photo/${+photoIndex + 1}`
-    );
+    if (canGoNext) {
+      router.push(
+        `/${params.username}/status/${params.postId}/photo/${+photoIndex + 1}`
+      );
+    }
   };
   const handlePrev = () => {
-    router.push(
-      `/${params.username}/status/${params.postId}/photo/${+photoIndex - 1}`
-    );
+    if (canGoPrev) {
+      router.push(
+        `/${params.username}/status/${params.postId}/photo/${+photoIndex - 1}`
+      );
+    }
   };
 
   React.useEffect(() => {
@@ -80,7 +92,6 @@ export default function PhotoModal({
           >
             <Icons.hideIcon className="fill-text h-5 w-5" strokeWidth={2} />
           </Button>
-
           <div className="flex flex-col justify-center items-center h-full relative">
             <div className="w-full h-[94%] absolute right-[50%] left-[50%] translate-x-[-50%] top-0">
               <Image
@@ -88,7 +99,7 @@ export default function PhotoModal({
                 src={imageArr.at(Number(photoIndex) - 1)!}
                 alt=""
                 fill
-                className="object-contain z-50 "
+                className="object-contain z-50"
               />
             </div>
             <div
@@ -105,24 +116,22 @@ export default function PhotoModal({
           </div>
 
           <div className="absolute top-0 left-0 bottom-0 flex items-center justify-between w-full">
-            {imageArr.length !== 1 && (
-              <Button
-                onClick={handlePrev}
-                isIconOnly
-                className="rounded-full bg-transparent hover:bg-text/10"
-              >
-                <Icons.arrowLeft className="h-5 w-5 fill-text" />
-              </Button>
-            )}
-            {imageArr.length !== 1 && (
-              <Button
-                onClick={handleNext}
-                isIconOnly
-                className="rounded-full bg-transparent hover:bg-text/10"
-              >
-                <Icons.arrowRight className="h-5 w-5 fill-text" />
-              </Button>
-            )}
+            <Button
+              disabled={canGoNext}
+              onClick={handlePrev}
+              isIconOnly
+              className="rounded-full bg-transparent hover:bg-text/10"
+            >
+              <Icons.arrowLeft className="h-5 w-5 fill-text" />
+            </Button>
+            <Button
+              disabled={canGoPrev}
+              onClick={handleNext}
+              isIconOnly
+              className="rounded-full bg-transparent hover:bg-text/10"
+            >
+              <Icons.arrowRight className="h-5 w-5 fill-text" />
+            </Button>
           </div>
         </div>
 
