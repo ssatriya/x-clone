@@ -13,7 +13,8 @@ export default async function HomePage() {
   const session = await getCurrentSession();
 
   if (!session?.user) {
-    return redirect("/");
+    // return redirect("/");
+    return <h1>Not Login</h1>;
   }
 
   const user = await db.user.findUnique({
