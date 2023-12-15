@@ -41,7 +41,7 @@ export default function LeftSidebar({ currentUser }: LeftSidebarProps) {
     {
       label: "Home",
       icon: "home",
-      href: `${process.env.NEXT_PUBLIC_APP_URL}/home`,
+      href: `/home`,
       disabled: false,
     },
     {
