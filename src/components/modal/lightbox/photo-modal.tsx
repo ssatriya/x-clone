@@ -66,7 +66,7 @@ export default function PhotoModal({
       <div className="fixed inset-0 bg-black lg:opacity-90"></div>
 
       <div className="flex relative w-full h-full">
-        <div className="relative flex-1 border-l">
+        <div className="relative flex-1">
           <Button
             onClick={handleClose}
             isIconOnly
@@ -76,7 +76,7 @@ export default function PhotoModal({
           </Button>
           <Button
             isIconOnly
-            className="rounded-full  right-3 z-50 top-3 bg-transparent hover:bg-text/10 hidden lg:absolute"
+            className="rounded-full right-3 z-50 top-3 bg-transparent hover:bg-text/10 hidden lg:absolute"
           >
             <Icons.hideIcon className="fill-text h-5 w-5" strokeWidth={2} />
           </Button>
