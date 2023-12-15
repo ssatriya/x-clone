@@ -8,6 +8,7 @@ export default function ForceRefresh() {
 
   React.useEffect(() => {
     router.refresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return <></>;
 }
