@@ -201,7 +201,7 @@ export default function LeftSidebar({ currentUser }: LeftSidebarProps) {
               </p>
             </DropdownItem>
             <DropdownItem
-              onClick={handleClick}
+              // onClick={handleClick}
               className="rounded-none py-3 px-4 data-[hover=true]:bg-hover"
             >
               <p className="font-bold text-[15px] leading-5">
