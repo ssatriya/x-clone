@@ -9,7 +9,6 @@ type SidebarItemProps = {
   icon: string;
   href: string;
   disabled: boolean;
-  currentUser: User;
 };
 
 export default function SidebarItem({
@@ -17,17 +16,18 @@ export default function SidebarItem({
   icon,
   href,
   disabled,
-  currentUser,
 }: SidebarItemProps) {
   const path = usePathname();
-  const router = useRouter();
 
   const Icon = Icons[icon];
 
-  if (href === "/home") {
-    <div
-      onClick={() => router.replace("/home")}
-      className="hover:bg-hover w-fit p-3 rounded-full"
+  return (
+    <Link
+      href={href}
+      className={cn(
+        "hover:bg-hover w-fit p-3 rounded-full",
+        disabled && "cursor-not-allowed text-neutral-400"
+      )}
     >
       <div className="flex items-center justify-center">
         {path === href ? (
@@ -44,40 +44,8 @@ export default function SidebarItem({
               "w-[27px] h-[27px]",
               label === "Home" || label === "Profile"
                 ? "stroke-neutral-100"
-                : "fill-neutral-100"
-            )}
-          />
-        )}
-        <div
-          className={cn(
-            path === href ? "font-bold" : "font-normal",
-            "text-xl pr-4 pl-5"
-          )}
-        >
-          {label}
-        </div>
-      </div>
-    </div>;
-  }
-
-  return (
-    <Link href={href} className="hover:bg-hover w-fit p-3 rounded-full">
-      <div className="flex items-center justify-center">
-        {path === href ? (
-          <Icon
-            className={cn(
-              "w-[27px] h-[27px] fill-neutral-100",
-              label === "Profile" || (label === "Home" && "stroke-neutral-100")
-            )}
-          />
-        ) : (
-          <Icon
-            strokeWidth={2}
-            className={cn(
-              "w-[27px] h-[27px]",
-              label === "Home" || label === "Profile"
-                ? "stroke-neutral-100"
-                : "fill-neutral-100"
+                : "fill-neutral-100",
+              disabled && "fill-neutral-400"
             )}
           />
         )}

@@ -112,7 +112,6 @@ export default function LeftSidebar({ currentUser }: LeftSidebarProps) {
               icon={link.icon}
               href={link.href}
               disabled={link.disabled}
-              currentUser={currentUser}
             />
           ))}
           <a
