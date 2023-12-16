@@ -1,6 +1,6 @@
 "use client";
 
-import Post from "../post/post";
+import Post from "../post/Post.1";
 import { ExtendedPost, UserWithFollowersFollowing } from "@/types/db";
 import { useIntersection } from "@mantine/hooks";
 

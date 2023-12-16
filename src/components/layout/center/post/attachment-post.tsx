@@ -2,7 +2,11 @@
 
 import * as React from "react";
 import { cn, removeAtSymbol } from "@/lib/utils";
-import { ExtendedPost, ExtendedPostWithoutUserTwo } from "@/types/db";
+import {
+  ExtendedPost,
+  ExtendedPostWithoutUserTwo,
+  UserWithFollowersFollowing,
+} from "@/types/db";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -15,11 +19,13 @@ import { usePhotoModal } from "@/hooks/usePhotoModal";
 type AttachmentPostProps = {
   post: ExtendedPost | ExtendedPostWithoutUserTwo;
   imageUrl: string;
+  currentUser: UserWithFollowersFollowing;
 };
 
 export default function AttachmentPost({
   imageUrl,
   post,
+  currentUser,
 }: AttachmentPostProps) {
   const path = usePathname();
   const setPhotoNumber = usePhotoNumber((state) => state.setPhotoNumber);
@@ -112,7 +118,10 @@ export default function AttachmentPost({
                 src={image}
                 fill
                 sizes="(max-widht: 600px) 512px"
-                className={cn(borderImage, "h-full w-full object-cover border")}
+                className={cn(
+                  "h-full w-full object-cover border cursor-pointer",
+                  borderImage
+                )}
                 alt="attachment"
                 priority
               />
@@ -144,6 +153,7 @@ export default function AttachmentPost({
         onClose={onClose}
         isOpen={isOpen}
         username={cleanUsername}
+        currentUser={currentUser}
         // url={`/${cleanUsername}/status/${post.id}/photo/${i + 1}`}
         imageUrlArray={imageUrlArray}
         post={post}

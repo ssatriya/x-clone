@@ -34,6 +34,7 @@ export default function Post({
   userPosted,
   classNames,
 }: PostProps) {
+  console.log(currentUser);
   const path = usePathname();
   const usernameWithoutAt = removeAtSymbol(post.user_one.username);
 
@@ -111,7 +112,11 @@ export default function Post({
             )}
           </div>
           {post.image_url && (
-            <AttachmentPost imageUrl={post.image_url} post={post} />
+            <AttachmentPost
+              currentUser={currentUser}
+              imageUrl={post.image_url}
+              post={post}
+            />
           )}
         </div>
         <div>

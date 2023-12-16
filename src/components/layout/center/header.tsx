@@ -4,7 +4,6 @@ import { Icons } from "@/components/icons";
 import { usePrevPath } from "@/hooks/usePrevPath";
 import { Button } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
-import { usePathname } from "next/navigation";
 
 type HeaderProps = {
   title: string;
@@ -21,7 +20,7 @@ export default function Header({ title, subtitle, backButton }: HeaderProps) {
     if (prevPath) {
       router.push(prevPath, { scroll: false });
     } else {
-      router.push("/", { scroll: false });
+      router.push("/home", { scroll: false });
     }
   };
 

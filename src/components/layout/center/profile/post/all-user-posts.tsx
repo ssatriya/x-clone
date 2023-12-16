@@ -3,7 +3,7 @@ import { ExtendedPost, UserWithFollowersFollowing } from "@/types/db";
 import { useIntersection } from "@mantine/hooks";
 import { Loader2 } from "lucide-react";
 import * as React from "react";
-import Post from "../../post/post";
+import Post from "../../post/Post.1";
 import { User } from "@prisma/client";
 import Repost from "../../post/repost";
 import ReplyItem from "../../reply/reply-item";

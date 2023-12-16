@@ -77,7 +77,11 @@ export default function SinglePost({ post, currentUser }: SinglePostProps) {
           )}
         </div>
         {post.image_url && (
-          <AttachmentPost imageUrl={post.image_url} post={post} />
+          <AttachmentPost
+            currentUser={currentUser}
+            imageUrl={post.image_url}
+            post={post}
+          />
         )}
         <div className="flex gap-2 items-center">
           <p className="text-[15px] leading-5 text-gray hover:underline cursor-pointer">

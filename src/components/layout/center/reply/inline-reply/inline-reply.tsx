@@ -9,7 +9,7 @@ import SinglePost from "../../post/single-post";
 import Reply from "../reply";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import Post from "../../post/post";
+import Post from "../../post/Post.1";
 import * as React from "react";
 import { Loader2 } from "lucide-react";
 
