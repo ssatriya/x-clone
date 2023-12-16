@@ -18,7 +18,7 @@ import { Button } from "@nextui-org/react";
 import { Icons } from "@/components/icons";
 import Link from "next/link";
 import { usePrevPath } from "@/hooks/usePrevPath";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 type PostProps = {
   post: ExtendedPostWithoutUserTwo;
@@ -33,6 +33,7 @@ export default function Post({
   userPosted,
   classNames,
 }: PostProps) {
+  const router = useRouter();
   const path = usePathname();
   const usernameWithoutAt = removeAtSymbol(post.user_one.username);
 
@@ -55,6 +56,10 @@ export default function Post({
   const onPostClick = () => {
     prevPath(path);
   };
+
+  React.useEffect(() => {
+    router.refresh();
+  }, []);
 
   return (
     <div

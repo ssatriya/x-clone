@@ -56,6 +56,7 @@ export default function PhotoModal({
       router.push(
         `/${params.username}/status/${params.postId}/photo/${+photoIndex + 1}`
       );
+      router.refresh();
     }
   };
   const handlePrev = () => {
@@ -63,6 +64,7 @@ export default function PhotoModal({
       router.push(
         `/${params.username}/status/${params.postId}/photo/${+photoIndex - 1}`
       );
+      router.refresh();
     }
   };
 
