@@ -19,6 +19,7 @@ import { Icons } from "@/components/icons";
 import Link from "next/link";
 import { usePrevPath } from "@/hooks/usePrevPath";
 import { usePathname, useRouter } from "next/navigation";
+import ForceRefresh from "@/components/force-refresh";
 
 type PostProps = {
   post: ExtendedPostWithoutUserTwo;
@@ -56,10 +57,6 @@ export default function Post({
   const onPostClick = () => {
     prevPath(path);
   };
-
-  React.useEffect(() => {
-    router.refresh();
-  }, []);
 
   return (
     <div

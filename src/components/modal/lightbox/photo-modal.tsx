@@ -9,12 +9,13 @@ import {
 import { Button, Divider } from "@nextui-org/react";
 import Image from "next/image";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import * as React from "react";
 import PostActionButton from "../../layout/center/post/action-button/post-action-button";
 import LightboxPost from "../../layout/center/post/lightbox/lightbox-post";
 import Reply from "../../layout/center/reply/reply";
 import { usePrevPath } from "@/hooks/usePrevPath";
+import Link from "next/link";
 
 type PhotoModalProps = {
   params: {
@@ -32,6 +33,7 @@ export default function PhotoModal({
   currentUser,
 }: PhotoModalProps) {
   const router = useRouter();
+  const path = usePathname();
 
   const prevPath = usePrevPath((state) => state.path);
 
@@ -79,19 +81,20 @@ export default function PhotoModal({
   return (
     <div
       className="fixed inset-0 flex items-center justify-center z-50"
-      onClick={handleClose}
+      // onClick={handleClose}
     >
-      <div className="fixed inset-0 bg-black lg:opacity-90"></div>
+      <div className="fixed inset-0 bg-black lg:opacity-90" />
 
       <div className="flex relative w-full h-full">
         <div className="relative flex-1">
-          <Button
-            onClick={handleClose}
-            isIconOnly
-            className="rounded-full absolute left-3 top-3 z-50 bg-transparent lg:hover:bg-text/10"
-          >
-            <Icons.close className="fill-text h-5 w-5" strokeWidth={2} />
-          </Button>
+          <Link href={prevPath!}>
+            <Button
+              isIconOnly
+              className="rounded-full absolute left-3 top-3 z-50 bg-transparent lg:hover:bg-text/10"
+            >
+              <Icons.close className="fill-text h-5 w-5" strokeWidth={2} />
+            </Button>
+          </Link>
           <Button
             isIconOnly
             className="rounded-full right-3 z-50 top-3 bg-transparent hover:bg-text/10 hidden lg:absolute"

@@ -1,4 +1,5 @@
 import Loading from "@/app/(home)/loading";
+import ForceRefresh from "@/components/force-refresh";
 import Header from "@/components/layout/center/header";
 import InlineReply from "@/components/layout/center/reply/inline-reply/inline-reply";
 import { db } from "@/lib/db";

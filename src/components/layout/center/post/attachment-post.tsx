@@ -85,6 +85,7 @@ export default function AttachmentPost({
                   scrollClickHandle();
                 }
               }}
+              as={`/${cleanUsername}/status/${post.id}/photo/${i + 1}`}
               href={`/${cleanUsername}/status/${post.id}/photo/${i + 1}`}
               scroll={false}
               onClick={onAttachmentClick}
