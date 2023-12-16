@@ -103,7 +103,7 @@ export default function LeftSidebar({ currentUser }: LeftSidebarProps) {
             onClick={handleHome}
             className="mb-2 h-[50px] w-[50px] rounded-full flex items-center justify-center"
           >
-            <Icons.x className="w-8 h-8 stroke-neutral-100 fill-neutral-100" />
+            <Icons.x className="w-8 h-8 fill-neutral-100" />
           </div>
           {routes.map((link) => (
             <SidebarItem
