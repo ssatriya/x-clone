@@ -19,6 +19,7 @@ import { Icons } from "@/components/icons";
 import Link from "next/link";
 import { usePrevPath } from "@/hooks/usePrevPath";
 import { usePathname } from "next/navigation";
+import { usePhotoNumber } from "@/hooks/usePhotoNumber";
 
 type PostProps = {
   post: ExtendedPostWithoutUserTwo;
@@ -35,6 +36,8 @@ export default function Post({
 }: PostProps) {
   const path = usePathname();
   const usernameWithoutAt = removeAtSymbol(post.user_one.username);
+
+  const photoNumber = usePhotoNumber((state) => state.photoNumber);
 
   const postURL = `/${usernameWithoutAt}/status/${post.id}`;
 
