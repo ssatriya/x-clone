@@ -21,7 +21,7 @@ import PostActionButton from "../action-button/post-action-button";
 type LightboxModalProps = {
   onClose: () => void;
   isOpen: boolean;
-
+  modalId: string;
   imageUrlArray: string[];
   username: string;
   post: ExtendedPostWithoutUserTwo;
@@ -31,6 +31,7 @@ type LightboxModalProps = {
 export default function LightboxModal({
   onClose,
   isOpen,
+  modalId,
   imageUrlArray,
   username,
   post,
@@ -59,6 +60,10 @@ export default function LightboxModal({
   const handleHide = () => {
     setIsLightboxPostOpen((prev) => !prev);
   };
+
+  if (modalId !== post.id) {
+    return;
+  }
 
   return (
     isOpen && (

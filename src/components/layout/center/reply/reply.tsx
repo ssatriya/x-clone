@@ -1,5 +1,7 @@
 "use client";
 
+import * as React from "react";
+
 import {
   ExtendedPost,
   ExtendedPostWithoutUserTwo,
@@ -12,14 +14,16 @@ import ReplyItem from "./reply-item";
 
 type ReplyProps = {
   currentUser: UserWithFollowersFollowing;
-  post: ExtendedPostWithoutUserTwo;
+  post: ExtendedPost | ExtendedPostWithoutUserTwo;
 };
 
 export default function Reply({ post, currentUser }: ReplyProps) {
-  const hasReplys = post.replys.length > 0;
-
-  const { data: replyData, isLoading } = useQuery({
-    queryKey: ["replyComment"],
+  const {
+    data: replyData,
+    isLoading,
+    isInitialLoading,
+  } = useQuery({
+    queryKey: ["replyComment", post.id],
     queryFn: async () => {
       const { data } = await axios.get("/api/post/reply/post-reply", {
         params: {
@@ -29,17 +33,14 @@ export default function Reply({ post, currentUser }: ReplyProps) {
 
       return data as ExtendedPost[];
     },
-    enabled: !!hasReplys,
   });
 
-  if (!!hasReplys) {
-    if (isLoading) {
-      return (
-        <div className="h-full flex justify-center items-start mt-6">
-          <Loader2 className="h-9 w-9 animate-spin stroke-blue" />
-        </div>
-      );
-    }
+  if (isLoading || isInitialLoading) {
+    return (
+      <div className="h-full flex justify-center items-start mt-6">
+        <Loader2 className="h-9 w-9 animate-spin stroke-blue" />
+      </div>
+    );
   }
 
   return (

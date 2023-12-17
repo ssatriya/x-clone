@@ -36,6 +36,8 @@ export default function ForYouFeed({ user }: ForYouFeedProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entry?.isIntersecting, isRefreshing]);
 
+  console.log(data);
+
   return (
     <>
       <ul>

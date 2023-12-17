@@ -59,6 +59,7 @@ export default function AttachmentPost({
   const onOpen = usePhotoModal((state) => state.onOpen);
   const onClose = usePhotoModal((state) => state.onClose);
   const isOpen = usePhotoModal((state) => state.isOpen);
+  const modalId = usePhotoModal((state) => state.id);
 
   const cleanUsername = removeAtSymbol(post.user_one.username);
   return (
@@ -106,7 +107,7 @@ export default function AttachmentPost({
             >
               <Image
                 onClick={() => {
-                  onOpen();
+                  onOpen(post.id);
                   window.history.pushState(
                     "page2",
                     "Title",
@@ -151,11 +152,11 @@ export default function AttachmentPost({
         );
       })}
       <LightboxModal
+        modalId={modalId}
         onClose={onClose}
         isOpen={isOpen}
         username={cleanUsername}
         currentUser={currentUser}
-        // url={`/${cleanUsername}/status/${post.id}/photo/${i + 1}`}
         imageUrlArray={imageUrlArray}
         post={post}
       />

@@ -269,6 +269,8 @@ export default function PostFormEditor({
             <div className={cn(className)}>
               {files.map((attachment, i) => (
                 <Attachment
+                  isSubmitting={isSubmitting}
+                  isUploading={isUploading}
                   url={attachment.url}
                   fill={files.length === 3 && i === 0}
                   onRemoveAttachment={handleRemoveImage}
@@ -397,12 +399,16 @@ export default function PostFormEditor({
 type AttachmentProps = {
   url: string;
   fill: boolean;
+  isSubmitting: boolean;
+  isUploading: boolean;
   onRemoveAttachment?: (url: string) => void;
 };
 
 export const Attachment = ({
   url,
   fill,
+  isSubmitting,
+  isUploading,
   onRemoveAttachment,
 }: AttachmentProps) => {
   const className = cn("overflow-hidden relative rounded-2xl shadow", {
@@ -413,14 +419,18 @@ export const Attachment = ({
     <div className={className}>
       {onRemoveAttachment && (
         <div className="absolute right-1 top-1">
-          <Button
-            onClick={() => onRemoveAttachment(url)}
-            isIconOnly
-            size="sm"
-            className="absolute bg-black/70 rounded-full z-50 right-1 top-1"
-          >
-            <Icons.close className="h-[18px] w-[18px] fill-text" />
-          </Button>
+          {isSubmitting ||
+            (!isUploading && (
+              <Button
+                disabled={isSubmitting || isUploading}
+                onClick={() => onRemoveAttachment(url)}
+                isIconOnly
+                size="sm"
+                className="absolute bg-black/70 rounded-full z-50 right-1 top-1"
+              >
+                <Icons.close className="h-[18px] w-[18px] fill-text" />
+              </Button>
+            ))}
         </div>
       )}
       <img className="h-full w-full object-cover" alt="Attachment" src={url} />

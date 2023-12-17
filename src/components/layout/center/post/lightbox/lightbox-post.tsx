@@ -56,10 +56,10 @@ export default function LightboxPost({
     <div
       className={cn(
         classNames,
-        "relative hover:bg-hover/30 transition-colors cursor-pointer flex justify-between gap-2 px-4"
+        "relative hover:bg-hover/30 transition-colors flex justify-between gap-2 px-4 cursor-default"
       )}
     >
-      <Link href={postURL} className="absolute inset-0" />
+      {/* <Link href={postURL} className="absolute inset-0" /> */}
 
       <div className="w-full flex flex-col">
         <div className="flex items-center justify-between">
@@ -100,7 +100,7 @@ export default function LightboxPost({
             {html.length > 0 && (
               <div
                 dangerouslySetInnerHTML={{ __html: html }}
-                className="text-[17px] leading-6"
+                className="text-[17px] leading-6 cursor-text"
               />
             )}
           </div>

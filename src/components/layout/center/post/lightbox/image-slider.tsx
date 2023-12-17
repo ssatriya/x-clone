@@ -25,8 +25,6 @@ export default function ImageSlider({
   const onClose = usePhotoModal((state) => state.onClose);
   const [currentIndex, setCurrentIndex] = React.useState(imagePosition - 1);
 
-  const [canGoNext, setCanGoNext] = React.useState(false);
-
   const goToPrevious = () => {
     const isFirstSlide = currentIndex === 0;
     const newIndex = isFirstSlide ? slides.length - 1 : currentIndex - 1;
@@ -78,7 +76,8 @@ export default function ImageSlider({
           disableAnimation
           className={cn(
             "rounded-full absolute right-6 bg-transparent hover:bg-text/10",
-            currentIndex > 0 && currentIndex + 1 === slides.length && "hidden"
+            currentIndex > 0 && currentIndex + 1 === slides.length && "hidden",
+            slides.length === 1 && "hidden"
           )}
         >
           <Icons.arrowRight className="h-5 w-5 fill-text" />

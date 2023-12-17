@@ -32,7 +32,7 @@ export default function InlineReplyFormEditor({
   post,
 }: InlineReplyFormEditorProps) {
   const queryClient = useQueryClient();
-  const { mutate: mutateInfiniteScroll } = useInfiniteScroll();
+  // const { mutate: mutateInfiniteScroll } = useInfiniteScroll();
   const [editorValue, setEditorValue] = React.useState<
     DeltaStatic | undefined
   >();
@@ -96,7 +96,7 @@ export default function InlineReplyFormEditor({
       return data as string;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["replyComment"] });
+      queryClient.invalidateQueries({ queryKey: ["replyComment", post.id] });
       setEditorValue(undefined);
       setFiles([]);
       toast.success("Reply has been created.");
