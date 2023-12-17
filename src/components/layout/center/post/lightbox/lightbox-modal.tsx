@@ -47,7 +47,9 @@ export default function LightboxModal({
   }, [prevPath, isOpen]);
 
   React.useEffect(() => {
-    document.body.style.overflow = "hidden";
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    }
 
     return () => {
       document.body.style.overflow = "auto";
