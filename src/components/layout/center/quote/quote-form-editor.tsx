@@ -79,14 +79,14 @@ export default function QuoteFormEditor({
         </div>
       </div>
       <div className={cn(className)}>
-        {files.map((attachment, i) => (
+        {/* {files.map((attachment, i) => (
           <Attachment
             url={attachment.url}
             fill={files.length === 3 && i === 0}
             onRemoveAttachment={handleRemoveImage}
             key={i}
           />
-        ))}
+        ))} */}
       </div>
       {/* <div className="w-full flex justify-between items-center">
         <input
