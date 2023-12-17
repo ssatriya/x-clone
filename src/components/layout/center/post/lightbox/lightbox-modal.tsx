@@ -36,12 +36,7 @@ export default function LightboxModal({
   post,
   currentUser,
 }: LightboxModalProps) {
-  const [photoSrc, setPhotoSrc] = React.useState("");
   const prevPath = usePrevPath((state) => state.path);
-  const [currentPhoto, setCurrentPhoto] = React.useState("");
-
-  const photoNumber = usePhotoNumber((state) => state.photoNumber);
-  const setPhotoNumber = usePhotoNumber((state) => state.setPhotoNumber);
 
   const [isLightboxPostOpen, setIsLightboxPostOpen] = React.useState(true);
 
@@ -52,30 +47,12 @@ export default function LightboxModal({
   }, [prevPath, isOpen]);
 
   React.useEffect(() => {
-    const currentUrl = window.location.href;
-  }, []);
-
-  const handleNext = () => {
-    const url = `/${username}/status/${post.id}/photo/${+photoNumber + 1}`;
-    if (isOpen) {
-      window.history.pushState("page2", "Title", url);
-    }
-  };
-
-  const handlePrev = () => {
-    const url = `/${username}/status/${post.id}/photo/${+photoNumber}`;
-    if (isOpen) {
-      window.history.pushState("page2", "Title", url);
-    }
-  };
-
-  React.useEffect(() => {
     document.body.style.overflow = "hidden";
 
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, []);
+  }, [isOpen]);
 
   const handleHide = () => {
     setIsLightboxPostOpen((prev) => !prev);
