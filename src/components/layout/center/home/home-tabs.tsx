@@ -57,7 +57,7 @@ export default function HomeTabs({ user }: HomeTabsProps) {
         }}
       >
         <Tab key="for-you" title="For you">
-          <div className="md:mt-[6.4rem]">
+          <div className="md:mt-[6.4rem] md:w-[599px]">
             <PostFormEditor
               user={user}
               focusHandler={focusHandler}
@@ -67,7 +67,7 @@ export default function HomeTabs({ user }: HomeTabsProps) {
           </div>
         </Tab>
         <Tab key="following" title="Following">
-          <div className="md:mt-[6.4rem]">
+          <div className="md:mt-[6.4rem] md:w-[599px]">
             <PostFormEditor
               user={user}
               focusHandler={focusHandler}
