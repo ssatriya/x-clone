@@ -29,7 +29,11 @@ import Image from "next/image";
 
 const QuillEditor = dynamic(() => import("./editor"), {
   ssr: false,
-  loading: () => <p>Loading...</p>,
+  loading: () => (
+    <div className="h-8 mt-2">
+      <p className="text-[20px] text-[#808080]">Whats happening?</p>
+    </div>
+  ),
 });
 
 type PostFormProps = {
@@ -247,7 +251,12 @@ export default function PostFormEditor({
             </Button>
           )}
           <div className="ml-3">
-            <div className="w-full h-11">
+            {/* <div>
+              <div className="h-8 mt-2">
+                <p className="text-[20px] text-[#808080]">Whats happening?</p>
+              </div>
+            </div> */}
+            <div className="w-full">
               <QuillEditor
                 focusHandler={focusHandler}
                 editorValue={editorValue}
