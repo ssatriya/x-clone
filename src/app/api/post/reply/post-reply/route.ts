@@ -34,6 +34,9 @@ export async function GET(req: Request) {
         replys: true,
         reposts: true,
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
 
     return new Response(JSON.stringify(reply));

@@ -29,6 +29,7 @@
   text-align: left !important;
   left: 0 !important;
   right: 0 !important;
+  font-size: 20px;
 }
 .reactEasyCrop_CropArea {
   border: 2px solid #1d9bf0 !important;

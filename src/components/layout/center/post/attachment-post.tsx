@@ -2,22 +2,34 @@
 
 import * as React from "react";
 import { cn, removeAtSymbol } from "@/lib/utils";
-import { ExtendedPost, ExtendedPostWithoutUserTwo } from "@/types/db";
+import {
+  ExtendedPost,
+  ExtendedPostWithoutUserTwo,
+  UserWithFollowersFollowing,
+} from "@/types/db";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { usePrevPath } from "@/hooks/usePrevPath";
+import LightboxModal from "./lightbox/lightbox-modal";
+import { useDisclosure } from "@nextui-org/react";
+import { usePhotoNumber } from "@/hooks/usePhotoNumber";
+import { usePhotoModal } from "@/hooks/usePhotoModal";
 
 type AttachmentPostProps = {
   post: ExtendedPost | ExtendedPostWithoutUserTwo;
   imageUrl: string;
+  currentUser: UserWithFollowersFollowing;
 };
 
 export default function AttachmentPost({
   imageUrl,
   post,
+  currentUser,
 }: AttachmentPostProps) {
   const path = usePathname();
+  const setPhotoNumber = usePhotoNumber((state) => state.setPhotoNumber);
+  const photoNumber = usePhotoNumber((state) => state.photoNumber);
 
   const scrollClickHandle = () => {
     const cleanUsername = removeAtSymbol(post.user_one.username);
@@ -44,6 +56,11 @@ export default function AttachmentPost({
     prevPath(path);
   };
 
+  const onOpen = usePhotoModal((state) => state.onOpen);
+  const onClose = usePhotoModal((state) => state.onClose);
+  const isOpen = usePhotoModal((state) => state.isOpen);
+
+  const cleanUsername = removeAtSymbol(post.user_one.username);
   return (
     <div className={cn(className)}>
       {imageUrlArray.map((image, i) => {
@@ -74,11 +91,42 @@ export default function AttachmentPost({
           });
         }
 
-        const cleanUsername = removeAtSymbol(post.user_one.username);
-
         return (
           <div key={image + i} className={cn(innerClassName)}>
-            <Link
+            <div
+              onMouseDown={(e) => {
+                if (e.button === 1) {
+                  e.stopPropagation();
+                  scrollClickHandle();
+                }
+              }}
+              onClick={() => {
+                onAttachmentClick();
+              }}
+            >
+              <Image
+                onClick={() => {
+                  onOpen();
+                  window.history.pushState(
+                    "page2",
+                    "Title",
+                    `/${cleanUsername}/status/${post.id}/photo/${i + 1}`
+                  );
+
+                  setPhotoNumber(i + 1);
+                }}
+                src={image}
+                fill
+                sizes="(max-widht: 600px) 512px"
+                className={cn(
+                  "h-full w-full object-cover border cursor-pointer",
+                  borderImage
+                )}
+                alt="attachment"
+                priority
+              />
+            </div>
+            {/* <Link
               onMouseDown={(e) => {
                 if (e.button === 1) {
                   e.stopPropagation();
@@ -90,18 +138,27 @@ export default function AttachmentPost({
               scroll={false}
               onClick={onAttachmentClick}
             >
-              <Image
-                src={image}
+            <Image
+            src={image}
                 fill
                 sizes="(max-widht: 600px) 512px"
                 className={cn(borderImage, "h-full w-full object-cover border")}
                 alt="attachment"
                 priority
-              />
-            </Link>
+                />
+              </Link> */}
           </div>
         );
       })}
+      <LightboxModal
+        onClose={onClose}
+        isOpen={isOpen}
+        username={cleanUsername}
+        currentUser={currentUser}
+        // url={`/${cleanUsername}/status/${post.id}/photo/${i + 1}`}
+        imageUrlArray={imageUrlArray}
+        post={post}
+      />
     </div>
   );
 }

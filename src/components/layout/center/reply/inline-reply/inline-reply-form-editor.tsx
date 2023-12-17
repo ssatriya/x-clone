@@ -96,7 +96,7 @@ export default function InlineReplyFormEditor({
       return data as string;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["repliedToPost"] });
+      queryClient.invalidateQueries({ queryKey: ["replyComment"] });
       setEditorValue(undefined);
       setFiles([]);
       toast.success("Reply has been created.");

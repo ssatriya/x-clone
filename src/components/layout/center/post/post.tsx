@@ -13,13 +13,13 @@ import UserPostAvatar from "./user-post-avatar";
 import UserPostName from "./user-post-name";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import { Post } from "@prisma/client";
-import { useMediaQuery } from "@mantine/hooks";
 import { Button } from "@nextui-org/react";
 import { Icons } from "@/components/icons";
 import Link from "next/link";
 import { usePrevPath } from "@/hooks/usePrevPath";
-import { usePathname, useRouter } from "next/navigation";
-import ForceRefresh from "@/components/force-refresh";
+
+import { usePathname } from "next/navigation";
+import { usePhotoNumber } from "@/hooks/usePhotoNumber";
 
 type PostProps = {
   post: ExtendedPostWithoutUserTwo;
@@ -34,9 +34,10 @@ export default function Post({
   userPosted,
   classNames,
 }: PostProps) {
-  const router = useRouter();
   const path = usePathname();
   const usernameWithoutAt = removeAtSymbol(post.user_one.username);
+
+  const photoNumber = usePhotoNumber((state) => state.photoNumber);
 
   const postURL = `/${usernameWithoutAt}/status/${post.id}`;
 
@@ -110,7 +111,11 @@ export default function Post({
             )}
           </div>
           {post.image_url && (
-            <AttachmentPost imageUrl={post.image_url} post={post} />
+            <AttachmentPost
+              currentUser={currentUser}
+              imageUrl={post.image_url}
+              post={post}
+            />
           )}
         </div>
         <div>

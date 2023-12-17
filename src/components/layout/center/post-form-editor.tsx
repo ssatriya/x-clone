@@ -27,7 +27,14 @@ import { DeltaStatic } from "quill";
 import { AttachmentType } from "@/types/types";
 import Image from "next/image";
 
-const QuillEditor = dynamic(() => import("./editor"), { ssr: false });
+const QuillEditor = dynamic(() => import("./editor"), {
+  ssr: false,
+  loading: () => (
+    <div className="h-8 mt-2">
+      <p className="text-[20px] text-[#808080]">Whats happening?</p>
+    </div>
+  ),
+});
 
 type PostFormProps = {
   focusHandler: () => void;
@@ -244,7 +251,12 @@ export default function PostFormEditor({
             </Button>
           )}
           <div className="ml-3">
-            <div className="w-full h-11">
+            {/* <div>
+              <div className="h-8 mt-2">
+                <p className="text-[20px] text-[#808080]">Whats happening?</p>
+              </div>
+            </div> */}
+            <div className="w-full">
               <QuillEditor
                 focusHandler={focusHandler}
                 editorValue={editorValue}

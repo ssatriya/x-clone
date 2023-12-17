@@ -1,6 +1,5 @@
 "use client";
 
-import Post from "../post/post";
 import { ExtendedPost, UserWithFollowersFollowing } from "@/types/db";
 import { useIntersection } from "@mantine/hooks";
 
@@ -8,6 +7,7 @@ import * as React from "react";
 import { Loader2 } from "lucide-react";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import QuoteItem from "../quote/quote-item";
+import Post from "../post/post";
 
 type ForYouFeedProps = {
   user: UserWithFollowersFollowing;

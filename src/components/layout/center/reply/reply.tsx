@@ -10,7 +10,7 @@ import axios from "axios";
 import { Loader2 } from "lucide-react";
 import ReplyItem from "./reply-item";
 import { Post as PostSchema } from "@prisma/client";
-import Post from "../post/post";
+import Post from "../post/Post.1";
 
 type ReplyProps = {
   currentUser: UserWithFollowersFollowing;
