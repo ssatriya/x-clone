@@ -43,7 +43,7 @@ export default function IconLeftSidebar({
           href="/home"
           className="mb-2 h-[50px] w-[50px] rounded-full flex items-center justify-center hover:bg-hover p-3"
         >
-          <Icons.x className="w-8 h-8 stroke-neutral-100 fill-neutral-100" />
+          <Icons.x className="w-8 h-8 fill-neutral-100" />
         </Link>
 
         <Link href="/home" className="hover:bg-hover w-fit p-3 rounded-full">
