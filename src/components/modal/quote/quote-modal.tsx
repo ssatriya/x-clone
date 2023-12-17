@@ -302,6 +302,7 @@ export default function QuoteModal({
                       <div className="flex justify-center">
                         {post.image_url && (
                           <AttachmentPost
+                            currentUser={currentUser}
                             imageUrl={post.image_url}
                             post={post}
                           />

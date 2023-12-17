@@ -94,7 +94,11 @@ export default function Repost({
             )}
           </div>
           {post.image_url && (
-            <AttachmentPost imageUrl={post.image_url} post={post} />
+            <AttachmentPost
+              currentUser={currentUser}
+              imageUrl={post.image_url}
+              post={post}
+            />
           )}
         </div>
 
