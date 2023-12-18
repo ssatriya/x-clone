@@ -192,10 +192,8 @@ export default function InlineReplyFormEditor({
             />
           </div>
         ))}
-      <div className="px-4">
-        <Divider orientation="horizontal" className="bg-border " />
-      </div>
-      <div className="w-full flex justify-between pt-4 gap-1 px-4">
+      <Divider orientation="horizontal" className="bg-border " />
+      <div className="w-full flex justify-between pt-4 gap-1">
         <div className="h-fit">
           <Avatar showFallback src={currentUser.avatar} />
         </div>

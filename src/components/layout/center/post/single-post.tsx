@@ -101,7 +101,7 @@ export default function SinglePost({ post, currentUser }: SinglePostProps) {
           reposts={post.reposts}
         />
       </div>
-      <div className="pb-3">
+      <div className="pb-3 px-4">
         <InlineReplyFormEditor currentUser={currentUser} post={post} />
       </div>
     </div>

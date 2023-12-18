@@ -20,8 +20,6 @@ type InlineReplyProps = {
 export default function InlineReply({ currentUser, post }: InlineReplyProps) {
   const queryClient = useQueryClient();
 
-  const isEnabled = post.original_replied_post_id;
-
   const { data: repliedToPost } = useQuery({
     queryKey: ["repliedToPost", post],
     queryFn: async () => {
@@ -35,7 +33,6 @@ export default function InlineReply({ currentUser, post }: InlineReplyProps) {
       });
       return data as ExtendedPost;
     },
-    enabled: !!isEnabled,
   });
 
   React.useEffect(() => {
