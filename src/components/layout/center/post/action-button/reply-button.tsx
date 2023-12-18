@@ -23,7 +23,7 @@ export default function ReplyButton({
   const [replysAmount, setReplysAmount] = React.useState<Reply[]>(post.replys);
 
   const { data: replyData } = useQuery({
-    queryKey: ["replyData", post],
+    queryKey: ["replyData", post.id],
     queryFn: async () => {
       const { data } = await axios.get("/api/post/reply", {
         params: {

@@ -10,11 +10,8 @@ import {
 
 import React from "react";
 import { Icons } from "@/components/icons";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 
-import { PostPayload, PostValidator } from "@/lib/validator/post";
 import axios from "axios";
 import { toast } from "sonner";
 import { User } from "@prisma/client";
@@ -26,6 +23,7 @@ import dynamic from "next/dynamic";
 import { DeltaStatic } from "quill";
 import { AttachmentType } from "@/types/types";
 import Image from "next/image";
+import Attachment from "./attachment";
 
 const QuillEditor = dynamic(() => import("./editor"), {
   ssr: false,
@@ -48,26 +46,19 @@ export default function PostFormEditor({
   user,
 }: PostFormProps) {
   const router = useRouter();
-  const [content, setContent] = React.useState("");
-  const { mutate: mutateInfiniteScroll } = useInfiniteScroll();
 
+  const mediaRef = React.useRef<HTMLInputElement>(null);
+
+  const [files, setFiles] = React.useState<AttachmentType[]>([]);
+  const [content, setContent] = React.useState("");
   const [editorValue, setEditorValue] = React.useState<
     DeltaStatic | undefined
   >();
   const [charLength, setCharLength] = React.useState(0);
 
-  const {
-    handleSubmit,
-    formState: { isSubmitting, isLoading },
-  } = useForm<PostPayload>({
-    defaultValues: {
-      content: "",
-      imageUrl: "",
-    },
-    resolver: zodResolver(PostValidator),
-  });
+  const { mutate: mutateInfiniteScroll } = useInfiniteScroll();
 
-  const { mutate: createPost } = useMutation({
+  const { mutate: createPost, isLoading } = useMutation({
     mutationFn: async ({
       content,
       imageUrl,
@@ -96,13 +87,10 @@ export default function PostFormEditor({
     },
   });
 
-  const [files, setFiles] = React.useState<AttachmentType[]>([]);
-
-  const mediaRef = React.useRef<HTMLInputElement>(null);
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const newAttachments: AttachmentType[] = Array.from(e.target.files).map(
+      const newAttachments: AttachmentType[] = Array.from(
+        e.target.files,
         (file) => ({
           type: "IMAGE",
           url: URL.createObjectURL(file),
@@ -114,7 +102,7 @@ export default function PostFormEditor({
         })
       );
 
-      setFiles((prevFiles) => [...prevFiles, ...newAttachments]);
+      setFiles((prevFiles) => prevFiles.concat(newAttachments));
     }
   };
 
@@ -128,18 +116,7 @@ export default function PostFormEditor({
     }
   };
 
-  const className = cn(
-    files.length > 0 ? "h-[300px] mb-4" : "",
-    "grid gap-2 w-full",
-    {
-      "grid-rows-1": files.length <= 2,
-      "grid-rows-2": files.length > 2,
-      "grid-cols-1": files.length === 1,
-      "grid-cols-2": files.length > 1,
-    }
-  );
-
-  const handleRemoveImage = (url: string) => {
+  const handleFileRemove = (url: string) => {
     setFiles((prevFiles) =>
       prevFiles.filter((attachment) => attachment.url !== url)
     );
@@ -211,7 +188,7 @@ export default function PostFormEditor({
 
   return (
     <div className="w-full relative">
-      {isSubmitting ||
+      {isLoading ||
         (isUploading && (
           <Progress
             size="sm"
@@ -225,12 +202,11 @@ export default function PostFormEditor({
       <div className="flex relative justify-between py-2 px-4 gap-2 border-b">
         <div
           className={cn(
-            isSubmitting || isUploading
-              ? "absolute inset-0 bg-black/60 z-50"
+            isLoading || isUploading
+              ? "absolute inset-0 bg-black/60 z-50 border-r"
               : "hidden"
           )}
         />
-
         <Image
           src={user.avatar}
           height={40}
@@ -240,7 +216,7 @@ export default function PostFormEditor({
           className="rounded-full h-10 w-10"
         />
         <div className="w-full flex flex-col">
-          {isFocus && !isUploading && !isSubmitting && (
+          {isFocus && !isUploading && !isLoading && (
             <Button
               variant="bordered"
               size="sm"
@@ -251,11 +227,6 @@ export default function PostFormEditor({
             </Button>
           )}
           <div className="ml-3">
-            {/* <div>
-              <div className="h-8 mt-2">
-                <p className="text-[20px] text-[#808080]">Whats happening?</p>
-              </div>
-            </div> */}
             <div className="w-full">
               <QuillEditor
                 focusHandler={focusHandler}
@@ -266,20 +237,14 @@ export default function PostFormEditor({
                 placeholder="Whats happening?"
               />
             </div>
-            <div className={cn(className)}>
-              {files.map((attachment, i) => (
-                <Attachment
-                  isSubmitting={isSubmitting}
-                  isUploading={isUploading}
-                  url={attachment.url}
-                  fill={files.length === 3 && i === 0}
-                  onRemoveAttachment={handleRemoveImage}
-                  key={i}
-                />
-              ))}
-            </div>
+            <Attachment
+              files={files}
+              isLoading={isLoading}
+              isUploading={isUploading}
+              handleRemove={handleFileRemove}
+            />
           </div>
-          {isFocus && !isUploading && !isSubmitting && (
+          {isFocus && !isUploading && !isLoading && (
             <>
               <div className="flex ml-3 flex-col relative mt-2">
                 <Button
@@ -304,7 +269,7 @@ export default function PostFormEditor({
               ref={mediaRef}
               onChange={handleFileChange}
             />
-            {!isUploading && !isSubmitting && (
+            {!isUploading && !isLoading && (
               <div className="flex">
                 <Button
                   onClick={handleMedia}
@@ -352,7 +317,7 @@ export default function PostFormEditor({
               </div>
             )}
             <div className="flex gap-2 items-center h-full">
-              {charLength > 0 && !isUploading && !isSubmitting && (
+              {charLength > 0 && !isUploading && !isLoading && (
                 <>
                   <CircularProgress
                     size="sm"
@@ -378,11 +343,11 @@ export default function PostFormEditor({
                 </Button> */}
                 </>
               )}
-              {!isUploading && !isSubmitting && (
+              {!isUploading && !isLoading && (
                 <Button
                   size="sm"
-                  isDisabled={isSubmitting || disabledByContent || isUploading}
-                  onClick={() => handleSubmit(handlePostSubmit)()}
+                  isDisabled={isLoading || disabledByContent || isUploading}
+                  onClick={handlePostSubmit}
                   className="bg-blue hover:bg-blue/90 font-bold rounded-full"
                 >
                   Post
@@ -395,45 +360,3 @@ export default function PostFormEditor({
     </div>
   );
 }
-
-type AttachmentProps = {
-  url: string;
-  fill: boolean;
-  isSubmitting: boolean;
-  isUploading: boolean;
-  onRemoveAttachment?: (url: string) => void;
-};
-
-export const Attachment = ({
-  url,
-  fill,
-  isSubmitting,
-  isUploading,
-  onRemoveAttachment,
-}: AttachmentProps) => {
-  const className = cn("overflow-hidden relative rounded-2xl shadow", {
-    "row-span-2": fill,
-  });
-
-  return (
-    <div className={className}>
-      {onRemoveAttachment && (
-        <div className="absolute right-1 top-1">
-          {isSubmitting ||
-            (!isUploading && (
-              <Button
-                disabled={isSubmitting || isUploading}
-                onClick={() => onRemoveAttachment(url)}
-                isIconOnly
-                size="sm"
-                className="absolute bg-black/70 rounded-full z-50 right-1 top-1"
-              >
-                <Icons.close className="h-[18px] w-[18px] fill-text" />
-              </Button>
-            ))}
-        </div>
-      )}
-      <img className="h-full w-full object-cover" alt="Attachment" src={url} />
-    </div>
-  );
-};

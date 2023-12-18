@@ -115,7 +115,6 @@ export default function LightboxPost({
             currentUser={currentUser}
             reposts={post.reposts}
           />
-          <Divider orientation="horizontal" className="bg-border h-[1px]" />
           <InlineReplyFormEditor currentUser={currentUser} post={post} />
         </div>
       </div>

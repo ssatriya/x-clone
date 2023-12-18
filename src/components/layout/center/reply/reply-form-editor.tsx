@@ -8,13 +8,14 @@ import { Avatar, Button, CircularProgress } from "@nextui-org/react";
 import { User } from "@prisma/client";
 import dynamic from "next/dynamic";
 import { DeltaStatic, Sources } from "quill";
-import { Attachment } from "@/components/layout/center/post-form-editor";
+
+import Attachment from "../attachment";
 import { AttachmentType } from "@/types/types";
 import { ExtendedPost, ExtendedPostWithoutUserTwo } from "@/types/db";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ReplyPayload } from "@/lib/validator/reply";
 import axios from "axios";
-import { uploadFiles } from "@/lib/uploadthing";
+import { uploadFiles, useUploadThing } from "@/lib/uploadthing";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { toast } from "sonner";
 
@@ -25,25 +26,28 @@ const QuillEditor = dynamic(() => import("../editor"), {
 type ReplyFormEditorProps = {
   post: ExtendedPost | ExtendedPostWithoutUserTwo;
   currentUser: User;
-  onOpen: () => void;
   onOpenChange: () => void;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsUploading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function ReplyFormEditor({
   post,
   currentUser,
-  onOpen,
   onOpenChange,
+  setIsLoading,
+  setIsUploading,
 }: ReplyFormEditorProps) {
-  const { mutate: mutateInfiniteScroll } = useInfiniteScroll();
+  // const { mutate: mutateInfiniteScroll } = useInfiniteScroll();
+  const queryClient = useQueryClient();
+
+  const mediaRef = React.useRef<HTMLInputElement>(null);
+
   const [editorValue, setEditorValue] = React.useState<
     DeltaStatic | undefined
   >();
   const [charLength, setCharLength] = React.useState(0);
-
   const [files, setFiles] = React.useState<AttachmentType[]>([]);
-
-  const mediaRef = React.useRef<HTMLInputElement>(null);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -69,13 +73,13 @@ export default function ReplyFormEditor({
     }
   };
 
-  const handleRemoveImage = (url: string) => {
+  const handleFileRemove = (url: string) => {
     setFiles((prevFiles) =>
       prevFiles.filter((attachment) => attachment.url !== url)
     );
   };
 
-  const { mutate: createReply, isLoading } = useMutation({
+  const { mutate: createReplyFromModal, isLoading } = useMutation({
     mutationKey: ["replyMutation"],
     mutationFn: async ({
       postRepliedToId,
@@ -99,70 +103,76 @@ export default function ReplyFormEditor({
       return data as string;
     },
     onSuccess: () => {
-      mutateInfiniteScroll();
+      queryClient.invalidateQueries({ queryKey: ["replyComment", post.id] });
+      queryClient.invalidateQueries({ queryKey: ["replyData", post.id] });
       setEditorValue(undefined);
       setFiles([]);
-      toast.success("Reply has been created.");
+      toast.success("Replied successfully");
       onOpenChange();
     },
   });
 
-  const className = cn(
-    files.length > 0 ? "h-[300px] mb-4" : "",
-    "grid gap-2 w-full",
-    {
-      "grid-rows-1": files.length <= 2,
-      "grid-rows-2": files.length > 2,
-      "grid-cols-1": files.length === 1,
-      "grid-cols-2": files.length > 1,
-    }
-  );
-
   const handleReplySubmit = async () => {
-    if (files) {
-      const allFiles: File[] = [];
-      files.map((file: AttachmentType) => {
-        allFiles.push(file.file);
-      });
-
-      const res = await uploadFiles({
-        files: allFiles,
-        endpoint: "imageUploader",
-        onUploadProgress: ({ file, progress }) => {
-          // console.log(file === files);
-          // calculateImageProgress(allFiles.length, file)
-        },
-      });
-
-      if (res) {
-        const urls: string[] = [];
-        res.map((r) => {
-          urls.push(r.url);
-        });
-
-        // const newData = {
-        //   ...data,
-        //   imageUrl: [...urls].toString()
-        // }
-
-        createReply({
-          postRepliedToId: post.id,
-          originalPostOwnerId: post.user_one.id,
-          content: editorValue,
-          imageUrl: [...urls].toString(),
-        });
-
-        return;
-      }
+    if (!files && charLength === 0) {
+      return;
     }
 
-    createReply({
-      postRepliedToId: post.id,
-      originalPostOwnerId: post.user_one.id,
-      content: editorValue,
-      imageUrl: "",
-    });
+    if (files && charLength === 0) {
+      if (files) {
+        const allFiles: File[] = [];
+        files.map((file) => allFiles.push(file.file));
+
+        if (allFiles.length === files.length) {
+          startUpload(allFiles);
+        }
+      }
+    } else if (files && charLength > 0) {
+      const allFiles: File[] = [];
+      files.map((file) => allFiles.push(file.file));
+
+      if (allFiles.length === files.length) {
+        startUpload(allFiles);
+      }
+    } else if (!files && charLength > 0) {
+      createReplyFromModal({
+        postRepliedToId: post.id,
+        originalPostOwnerId: post.user_one.id,
+        content: editorValue,
+        imageUrl: "",
+      });
+    }
   };
+
+  const { startUpload, isUploading } = useUploadThing("imageUploader", {
+    onClientUploadComplete: (file) => {
+      if (file) {
+        const fileUrl: string[] = [];
+        file.map((f) => fileUrl.push(f.url));
+
+        if (fileUrl.length === files.length) {
+          createReplyFromModal({
+            postRepliedToId: post.id,
+            originalPostOwnerId: post.user_one.id,
+            content: editorValue,
+            imageUrl: fileUrl.toString(),
+          });
+        }
+      }
+
+      setFiles([]);
+      setEditorValue(undefined);
+    },
+  });
+
+  React.useEffect(() => {
+    setIsLoading(isLoading);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]);
+
+  React.useEffect(() => {
+    setIsUploading(isUploading);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isUploading]);
 
   let disabledByContent: boolean = true;
 
@@ -192,16 +202,12 @@ export default function ReplyFormEditor({
           />
         </div>
       </div>
-      <div className={cn(className)}>
-        {files.map((attachment, i) => (
-          <Attachment
-            url={attachment.url}
-            fill={files.length === 3 && i === 0}
-            onRemoveAttachment={handleRemoveImage}
-            key={i}
-          />
-        ))}
-      </div>
+      <Attachment
+        files={files}
+        isLoading={isLoading}
+        isUploading={isUploading}
+        handleRemove={handleFileRemove}
+      />
       <div className="w-full flex justify-between items-center">
         <input
           multiple

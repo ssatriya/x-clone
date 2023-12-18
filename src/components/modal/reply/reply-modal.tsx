@@ -11,6 +11,7 @@ import {
   ModalBody,
   ModalContent,
   ModalHeader,
+  Progress,
 } from "@nextui-org/react";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import { User } from "@prisma/client";
@@ -33,6 +34,9 @@ export default function ReplyModal({
   currentUser,
   onOpen,
 }: ReplyModal) {
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [isUploading, setIsUploading] = React.useState(false);
+
   const isMobile = useMediaQuery("(max-width: 420px)");
   const { pressProps, isPressed } = usePress({
     onPress: (e) => {
@@ -71,6 +75,22 @@ export default function ReplyModal({
       <ModalContent>
         {(onClose) => (
           <>
+            <div className="relative">
+              {isLoading ||
+                (isUploading && (
+                  <Progress
+                    size="sm"
+                    aria-label="Posting..."
+                    isIndeterminate
+                    classNames={{
+                      indicator: "bg-blueProgress",
+                      track: "bg-transparent",
+                    }}
+                    radius="none"
+                    className="absolute md:top-0 -top-4 w-full right-0 bg-black z-60"
+                  />
+                ))}
+            </div>
             <ModalHeader
               className="flex flex-col gap-1 px-4 pt-2 h-[54px]"
               onClick={(e) => e.stopPropagation()}
@@ -130,12 +150,12 @@ export default function ReplyModal({
                     </div>
                   </div>
                 </div>
-                {/* Editor */}
                 <ReplyFormEditor
-                  onOpen={onOpen}
                   post={post}
                   currentUser={currentUser}
                   onOpenChange={onOpenChange}
+                  setIsLoading={setIsLoading}
+                  setIsUploading={setIsUploading}
                 />
               </div>
               {isMobile && <div className="h-full" {...pressProps} />}
