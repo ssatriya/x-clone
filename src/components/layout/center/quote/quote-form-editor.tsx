@@ -8,7 +8,6 @@ import { Avatar, Button, CircularProgress } from "@nextui-org/react";
 import { User } from "@prisma/client";
 import dynamic from "next/dynamic";
 import { DeltaStatic, Sources } from "quill";
-import { Attachment } from "@/components/layout/center/post-form-editor";
 import { AttachmentType } from "@/types/types";
 import { ExtendedPost, ExtendedPostWithoutUserTwo } from "@/types/db";
 import { useMutation } from "@tanstack/react-query";
