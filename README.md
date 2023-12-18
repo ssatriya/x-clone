@@ -28,7 +28,7 @@ Welcome to the X Clone App (formerly known as Twitter) repository! This project 
 - [ ] Implement S3 as media storage (currently using [uploadthing](https://uploadthing.com/)).
 - [ ] Implement unit and integration testing (as part of my learning).
 - [x] Change lightbox page using modal (currently using Nextjs intercepting routes).
-- [ ] Complete main functionality, turns out I forgot to do the quote modal and related.
+- [ ] Complete main functionality, turns out I forgot to do the quote modal and related functionality.
 
 ## Knwon Bug 🐞
 
