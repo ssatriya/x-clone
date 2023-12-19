@@ -18,6 +18,7 @@ import { User } from "@prisma/client";
 import { formatTimeToNow } from "@/lib/utils";
 import { useMediaQuery } from "@mantine/hooks";
 import { usePress } from "react-aria";
+import ReplyModalFormEditor from "./reply-modal-form-editor";
 
 type ReplyModal = {
   post: ExtendedPost | ExtendedPostWithoutUserTwo;
@@ -150,12 +151,13 @@ export default function ReplyModal({
                     </div>
                   </div>
                 </div>
-                <ReplyFormEditor
+                <ReplyModalFormEditor
                   post={post}
                   currentUser={currentUser}
                   onOpenChange={onOpenChange}
                   setIsLoading={setIsLoading}
                   setIsUploading={setIsUploading}
+                  isOpen={isOpen}
                 />
               </div>
               {isMobile && <div className="h-full" {...pressProps} />}

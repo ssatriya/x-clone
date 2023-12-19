@@ -15,8 +15,7 @@ import { ExtendedPost, ExtendedPostWithoutUserTwo } from "@/types/db";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ReplyPayload } from "@/lib/validator/reply";
 import axios from "axios";
-import { uploadFiles, useUploadThing } from "@/lib/uploadthing";
-import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+import { useUploadThing } from "@/lib/uploadthing";
 import { toast } from "sonner";
 
 const QuillEditor = dynamic(() => import("../editor"), {
