@@ -1,16 +1,21 @@
-import { ExtendedPost, UserWithFollowersFollowing } from "@/types/db";
+import {
+  ExtendedPostWithoutUserTwo,
+  UserWithFollowersFollowing,
+} from "@/types/db";
 import Link from "next/link";
 import UserTooltip from "../user-tooltip";
-import { Avatar } from "@nextui-org/react";
+import { Avatar, Button } from "@nextui-org/react";
 import { formatTimeToNow, removeAtSymbol, truncateString } from "@/lib/utils";
 import AttachmentPost from "../post/attachment-post";
 import PostActionButton from "../post/action-button/post-action-button";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import UserPostName from "../post/user-post-name";
 import { useMediaQuery } from "@mantine/hooks";
+import QuoteAttachment from "./quote-attachment";
+import { Icons } from "@/components/icons";
 
 type QuoteItemProps = {
-  post: ExtendedPost;
+  post: ExtendedPostWithoutUserTwo;
   userPosted: string;
   currentUser: UserWithFollowersFollowing;
   postUserOwner: UserWithFollowersFollowing;
@@ -71,8 +76,9 @@ export default function QuoteItem({
       </div>
 
       <div className="w-full flex flex-col">
-        <div className="flex items-center gap-2">
-          {/* <UserTooltip user={post.user_one} currentUser={currentUser}>
+        <div className="flex w-full justify-between">
+          <div className="flex items-center gap-2">
+            {/* <UserTooltip user={post.user_one} currentUser={currentUser}>
             <Link
               href={`/${username}`}
               className="font-bold hover:underline focus-visible:ring-0"
@@ -88,17 +94,27 @@ export default function QuoteItem({
               {post.user_one.username}
             </Link>
           </UserTooltip> */}
-          <UserPostName
-            currentUser={currentUser}
-            post={post}
-            usernameWithoutAt={usernameWithoutAt}
-            align="ROW"
-            truncate={false}
-          />
-          <span className="text-gray">·</span>
-          <p className="text-gray">
-            {formatTimeToNow(new Date(post.createdAt))}
-          </p>
+            <UserPostName
+              currentUser={currentUser}
+              post={post}
+              usernameWithoutAt={usernameWithoutAt}
+              align="ROW"
+              truncate={false}
+            />
+            <span className="text-gray">·</span>
+            <p className="text-gray">
+              {formatTimeToNow(new Date(post.createdAt))}
+            </p>
+          </div>
+          <div className="relative right-8 bottom-1">
+            <Button
+              isIconOnly
+              size="sm"
+              className="absolute rounded-full bg-transparent data-[hover=true]:bg-blue/10 group"
+            >
+              <Icons.more className="h-4 w-4 fill-gray group-data-[hover=true]:fill-blue" />
+            </Button>
+          </div>
         </div>
         <div className="flex flex-col gap-2">
           {postContent.length > 0 && (
@@ -145,7 +161,8 @@ export default function QuoteItem({
                 </UserTooltip>
                 <span className="text-gray">·</span>
                 <p className="text-[#555b61]">
-                  {post.createdAt && formatTimeToNow(new Date(post.createdAt))}
+                  {post.original_repost?.createdAt &&
+                    formatTimeToNow(new Date(post.original_repost?.createdAt))}
                 </p>
               </div>
             </div>
@@ -158,6 +175,15 @@ export default function QuoteItem({
                   />
                 )}
               </div>
+              {post.original_repost && post.original_repost.image_url && (
+                <div className="mb-2">
+                  <QuoteAttachment
+                    currentUser={currentUser}
+                    imageUrl={post.original_repost.image_url}
+                    post={post}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>

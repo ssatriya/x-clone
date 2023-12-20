@@ -26,6 +26,7 @@ export async function GET(req: Request) {
             following: true,
           },
         },
+        original_repost: true,
         likes: true,
         replys: true,
         reposts: true,

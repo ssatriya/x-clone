@@ -1,10 +1,16 @@
 import Loading from "@/app/(home)/loading";
 import ForceRefresh from "@/components/force-refresh";
 import Header from "@/components/layout/center/header";
-import InlineReply from "@/components/layout/center/reply/inline-reply/inline-reply";
+import SinglePost from "@/components/layout/center/post/single-post";
+import QuoteItem from "@/components/layout/center/quote/quote-item";
+import InlineReply from "@/components/layout/center/reply/inline-reply/inline-post-reply";
+import QuoteSinglePost from "@/components/layout/center/single-post/quote-single-post";
 import { db } from "@/lib/db";
 import getCurrentSession from "@/lib/getCurrentSession";
+import { ExtendedPost } from "@/types/db";
 import * as React from "react";
+import PostRepost from "./_components/post-repost";
+import PostQuote from "./_components/post-quote";
 
 type PostPageProps = {
   params: {
@@ -16,7 +22,6 @@ type PostPageProps = {
 export default async function PostPage({ params }: PostPageProps) {
   const session = await getCurrentSession();
   const username = params.username;
-  const postId = params.postId;
 
   if (!session?.user) {
     // show login
@@ -34,30 +39,6 @@ export default async function PostPage({ params }: PostPageProps) {
     },
   });
 
-  const post = await db.post.findUnique({
-    where: {
-      id: postId,
-    },
-    include: {
-      user_one: {
-        include: {
-          followers: true,
-          following: true,
-        },
-      },
-      user_two: {
-        include: {
-          followers: true,
-          following: true,
-        },
-      },
-      original_repost: true,
-      replys: true,
-      reposts: true,
-      likes: true,
-    },
-  });
-
   const currentUser = await db.user.findUnique({
     where: {
       id: session.user.userId,
@@ -68,13 +49,34 @@ export default async function PostPage({ params }: PostPageProps) {
     },
   });
 
+  const post = await db.post.findUnique({
+    where: {
+      id: params.postId,
+    },
+    include: {
+      user_one: true,
+      user_two: true,
+      original_repost: {
+        include: {
+          user_one: true,
+        },
+      },
+    },
+  });
+
   if (!otherUser || !currentUser || !post) {
     return <h1>Not login</h1>;
   }
 
   return (
     <div>
-      <InlineReply currentUser={currentUser} post={post} />
+      {/* <p>Currently not available</p> */}
+      {post.post_type === "POST" && (
+        <PostRepost post={post} username={post.user_one.name} />
+      )}
+      {post.post_type === "QUOTE" && (
+        <PostQuote post={post} currentUser={currentUser} />
+      )}
     </div>
   );
 }

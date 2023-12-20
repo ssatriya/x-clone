@@ -29,7 +29,6 @@ export default function AttachmentPost({
 }: AttachmentPostProps) {
   const path = usePathname();
   const setPhotoNumber = usePhotoNumber((state) => state.setPhotoNumber);
-  const photoNumber = usePhotoNumber((state) => state.photoNumber);
 
   const scrollClickHandle = () => {
     const cleanUsername = removeAtSymbol(post.user_one.username);

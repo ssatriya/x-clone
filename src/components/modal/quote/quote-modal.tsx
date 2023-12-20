@@ -47,8 +47,10 @@ export default function QuoteModal({
   post,
   currentUser,
 }: ReplyModal) {
+  // console.log(isOpen);
+
   const { mutate: mutateInfiniteScroll } = useInfiniteScroll();
-  const isMobile = useMediaQuery("(max-width: 420px)");
+  const isMobile = useMediaQuery("(max-width: 450px)");
   const [editorValue, setEditorValue] = React.useState<
     DeltaStatic | undefined
   >();

@@ -20,7 +20,6 @@ import UserPostName from "../user-post-name";
 import AttachmentPost from "../attachment-post";
 import PostActionButton from "../action-button/post-action-button";
 import { Button, Divider } from "@nextui-org/react";
-import InlineReply from "../../reply/inline-reply/inline-reply";
 import InlineReplyFormEditor from "../../reply/inline-reply/inline-reply-form-editor";
 import { Icons } from "@/components/icons";
 

@@ -39,7 +39,7 @@ export default function RepostButton({
   post,
   reposts,
 }: RepostButtonProps) {
-  const isMobile = useMediaQuery("(max-width: 420px)");
+  const isMobile = useMediaQuery("(max-width: 480px)");
   const {
     isOpen: isOpenOption,
     onOpen: onOpenOption,
@@ -123,114 +123,21 @@ export default function RepostButton({
   }
 
   // Modal
-
   if (isMobile) {
     return (
-      <>
-        <div className="flex items-center group">
-          <Button
-            onPress={onOpenOption}
-            size="sm"
-            isIconOnly
-            className="rounded-full bg-transparent flex items-center justify-center gap-2 group-hover:bg-green-600/10"
-          >
-            <Icons.repost
-              className={cn(
-                isRepostedByCurrentUser
-                  ? "fill-green-600"
-                  : "fill-gray group-hover:fill-green-600",
-                "w-[18px] h-[18px]"
-              )}
-            />
-          </Button>
-          <p
-            className={cn(
-              isRepostedByCurrentUser ? "text-green-600" : " text-gray ",
-              "text-sm group-hover:text-green-600 tabular-nums"
-            )}
-          >
-            {repostsAmount.length}
-          </p>
-        </div>
-
-        <Modal
-          hideCloseButton
-          size="4xl"
-          isOpen={isOpenOption}
-          placement="bottom"
-          onOpenChange={onOpenChangeOption}
-          classNames={{
-            base: "bg-black h-fit",
-            body: "px-0 pt-0 gap-0",
-            backdrop: "bg-backdrop",
-          }}
-          className="rounded-t-2xl m-0"
-          radius="none"
-        >
-          <ModalContent>
-            {(onCloseOption) => (
-              <ModalBody className="flex flex-col justify-between items-center">
-                <div className="w-full">
-                  {isRepostedByCurrentUser ? (
-                    <Button
-                      onPress={() => {
-                        repost();
-                        onCloseOption();
-                      }}
-                      disableAnimation
-                      className="bg-black w-full rounded-t-2xl rounded-b-none h-11 font-bold leading-5 text-base flex justify-start data-[pressed=true]:bg-hover"
-                    >
-                      <Icons.repost className="h-5 w-5 fill-text" />
-                      Undo repost
-                    </Button>
-                  ) : (
-                    <Button
-                      onPress={() => {
-                        repost();
-                        onCloseOption();
-                      }}
-                      disableAnimation
-                      className="bg-black w-full rounded-t-2xl rounded-b-none h-11 font-bold leading-5 text-base flex justify-start data-[pressed=true]:bg-hover"
-                    >
-                      <Icons.repost className="h-5 w-5 fill-text" />
-                      Repost
-                    </Button>
-                  )}
-                  <Button
-                    onPress={() => {
-                      // onOpenOption();
-                      onOpen();
-
-                      onCloseOption();
-                    }}
-                    disableAnimation
-                    className="bg-black w-full h-11 rounded-none font-bold leading-5 text-base flex justify-start data-[pressed=true]:bg-hover"
-                  >
-                    <Icons.quote className="h-5 w-5 fill-text" />
-                    Quote
-                  </Button>
-                </div>
-                <div className="px-4 py-3 w-full">
-                  <Button
-                    onPress={onCloseOption}
-                    disableAnimation
-                    className="w-full h-11 border-text/70 border-1 rounded-full font-bold leading-5 text-base bg-black data-[pressed=true]:bg-text/25"
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </ModalBody>
-            )}
-          </ModalContent>
-        </Modal>
-
-        <QuoteModal
-          isOpen={isOpen}
-          onOpenChange={onOpenChange}
-          post={post}
-          currentUser={currentUser}
-        />
-      </>
+      <RepostButtonMobile
+        currentUser={currentUser}
+        isOpen={isOpen}
+        isOpenOption={isOpenOption}
+        isRepostedByCurrentUser={isRepostedByCurrentUser}
+        onOpen={onOpen}
+        onOpenChange={onOpenChange}
+        onOpenChangeOption={onOpenChangeOption}
+        onOpenOption={onOpenOption}
+        post={post}
+        repost={repost}
+        repostsAmount={repostsAmount}
+      />
     );
   }
 
@@ -286,7 +193,10 @@ export default function RepostButton({
               </DropdownItem>
             )}
             <DropdownItem
-              onPress={onOpenOption}
+              onPress={() => {
+                onOpenOption();
+                onOpen();
+              }}
               startContent={
                 <Icons.quote className="w-[18px] h-[18px] fill-white" />
               }
@@ -307,6 +217,140 @@ export default function RepostButton({
           {repostsAmount.length}
         </p>
       </div>
+
+      <QuoteModal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        post={post}
+        currentUser={currentUser}
+      />
+    </>
+  );
+}
+
+type RepostButtonMobile = {
+  onOpenOption: () => void;
+  isRepostedByCurrentUser: boolean;
+  repostsAmount: RepostT[];
+  onOpenChangeOption: () => void;
+  isOpenOption: boolean;
+  repost: () => void;
+  onOpen: () => void;
+  post: ExtendedPost | ExtendedPostWithoutUserTwo;
+  isOpen: boolean;
+  onOpenChange: () => void;
+  currentUser: UserWithFollowersFollowing;
+};
+export function RepostButtonMobile({
+  onOpenOption,
+  isRepostedByCurrentUser,
+  repostsAmount,
+  onOpenChangeOption,
+  isOpenOption,
+  repost,
+  onOpen,
+  post,
+  isOpen,
+  onOpenChange,
+  currentUser,
+}: RepostButtonMobile) {
+  return (
+    <>
+      <div className="flex items-center group">
+        <Button
+          onPress={onOpenOption}
+          size="sm"
+          isIconOnly
+          className="rounded-full bg-transparent flex items-center justify-center gap-2 group-hover:bg-green-600/10"
+        >
+          <Icons.repost
+            className={cn(
+              isRepostedByCurrentUser
+                ? "fill-green-600"
+                : "fill-gray group-hover:fill-green-600",
+              "w-[18px] h-[18px]"
+            )}
+          />
+        </Button>
+        <p
+          className={cn(
+            isRepostedByCurrentUser ? "text-green-600" : " text-gray ",
+            "text-sm group-hover:text-green-600 tabular-nums"
+          )}
+        >
+          {repostsAmount.length}
+        </p>
+      </div>
+
+      <Modal
+        hideCloseButton
+        size="4xl"
+        isOpen={isOpenOption}
+        placement="bottom"
+        onOpenChange={onOpenChangeOption}
+        classNames={{
+          base: "bg-black h-fit",
+          body: "px-0 pt-0 gap-0",
+          backdrop: "bg-backdrop",
+        }}
+        className="rounded-t-2xl m-0"
+        radius="none"
+      >
+        <ModalContent>
+          {(onCloseOption) => (
+            <ModalBody className="flex flex-col justify-between items-center">
+              <div className="w-full">
+                {isRepostedByCurrentUser ? (
+                  <Button
+                    onPress={() => {
+                      repost();
+                      onCloseOption();
+                    }}
+                    disableAnimation
+                    className="bg-black w-full rounded-t-2xl rounded-b-none h-11 font-bold leading-5 text-base flex justify-start data-[pressed=true]:bg-hover"
+                  >
+                    <Icons.repost className="h-5 w-5 fill-text" />
+                    Undo repost
+                  </Button>
+                ) : (
+                  <Button
+                    onPress={() => {
+                      repost();
+                      onCloseOption();
+                    }}
+                    disableAnimation
+                    className="bg-black w-full rounded-t-2xl rounded-b-none h-11 font-bold leading-5 text-base flex justify-start data-[pressed=true]:bg-hover"
+                  >
+                    <Icons.repost className="h-5 w-5 fill-text" />
+                    Repost
+                  </Button>
+                )}
+                <Button
+                  onPress={() => {
+                    // onOpenOption();
+                    onOpen();
+                    onCloseOption();
+                  }}
+                  disableAnimation
+                  className="bg-black w-full h-11 rounded-none font-bold leading-5 text-base flex justify-start data-[pressed=true]:bg-hover"
+                >
+                  <Icons.quote className="h-5 w-5 fill-text" />
+                  Quote
+                </Button>
+              </div>
+              <div className="px-4 py-3 w-full">
+                <Button
+                  onPress={onCloseOption}
+                  disableAnimation
+                  className="w-full h-11 border-text/70 border-1 rounded-full font-bold leading-5 text-base bg-black data-[pressed=true]:bg-text/25"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </ModalBody>
+          )}
+        </ModalContent>
+      </Modal>
 
       <QuoteModal
         isOpen={isOpen}

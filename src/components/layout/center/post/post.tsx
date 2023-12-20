@@ -92,7 +92,6 @@ export default function Post({
           </div>
           <div className="relative right-8 bottom-1">
             <Button
-              onClick={(e) => console.log("click")}
               isIconOnly
               size="sm"
               className="absolute rounded-full bg-transparent data-[hover=true]:bg-blue/10 group"

@@ -20,7 +20,6 @@ import { Icons } from "@/components/icons";
 import AttachmentPost from "./attachment-post";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import PostActionButton from "./action-button/post-action-button";
-import dynamic from "next/dynamic";
 import InlineReplyFormEditor from "../reply/inline-reply/inline-reply-form-editor";
 
 type SinglePostProps = {
