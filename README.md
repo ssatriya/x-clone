@@ -20,15 +20,7 @@ Welcome to the X Clone App (formerly known as Twitter) repository! This project 
 
 ## TODO 📝
 
-- [ ] Improve code, refactor component to make it more reuseable, readable and easy to understand.
-- [ ] Implement followed only homepage.
-- [ ] Display following and followed page.
-- [ ] Add real-time updates for notifications.
-- [ ] Add upload and display video & gif functionality.
-- [ ] Implement S3 as media storage (currently using [uploadthing](https://uploadthing.com/)).
-- [ ] Implement unit and integration testing (as part of my learning).
-- [x] Change lightbox page using modal (currently using Nextjs intercepting routes).
-- [ ] Complete main functionality, turns out I forgot to do the quote modal and related functionality.
+- [ ] Complete the basic functionality like following/followers page, single page for post and quotes.
 
 ## Knwon Bug 🐞
 
