@@ -5,7 +5,6 @@ import UserTooltip from "../user-tooltip";
 import { UserWithFollowersFollowing } from "@/types/db";
 import * as React from "react";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 
 type UserPostAvatarProps = {
   user: UserWithFollowersFollowing;

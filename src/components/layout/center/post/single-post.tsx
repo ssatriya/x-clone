@@ -1,25 +1,17 @@
 "use client";
 
 import {
-  ExtendedPost,
   ExtendedPostWithoutUserTwo,
   UserWithFollowersFollowing,
 } from "@/types/db";
 import UserPostAvatar from "./user-post-avatar";
-import {
-  formatSinglePostDate,
-  formatTimeToNow,
-  removeAtSymbol,
-} from "@/lib/utils";
-import UserPostName from "./user-post-name";
-import UserTooltip from "../user-tooltip";
-import Link from "next/link";
+import { formatSinglePostDate, removeAtSymbol } from "@/lib/utils";
 import SinglePostUsername from "./single-post-username";
 import { Avatar, Button, Divider } from "@nextui-org/react";
 import { Icons } from "@/components/icons";
-import AttachmentPost from "./attachment-post";
+import AttachmentPost from "./post-attachment";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
-import PostActionButton from "./action-button/post-action-button";
+import PostActionButton from "@/components/layout/center/action-button/post-action-button";
 import InlineReplyFormEditor from "../reply/inline-reply/inline-reply-form-editor";
 
 type SinglePostProps = {

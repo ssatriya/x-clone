@@ -14,20 +14,20 @@ import ReplyItem from "./reply-item";
 
 type ReplyProps = {
   currentUser: UserWithFollowersFollowing;
-  post: ExtendedPost | ExtendedPostWithoutUserTwo;
+  postId: string;
 };
 
-export default function Reply({ post, currentUser }: ReplyProps) {
+export default function Reply({ postId, currentUser }: ReplyProps) {
   const {
     data: replyData,
     isLoading,
     isInitialLoading,
   } = useQuery({
-    queryKey: ["replyComment", post.id],
+    queryKey: ["replyComment", postId],
     queryFn: async () => {
       const { data } = await axios.get("/api/post/reply/post-reply", {
         params: {
-          postId: post.id,
+          postId: postId,
         },
       });
 

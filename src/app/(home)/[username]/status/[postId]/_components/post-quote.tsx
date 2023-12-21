@@ -1,6 +1,6 @@
 "use client";
 
-import AttachmentPost from "@/components/layout/center/post/attachment-post";
+import AttachmentPost from "@/components/layout/center/post/post-attachment";
 import UserTooltip from "@/components/layout/center/user-tooltip";
 import { formatTimeToNow } from "@/lib/utils";
 import { UserWithFollowersFollowing } from "@/types/db";

@@ -23,7 +23,7 @@ import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import UserTooltip from "@/components/layout/center/user-tooltip";
 import Link from "next/link";
 import { formatTimeToNow, truncateString } from "@/lib/utils";
-import AttachmentPost from "@/components/layout/center/post/attachment-post";
+import AttachmentPost from "@/components/layout/center/post/post-attachment";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { AttachmentType } from "@/types/types";

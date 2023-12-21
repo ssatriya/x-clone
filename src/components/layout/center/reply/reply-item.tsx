@@ -8,7 +8,7 @@ import UserPostAvatar from "../post/user-post-avatar";
 import UserPostName from "../post/user-post-name";
 import { formatTimeToNow, removeAtSymbol } from "@/lib/utils";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
-import AttachmentPost from "../post/attachment-post";
+import AttachmentPost from "../post/post-attachment";
 import PostActionButton from "../post/action-button/post-action-button";
 import { Button } from "@nextui-org/react";
 import { Icons } from "@/components/icons";

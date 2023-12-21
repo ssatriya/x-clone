@@ -2,34 +2,38 @@
 
 import * as React from "react";
 import { cn, removeAtSymbol } from "@/lib/utils";
-import { ExtendedPost, UserWithFollowersFollowing } from "@/types/db";
+import {
+  ExtendedPost,
+  ExtendedPostWithoutUserTwo,
+  UserWithFollowersFollowing,
+} from "@/types/db";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useDisclosure } from "@nextui-org/react";
+
 import { usePrevPath } from "@/hooks/usePrevPath";
 import { usePhotoNumber } from "@/hooks/usePhotoNumber";
 import { usePhotoModal } from "@/hooks/usePhotoModal";
-import { useDisclosure } from "@nextui-org/react";
-import LightboxQuoteAttachment from "../post/lightbox/quote/lightbox-quote-attachment";
+import LightboxPostModal from "@/components/layout/center/lightbox/post/lightbox-post-modal";
 
-type QuoteAttachmentProps = {
-  post: ExtendedPost;
+type PostAttachmentProps = {
+  post: ExtendedPost | ExtendedPostWithoutUserTwo;
   imageUrl: string;
   currentUser: UserWithFollowersFollowing;
 };
 
-export default function QuoteAttachment({
+export default function PostAttachment({
   imageUrl,
   post,
   currentUser,
-}: QuoteAttachmentProps) {
+}: PostAttachmentProps) {
   const path = usePathname();
   const setPhotoNumber = usePhotoNumber((state) => state.setPhotoNumber);
-  const cleanUsername = removeAtSymbol(post.original_repost!.user_one.username);
-
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { isOpen, onClose, onOpenChange, onOpen } = useDisclosure();
 
   const scrollClickHandle = () => {
-    const singlePost = `/${cleanUsername}/status/${post.original_repost!.id}`;
+    const cleanUsername = removeAtSymbol(post.user_one.username);
+    const singlePost = `/${cleanUsername}/status/${post.id}`;
 
     window.open(singlePost);
   };
@@ -57,6 +61,7 @@ export default function QuoteAttachment({
   // const isOpen = usePhotoModal((state) => state.isOpen);
   const modalId = usePhotoModal((state) => state.id);
 
+  const cleanUsername = removeAtSymbol(post.user_one.username);
   return (
     <div className={cn(className)}>
       {imageUrlArray.map((image, i) => {
@@ -65,25 +70,25 @@ export default function QuoteAttachment({
           "row-span-2": fill,
         });
 
-        let borderImage: string = "rounded-xl";
+        let borderImage: string = "rounded-2xl";
 
         if (imageUrlArray.length === 4) {
           borderImage = cn({
-            "rounded-tl-xl": i === 0,
-            "rounded-tr-xl": i === 1,
-            "rounded-bl-xl": i === 2,
-            "rounded-br-xl": i === 3,
+            "rounded-tl-2xl": i === 0,
+            "rounded-tr-2xl": i === 1,
+            "rounded-bl-2xl": i === 2,
+            "rounded-br-2xl": i === 3,
           });
         } else if (imageUrlArray.length === 3) {
           borderImage = cn({
-            "rounded-l-xl": i === 0,
-            "rounded-tr-xl": i === 1,
-            "rounded-br-xl": i === 2,
+            "rounded-l-2xl": i === 0,
+            "rounded-tr-2xl": i === 1,
+            "rounded-br-2xl": i === 2,
           });
         } else if (imageUrlArray.length === 2) {
           borderImage = cn({
-            "rounded-l-xl": i === 0,
-            "rounded-r-xl": i === 1,
+            "rounded-l-2xl": i === 0,
+            "rounded-r-2xl": i === 1,
           });
         }
 
@@ -106,10 +111,9 @@ export default function QuoteAttachment({
                   window.history.pushState(
                     "page2",
                     "Title",
-                    `/${cleanUsername}/status/${
-                      post.original_repost!.id
-                    }/photo/${i + 1}`
+                    `/${cleanUsername}/status/${post.id}/photo/${i + 1}`
                   );
+
                   setPhotoNumber(i + 1);
                 }}
                 src={image}
@@ -147,7 +151,7 @@ export default function QuoteAttachment({
           </div>
         );
       })}
-      <LightboxQuoteAttachment
+      <LightboxPostModal
         modalId={modalId}
         onClose={onClose}
         isOpen={isOpen}
@@ -155,6 +159,7 @@ export default function QuoteAttachment({
         currentUser={currentUser}
         imageUrlArray={imageUrlArray}
         post={post}
+        postId={post.id}
       />
     </div>
   );

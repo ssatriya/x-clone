@@ -9,7 +9,7 @@ import Link from "next/link";
 import UserTooltip from "../user-tooltip";
 import { Avatar } from "@nextui-org/react";
 import { formatTimeToNow, removeAtSymbol, truncateString } from "@/lib/utils";
-import AttachmentPost from "../post/attachment-post";
+import AttachmentPost from "../post/post-attachment";
 import PostActionButton from "../post/action-button/post-action-button";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import UserPostName from "../post/user-post-name";

@@ -12,7 +12,7 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import * as React from "react";
 import PostActionButton from "../../layout/center/post/action-button/post-action-button";
-import LightboxPost from "../../layout/center/post/lightbox/lightbox-post";
+import LightboxPost from "../../layout/center/post/lightbox/post/lightbox-post-content";
 import Reply from "../../layout/center/reply/reply";
 import { usePrevPath } from "@/hooks/usePrevPath";
 import Link from "next/link";

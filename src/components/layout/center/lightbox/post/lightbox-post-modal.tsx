@@ -13,25 +13,24 @@ import {
 } from "@/types/db";
 import { usePhotoNumber } from "@/hooks/usePhotoNumber";
 import { cn } from "@/lib/utils";
-import ImageSlider from "./image-slider";
-import LightboxPost from "./lightbox-post";
-import Reply from "../../reply/reply";
-import PostActionButton from "../action-button/post-action-button";
+import ImageSlider from "../image-slider";
+import LightboxPost from "./lightbox-post-content";
+import Reply from "../../../reply/reply";
+import PostActionButton from "../../action-button/post-action-button";
 import { usePhotoModal } from "@/hooks/usePhotoModal";
-import LightboxPostAttachment from "./lightbox-post-attachment";
-import { createPortal } from "react-dom";
 
-type LightboxQuoteAttachmentProps = {
+type LightboxPostModalProps = {
   onClose: () => void;
   isOpen: boolean;
   modalId: string;
   imageUrlArray: string[];
   username: string;
-  post: ExtendedPost;
+  post: ExtendedPostWithoutUserTwo;
   currentUser: UserWithFollowersFollowing;
+  postId: string;
 };
 
-export default function LightboxQuoteAttachment({
+export default function LightboxPostModal({
   onClose,
   isOpen,
   modalId,
@@ -39,7 +38,8 @@ export default function LightboxQuoteAttachment({
   username,
   post,
   currentUser,
-}: LightboxQuoteAttachmentProps) {
+  postId,
+}: LightboxPostModalProps) {
   const prevPath = usePrevPath((state) => state.path);
 
   const [isLightboxPostOpen, setIsLightboxPostOpen] = React.useState(true);
@@ -65,28 +65,28 @@ export default function LightboxQuoteAttachment({
   };
 
   return (
-    isOpen &&
-    createPortal(
+    isOpen && (
       <>
         <div
           role="dialog"
-          className="fixed inset-0 flex items-center justify-center z-50"
+          className="fixed inset-0 flex items-center justify-center z-[50]"
+          onClick={(e) => {
+            console.log("dialog");
+            e.stopPropagation();
+            e.preventDefault();
+          }}
         >
-          <div className="fixed inset-0 bg-black/80 z-50" />
           <div
-            className="flex relative w-full h-full z-[60]"
-            onClick={() => {
-              onClose();
-              console.log("click");
+            className="fixed inset-0 bg-black/70 z-40"
+            onClick={(e) => {
+              console.log("overlay");
+
+              e.stopPropagation();
+              e.preventDefault();
             }}
-          >
-            <div
-              className="relative flex-1"
-              onClick={() => {
-                onClose();
-                console.log("click");
-              }}
-            >
+          />
+          <div className="flex relative w-full h-full z-50">
+            <div className="relative flex-1">
               <Button
                 onClick={onClose}
                 isIconOnly
@@ -139,7 +139,7 @@ export default function LightboxQuoteAttachment({
                 className="flex-none w-[350px] bg-black border-l z-40 h-full pt-3 overflow-y-auto hidden lg:block"
                 onClick={(e) => e.stopPropagation()}
               >
-                <LightboxPostAttachment
+                <LightboxPost
                   currentUser={currentUser}
                   post={post}
                   userPosted={post.user_one.avatar}
@@ -148,13 +148,12 @@ export default function LightboxQuoteAttachment({
                   orientation="horizontal"
                   className="mt-3 bg-border h-[1px]"
                 />
-                <Reply post={post} currentUser={currentUser} />
+                <Reply postId={post.id} currentUser={currentUser} />
               </div>
             )}
           </div>
         </div>
-      </>,
-      document.body
+      </>
     )
   );
 }

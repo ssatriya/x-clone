@@ -15,28 +15,28 @@ import Link from "next/link";
 
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import { Post } from "@prisma/client";
-import UserPostAvatar from "../user-post-avatar";
-import UserPostName from "../user-post-name";
-import AttachmentPost from "../attachment-post";
-import PostActionButton from "../action-button/post-action-button";
+import UserPostAvatar from "../../user-post-avatar";
+import UserPostName from "../../user-post-name";
+import AttachmentPost from "../../post-attachment";
+import PostActionButton from "../../action-button/post-action-button";
 import { Button, Divider, user } from "@nextui-org/react";
-import InlineReplyFormEditor from "../../reply/inline-reply/inline-reply-form-editor";
+import InlineReplyFormEditor from "../../../reply/inline-reply/inline-reply-form-editor";
 import { Icons } from "@/components/icons";
-import PostUsername from "../username/post-username";
+import PostUsername from "../../username/post-username";
 
-type LightboxPostAttachmentProps = {
+type LightboxQuoteContentProps = {
   post: ExtendedPost;
   userPosted: string;
   currentUser: UserWithFollowersFollowing;
   classNames?: string;
 };
 
-export default function LightboxPostAttachment({
+export default function LightboxQuoteContent({
   post,
   currentUser,
   userPosted,
   classNames,
-}: LightboxPostAttachmentProps) {
+}: LightboxQuoteContentProps) {
   const usernameWithoutAt = removeAtSymbol(post.user_two.username);
   const postURL = `/${usernameWithoutAt}/status/${post.id}`;
 

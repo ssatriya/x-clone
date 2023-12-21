@@ -7,10 +7,9 @@ import {
   UserWithFollowersFollowing,
 } from "@/types/db";
 import { cn, formatTimeToNow, removeAtSymbol } from "@/lib/utils";
-import PostActionButton from "./action-button/post-action-button";
-import AttachmentPost from "./attachment-post";
+import PostActionButton from "@/components/layout/center/action-button/post-action-button";
+import AttachmentPost from "./post-attachment";
 import UserPostAvatar from "./user-post-avatar";
-import UserPostName from "./user-post-name";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import { Post } from "@prisma/client";
 import { Button } from "@nextui-org/react";
@@ -20,7 +19,7 @@ import { usePrevPath } from "@/hooks/usePrevPath";
 
 import { usePathname } from "next/navigation";
 import { usePhotoNumber } from "@/hooks/usePhotoNumber";
-import PostUsername from "./username/post-username";
+import PostUsername from "@/components/layout/center/username/post-username";
 
 type PostProps = {
   post: ExtendedPostWithoutUserTwo;

@@ -6,11 +6,11 @@ import {
   UserWithFollowersFollowing,
 } from "@/types/db";
 import { formatTimeToNow, removeAtSymbol } from "@/lib/utils";
-import PostActionButton from "./action-button/post-action-button";
+import PostActionButton from "@/components/layout/center/action-button/post-action-button";
 import Link from "next/link";
 import UserTooltip from "../user-tooltip";
 import * as React from "react";
-import AttachmentPost from "./attachment-post";
+import AttachmentPost from "./post-attachment";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import UserPostAvatar from "./user-post-avatar";
 import { Icons } from "@/components/icons";
