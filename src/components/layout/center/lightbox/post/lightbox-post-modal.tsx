@@ -5,19 +5,16 @@ import * as React from "react";
 import { Icons } from "@/components/icons";
 import { usePrevPath } from "@/hooks/usePrevPath";
 import { Button, Divider } from "@nextui-org/react";
-import Image from "next/image";
+
 import {
-  ExtendedPost,
   ExtendedPostWithoutUserTwo,
   UserWithFollowersFollowing,
 } from "@/types/db";
-import { usePhotoNumber } from "@/hooks/usePhotoNumber";
 import { cn } from "@/lib/utils";
 import ImageSlider from "../image-slider";
 import LightboxPost from "./lightbox-post-content";
-import Reply from "../../../reply/reply";
+import Reply from "@/components/layout/center/reply/reply";
 import PostActionButton from "../../action-button/post-action-button";
-import { usePhotoModal } from "@/hooks/usePhotoModal";
 
 type LightboxPostModalProps = {
   onClose: () => void;

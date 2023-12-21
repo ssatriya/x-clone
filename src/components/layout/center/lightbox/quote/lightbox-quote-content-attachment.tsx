@@ -1,26 +1,14 @@
 "use client";
 
-import {
-  ExtendedPost,
-  ExtendedPostWithoutUserTwo,
-  UserWithFollowersFollowing,
-} from "@/types/db";
-import {
-  cn,
-  formatSinglePostDate,
-  formatTimeToNow,
-  removeAtSymbol,
-} from "@/lib/utils";
-import Link from "next/link";
+import { ExtendedPost, UserWithFollowersFollowing } from "@/types/db";
+import { cn, formatSinglePostDate, removeAtSymbol } from "@/lib/utils";
 
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
-import { Post } from "@prisma/client";
-import UserPostAvatar from "../../user-post-avatar";
-import UserPostName from "../../user-post-name";
-import AttachmentPost from "../../post-attachment";
+import UserPostAvatar from "../../post/user-post-avatar";
+
 import PostActionButton from "../../action-button/post-action-button";
-import { Button, Divider, user } from "@nextui-org/react";
-import InlineReplyFormEditor from "../../../reply/inline-reply/inline-reply-form-editor";
+import { Button, Divider } from "@nextui-org/react";
+import InlineReplyFormEditor from "../../reply/inline-reply/inline-reply-form-editor";
 import { Icons } from "@/components/icons";
 import PostUsername from "../../username/post-username";
 

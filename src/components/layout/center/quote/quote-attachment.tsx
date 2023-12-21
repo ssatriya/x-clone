@@ -9,7 +9,7 @@ import { usePrevPath } from "@/hooks/usePrevPath";
 import { usePhotoNumber } from "@/hooks/usePhotoNumber";
 import { usePhotoModal } from "@/hooks/usePhotoModal";
 import { useDisclosure } from "@nextui-org/react";
-import LightboxQuoteAttachment from "../post/lightbox/quote/lightbox-quote-attachment";
+import LightboxQuoteAttachment from "../lightbox/quote/lightbox-quote-attachment";
 
 type QuoteAttachmentProps = {
   post: ExtendedPost;

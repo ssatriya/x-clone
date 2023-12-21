@@ -6,15 +6,14 @@ import {
 import Link from "next/link";
 import UserTooltip from "../user-tooltip";
 import { Avatar, Button } from "@nextui-org/react";
-import { formatTimeToNow, removeAtSymbol, truncateString } from "@/lib/utils";
+import { formatTimeToNow, removeAtSymbol } from "@/lib/utils";
 import AttachmentPost from "../post/post-attachment";
-import PostActionButton from "../post/action-button/post-action-button";
+import PostActionButton from "../action-button/post-action-button";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
-import UserPostName from "../post/user-post-name";
 import { useMediaQuery } from "@mantine/hooks";
 import QuoteAttachment from "./quote-attachment";
 import { Icons } from "@/components/icons";
-import PostUsername from "../post/username/post-username";
+import PostUsername from "../username/post-username";
 
 type QuoteItemProps = {
   post: ExtendedPost;

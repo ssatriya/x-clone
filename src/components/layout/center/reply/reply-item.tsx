@@ -5,13 +5,13 @@ import {
 } from "@/types/db";
 import Link from "next/link";
 import UserPostAvatar from "../post/user-post-avatar";
-import UserPostName from "../post/user-post-name";
 import { formatTimeToNow, removeAtSymbol } from "@/lib/utils";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import AttachmentPost from "../post/post-attachment";
-import PostActionButton from "../post/action-button/post-action-button";
+import PostActionButton from "../action-button/post-action-button";
 import { Button } from "@nextui-org/react";
 import { Icons } from "@/components/icons";
+import PostUsername from "../username/post-username";
 
 type ReplyItemProps = {
   post: ExtendedPost;
@@ -59,12 +59,16 @@ export default function ReplyItem({
         <div className="flex flex-col w-full">
           <div className="w-full flex flex-col ml-2">
             <div className="flex items-center gap-2">
-              <UserPostName
+              <PostUsername
+                name={post.user_one.username}
+                username={post.user_one.username}
+                userId={post.user_one.id}
+                avatar={post.user_one.avatar}
+                bio={post.user_one.bio}
+                userFollowers={post.user_one.followers}
+                userFollowing={post.user_one.following}
                 currentUser={currentUser}
-                post={post}
-                usernameWithoutAt={usernameWithoutAt}
-                align="ROW"
-                truncate={true}
+                align="row"
               />
               <span className="text-gray">·</span>
               <p className="text-gray">

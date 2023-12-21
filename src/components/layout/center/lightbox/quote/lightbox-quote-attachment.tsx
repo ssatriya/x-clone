@@ -15,7 +15,7 @@ import { usePhotoNumber } from "@/hooks/usePhotoNumber";
 import { cn } from "@/lib/utils";
 import ImageSlider from "../image-slider";
 import LightboxPost from "../post/lightbox-post-content";
-import Reply from "../../../reply/reply";
+import Reply from "../../reply/reply";
 import PostActionButton from "../../action-button/post-action-button";
 import { usePhotoModal } from "@/hooks/usePhotoModal";
 import LightboxPostAttachment from "./lightbox-quote-content-attachment";
