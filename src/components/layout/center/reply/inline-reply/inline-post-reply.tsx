@@ -56,7 +56,7 @@ export default function InlinePostReply({
 
       <div className="min-h-screen">
         <SinglePost currentUser={currentUser} post={post} />
-        <Reply post={post} currentUser={currentUser} />
+        <Reply postId={post.id} currentUser={currentUser} />
       </div>
     </>
   );
