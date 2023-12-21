@@ -10,14 +10,15 @@ import UserTooltip from "../user-tooltip";
 import { Avatar } from "@nextui-org/react";
 import { formatTimeToNow, removeAtSymbol, truncateString } from "@/lib/utils";
 import AttachmentPost from "../post/post-attachment";
-import PostActionButton from "../post/action-button/post-action-button";
+import PostActionButton from "../action-button/post-action-button";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
-import UserPostName from "../post/user-post-name";
+
 import { useMediaQuery } from "@mantine/hooks";
 import QuoteAttachment from "../quote/quote-attachment";
+import PostUsername from "../username/post-username";
 
 type QuoteSinglePostProps = {
-  post: ExtendedPostWithoutUserTwo;
+  post: ExtendedPost;
   userPosted: string;
   currentUser: UserWithFollowersFollowing;
   postUserOwner: UserWithFollowersFollowing;
@@ -35,7 +36,6 @@ export default function QuoteSinglePost({
   const originalPostURL = `/${usernameOriginalPost}/status/${post.original_repost_post_id}`;
 
   const usernameWithoutAt = removeAtSymbol(post.user_one.username);
-  const postUrl = `/${usernameWithoutAt}/status/${post.id}`;
 
   const cfg = {};
   let originalPostContent = "";
@@ -78,28 +78,16 @@ export default function QuoteSinglePost({
 
       <div className="w-full flex flex-col">
         <div className="flex items-center gap-2">
-          {/* <UserTooltip user={post.user_one} currentUser={currentUser}>
-              <Link
-                href={`/${username}`}
-                className="font-bold hover:underline focus-visible:ring-0"
-              >
-                {post.user_one.name}
-              </Link>
-            </UserTooltip>
-            <UserTooltip user={post.user_one} currentUser={currentUser}>
-              <Link
-                href={`/${username}`}
-                className="text-gray focus-visible:ring-0"
-              >
-                {post.user_one.username}
-              </Link>
-            </UserTooltip> */}
-          <UserPostName
+          <PostUsername
+            username={post.user_one.username}
+            name={post.user_one.name}
+            avatar={post.user_one.avatar}
+            bio={post.user_one.bio}
+            userFollowers={post.user_one.followers}
+            userFollowing={post.user_one.following}
+            userId={post.user_one.id}
             currentUser={currentUser}
-            post={post}
-            usernameWithoutAt={usernameWithoutAt}
-            align="ROW"
-            truncate={false}
+            align="row"
           />
           <span className="text-gray">·</span>
           <p className="text-gray">
