@@ -14,6 +14,7 @@ import UserPostName from "../post/user-post-name";
 import { useMediaQuery } from "@mantine/hooks";
 import QuoteAttachment from "./quote-attachment";
 import { Icons } from "@/components/icons";
+import PostUsername from "../post/username/post-username";
 
 type QuoteItemProps = {
   post: ExtendedPost;
@@ -65,7 +66,7 @@ export default function QuoteItem({
   }
 
   return (
-    <div className="hover:bg-hover/30 transition-colors cursor-pointer flex justify-between py-2 px-4 gap-4 border-b relative">
+    <div className="hover:bg-hover/30 transition-colors cursor-pointer flex justify-between py-2 px-4 gap-2 border-b relative">
       <Link href={postUrl} className="absolute inset-0" />
       <div className="h-fit">
         <UserTooltip user={post.user_one} currentUser={currentUser}>
@@ -78,28 +79,16 @@ export default function QuoteItem({
       <div className="w-full flex flex-col">
         <div className="flex w-full justify-between">
           <div className="flex items-center gap-2">
-            {/* <UserTooltip user={post.user_one} currentUser={currentUser}>
-            <Link
-              href={`/${username}`}
-              className="font-bold hover:underline focus-visible:ring-0"
-            >
-              {post.user_one.name}
-            </Link>
-          </UserTooltip>
-          <UserTooltip user={post.user_one} currentUser={currentUser}>
-            <Link
-              href={`/${username}`}
-              className="text-gray focus-visible:ring-0"
-            >
-              {post.user_one.username}
-            </Link>
-          </UserTooltip> */}
-            <UserPostName
+            <PostUsername
+              name={post.user_one.name}
+              username={post.user_one.username}
+              avatar={post.user_one.avatar}
+              bio={post.user_one.bio}
+              userFollowers={post.user_one.followers}
+              userFollowing={post.user_one.following}
               currentUser={currentUser}
-              post={post}
-              usernameWithoutAt={usernameWithoutAt}
-              align="ROW"
-              truncate={false}
+              userId={post.user_one.id}
+              align="row"
             />
             <span className="text-gray">·</span>
             <p className="text-gray">
@@ -133,7 +122,7 @@ export default function QuoteItem({
           )}
         </div>
         <div className="flex flex-col space-y-3">
-          <div className="hover:bg-[#0e0e0e] transition-colors cursor-pointer flex h-fit overflow-hidden flex-col justify-between pt-4 px-4 mt-2 border rounded-xl border-[#2f3336] z-10 relative">
+          <div className="hover:bg-[#0e0e0e] transition-colors cursor-pointer flex h-fit overflow-hidden flex-col justify-between pt-4 px-4 mt-2 border rounded-2xl border-[#2f3336] z-10 relative">
             <Link href={originalPostURL} className="absolute inset-0" />
             <div className="flex gap-2 items-center mb-1">
               <UserTooltip user={postUserOwner} currentUser={currentUser}>
@@ -145,20 +134,17 @@ export default function QuoteItem({
                 />
               </UserTooltip>
               <div className="flex items-center gap-2">
-                <UserTooltip user={postUserOwner} currentUser={currentUser}>
-                  <p className="font-bold">
-                    {isMobile
-                      ? truncateString(postUserOwner.name, 10)
-                      : postUserOwner.name}
-                  </p>
-                </UserTooltip>
-                <UserTooltip user={postUserOwner} currentUser={currentUser}>
-                  <p className="text-[#555b61]">
-                    {isMobile
-                      ? truncateString(postUserOwner.username, 10)
-                      : postUserOwner.username}
-                  </p>
-                </UserTooltip>
+                <PostUsername
+                  name={postUserOwner.name}
+                  username={postUserOwner.username}
+                  avatar={postUserOwner.avatar}
+                  bio={postUserOwner.bio}
+                  userFollowers={postUserOwner.followers}
+                  userFollowing={postUserOwner.following}
+                  userId={postUserOwner.id}
+                  currentUser={currentUser}
+                  align="row"
+                />
                 <span className="text-gray">·</span>
                 <p className="text-[#555b61]">
                   {post.original_repost?.createdAt &&

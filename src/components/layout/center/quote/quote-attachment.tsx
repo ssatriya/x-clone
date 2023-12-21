@@ -26,7 +26,7 @@ export default function QuoteAttachment({
   const setPhotoNumber = usePhotoNumber((state) => state.setPhotoNumber);
   const cleanUsername = removeAtSymbol(post.original_repost!.user_one.username);
 
-  const { isOpen, onClose, onOpenChange, onOpen } = useDisclosure();
+  const { isOpen, onClose, onOpen } = useDisclosure();
 
   const scrollClickHandle = () => {
     const singlePost = `/${cleanUsername}/status/${post.original_repost!.id}`;
@@ -65,25 +65,25 @@ export default function QuoteAttachment({
           "row-span-2": fill,
         });
 
-        let borderImage: string = "rounded-2xl";
+        let borderImage: string = "rounded-xl";
 
         if (imageUrlArray.length === 4) {
           borderImage = cn({
-            "rounded-tl-2xl": i === 0,
-            "rounded-tr-2xl": i === 1,
-            "rounded-bl-2xl": i === 2,
-            "rounded-br-2xl": i === 3,
+            "rounded-tl-xl": i === 0,
+            "rounded-tr-xl": i === 1,
+            "rounded-bl-xl": i === 2,
+            "rounded-br-xl": i === 3,
           });
         } else if (imageUrlArray.length === 3) {
           borderImage = cn({
-            "rounded-l-2xl": i === 0,
-            "rounded-tr-2xl": i === 1,
-            "rounded-br-2xl": i === 2,
+            "rounded-l-xl": i === 0,
+            "rounded-tr-xl": i === 1,
+            "rounded-br-xl": i === 2,
           });
         } else if (imageUrlArray.length === 2) {
           borderImage = cn({
-            "rounded-l-2xl": i === 0,
-            "rounded-r-2xl": i === 1,
+            "rounded-l-xl": i === 0,
+            "rounded-r-xl": i === 1,
           });
         }
 

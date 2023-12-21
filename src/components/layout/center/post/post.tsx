@@ -20,6 +20,7 @@ import { usePrevPath } from "@/hooks/usePrevPath";
 
 import { usePathname } from "next/navigation";
 import { usePhotoNumber } from "@/hooks/usePhotoNumber";
+import PostUsername from "./username/post-username";
 
 type PostProps = {
   post: ExtendedPostWithoutUserTwo;
@@ -79,11 +80,16 @@ export default function Post({
       <div className="w-full flex flex-col h-full">
         <div className="flex w-full justify-between">
           <div className="flex items-center gap-2 z-10">
-            <UserPostName
+            <PostUsername
+              username={post.user_one.username}
+              name={post.user_one.name}
+              avatar={post.user_one.avatar}
+              bio={post.user_one.bio}
+              userFollowers={post.user_one.followers}
+              userFollowing={post.user_one.following}
+              userId={post.user_one.id}
               currentUser={currentUser}
-              post={post}
-              usernameWithoutAt={usernameWithoutAt}
-              align="ROW"
+              align="row"
             />
             <span className="text-gray">·</span>
             <p className="text-gray w-fit">
