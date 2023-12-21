@@ -17,6 +17,7 @@ import ImageSlider from "./image-slider";
 import LightboxPost from "./lightbox-post";
 import Reply from "../../reply/reply";
 import PostActionButton from "../action-button/post-action-button";
+import { usePhotoModal } from "@/hooks/usePhotoModal";
 
 type LightboxModalProps = {
   onClose: () => void;
@@ -26,6 +27,7 @@ type LightboxModalProps = {
   username: string;
   post: ExtendedPostWithoutUserTwo;
   currentUser: UserWithFollowersFollowing;
+  postId: string;
 };
 
 export default function LightboxModal({
@@ -36,6 +38,7 @@ export default function LightboxModal({
   username,
   post,
   currentUser,
+  postId,
 }: LightboxModalProps) {
   const prevPath = usePrevPath((state) => state.path);
 
@@ -61,19 +64,27 @@ export default function LightboxModal({
     setIsLightboxPostOpen((prev) => !prev);
   };
 
-  if (modalId !== post.id) {
-    return;
-  }
-
   return (
     isOpen && (
       <>
         <div
           role="dialog"
-          className="fixed inset-0 flex items-center justify-center z-40"
+          className="fixed inset-0 flex items-center justify-center z-[50]"
+          onClick={(e) => {
+            console.log("dialog");
+            e.stopPropagation();
+            e.preventDefault();
+          }}
         >
-          <div className="fixed inset-0 bg-black lg:opacity-90"></div>
+          <div
+            className="fixed inset-0 bg-black/70 z-40"
+            onClick={(e) => {
+              console.log("overlay");
 
+              e.stopPropagation();
+              e.preventDefault();
+            }}
+          />
           <div className="flex relative w-full h-full z-50">
             <div className="relative flex-1">
               <Button
@@ -104,6 +115,8 @@ export default function LightboxModal({
                     slides={imageUrlArray}
                     username={username}
                     post={post}
+                    onClose={onClose}
+                    isOpen={isOpen}
                   />
                 </div>
                 <div className="w-fit">

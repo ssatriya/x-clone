@@ -2,22 +2,17 @@
 
 import * as React from "react";
 import { cn, removeAtSymbol } from "@/lib/utils";
-import {
-  ExtendedPost,
-  ExtendedPostWithoutUserTwo,
-  UserWithFollowersFollowing,
-} from "@/types/db";
+import { ExtendedPost, UserWithFollowersFollowing } from "@/types/db";
 import Image from "next/image";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { usePrevPath } from "@/hooks/usePrevPath";
-import { useDisclosure } from "@nextui-org/react";
 import { usePhotoNumber } from "@/hooks/usePhotoNumber";
 import { usePhotoModal } from "@/hooks/usePhotoModal";
-import LightboxModal from "../post/lightbox/lightbox-modal";
+import { useDisclosure } from "@nextui-org/react";
+import LightboxQuoteAttachment from "../post/lightbox/lightbox-quote-attachment";
 
 type QuoteAttachmentProps = {
-  post: ExtendedPost | ExtendedPostWithoutUserTwo;
+  post: ExtendedPost;
   imageUrl: string;
   currentUser: UserWithFollowersFollowing;
 };
@@ -29,10 +24,12 @@ export default function QuoteAttachment({
 }: QuoteAttachmentProps) {
   const path = usePathname();
   const setPhotoNumber = usePhotoNumber((state) => state.setPhotoNumber);
-  const cleanUsername = removeAtSymbol(post.user_one.username);
+  const cleanUsername = removeAtSymbol(post.original_repost!.user_one.username);
+
+  const { isOpen, onClose, onOpenChange, onOpen } = useDisclosure();
 
   const scrollClickHandle = () => {
-    const singlePost = `/${cleanUsername}/status/${post.original_repost.id}`;
+    const singlePost = `/${cleanUsername}/status/${post.original_repost!.id}`;
 
     window.open(singlePost);
   };
@@ -55,9 +52,9 @@ export default function QuoteAttachment({
     prevPath(path);
   };
 
-  const onOpen = usePhotoModal((state) => state.onOpen);
-  const onClose = usePhotoModal((state) => state.onClose);
-  const isOpen = usePhotoModal((state) => state.isOpen);
+  // const onOpen = usePhotoModal((state) => state.onOpen);
+  // const onClose = usePhotoModal((state) => state.onClose);
+  // const isOpen = usePhotoModal((state) => state.isOpen);
   const modalId = usePhotoModal((state) => state.id);
 
   return (
@@ -105,15 +102,14 @@ export default function QuoteAttachment({
             >
               <Image
                 onClick={() => {
-                  onOpen(post.original_repost.id);
+                  onOpen();
                   window.history.pushState(
                     "page2",
                     "Title",
                     `/${cleanUsername}/status/${
-                      post.original_repost.id
+                      post.original_repost!.id
                     }/photo/${i + 1}`
                   );
-
                   setPhotoNumber(i + 1);
                 }}
                 src={image}
@@ -151,7 +147,7 @@ export default function QuoteAttachment({
           </div>
         );
       })}
-      <LightboxModal
+      <LightboxQuoteAttachment
         modalId={modalId}
         onClose={onClose}
         isOpen={isOpen}

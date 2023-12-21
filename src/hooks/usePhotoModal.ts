@@ -11,5 +11,5 @@ export const usePhotoModal = create<PhotoModalStore>((set) => ({
   id: "",
   isOpen: false,
   onOpen: (id: string) => set({ isOpen: true, id }),
-  onClose: () => set({ isOpen: false, id: undefined }),
+  onClose: () => set({ isOpen: false, id: "" }),
 }));

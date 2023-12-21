@@ -29,6 +29,7 @@ export default function AttachmentPost({
 }: AttachmentPostProps) {
   const path = usePathname();
   const setPhotoNumber = usePhotoNumber((state) => state.setPhotoNumber);
+  const { isOpen, onClose, onOpenChange, onOpen } = useDisclosure();
 
   const scrollClickHandle = () => {
     const cleanUsername = removeAtSymbol(post.user_one.username);
@@ -55,9 +56,9 @@ export default function AttachmentPost({
     prevPath(path);
   };
 
-  const onOpen = usePhotoModal((state) => state.onOpen);
-  const onClose = usePhotoModal((state) => state.onClose);
-  const isOpen = usePhotoModal((state) => state.isOpen);
+  // const onOpen = usePhotoModal((state) => state.onOpen);
+  // const onClose = usePhotoModal((state) => state.onClose);
+  // const isOpen = usePhotoModal((state) => state.isOpen);
   const modalId = usePhotoModal((state) => state.id);
 
   const cleanUsername = removeAtSymbol(post.user_one.username);
@@ -106,7 +107,7 @@ export default function AttachmentPost({
             >
               <Image
                 onClick={() => {
-                  onOpen(post.id);
+                  onOpen();
                   window.history.pushState(
                     "page2",
                     "Title",
@@ -158,6 +159,7 @@ export default function AttachmentPost({
         currentUser={currentUser}
         imageUrlArray={imageUrlArray}
         post={post}
+        postId={post.id}
       />
     </div>
   );

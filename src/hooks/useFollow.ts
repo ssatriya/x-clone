@@ -26,8 +26,12 @@ export const useFollow = (userByUsernameId: string, currentUserId: string) => {
       } else if (data === "Unfollowed") {
         toast.error("Unfollowed");
       }
-      queryClient.invalidateQueries({ queryKey: ["followersData"] });
-      queryClient.invalidateQueries({ queryKey: ["followingData"] });
+      queryClient.invalidateQueries({
+        queryKey: ["followersData", currentUserId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["followingData", currentUserId],
+      });
       queryClient.invalidateQueries({ queryKey: ["currUFollowing"] });
     },
   });

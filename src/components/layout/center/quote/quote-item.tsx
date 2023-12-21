@@ -1,4 +1,5 @@
 import {
+  ExtendedPost,
   ExtendedPostWithoutUserTwo,
   UserWithFollowersFollowing,
 } from "@/types/db";
@@ -15,7 +16,7 @@ import QuoteAttachment from "./quote-attachment";
 import { Icons } from "@/components/icons";
 
 type QuoteItemProps = {
-  post: ExtendedPostWithoutUserTwo;
+  post: ExtendedPost;
   userPosted: string;
   currentUser: UserWithFollowersFollowing;
   postUserOwner: UserWithFollowersFollowing;
@@ -28,7 +29,6 @@ export default function QuoteItem({
   postUserOwner,
 }: QuoteItemProps) {
   const isMobile = useMediaQuery("(max-width: 420px)");
-
   const usernameOriginalPost = removeAtSymbol(postUserOwner.username);
   const originalPostURL = `/${usernameOriginalPost}/status/${post.original_repost_post_id}`;
 

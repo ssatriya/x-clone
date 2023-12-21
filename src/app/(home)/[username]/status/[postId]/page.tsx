@@ -54,13 +54,16 @@ export default async function PostPage({ params }: PostPageProps) {
       id: params.postId,
     },
     include: {
-      user_one: true,
+      user_one: {},
       user_two: true,
       original_repost: {
         include: {
           user_one: true,
         },
       },
+      replys: true,
+      reposts: true,
+      likes: true,
     },
   });
 
@@ -70,7 +73,6 @@ export default async function PostPage({ params }: PostPageProps) {
 
   return (
     <div>
-      {/* <p>Currently not available</p> */}
       {post.post_type === "POST" && (
         <PostRepost post={post} username={post.user_one.name} />
       )}

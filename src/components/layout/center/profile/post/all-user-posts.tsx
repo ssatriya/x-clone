@@ -7,6 +7,7 @@ import Post from "../../post/post";
 import { User } from "@prisma/client";
 import Repost from "../../post/repost";
 import ReplyItem from "../../reply/reply-item";
+import QuoteItem from "../../quote/quote-item";
 
 type AllUserPostsProps = {
   userByUsername: User;
@@ -86,6 +87,17 @@ export default function AllUserPosts({
                     />
                   </li>
                 );
+              } else if (post.post_type === "QUOTE") {
+                return (
+                  <li key={post.id} ref={ref}>
+                    <QuoteItem
+                      post={post}
+                      userPosted={post.user_one.avatar}
+                      currentUser={currentUser!}
+                      postUserOwner={post.user_two}
+                    />
+                  </li>
+                );
               }
             } else {
               if (post.post_type === "POST") {
@@ -117,6 +129,16 @@ export default function AllUserPosts({
                     currentUser={currentUser!}
                     postUserOwner={post.user_two}
                     disabledNote={false}
+                  />
+                );
+              } else if (post.post_type === "QUOTE") {
+                return (
+                  <QuoteItem
+                    key={post.id}
+                    post={post}
+                    currentUser={currentUser!}
+                    postUserOwner={post.user_two}
+                    userPosted={post.user_one.avatar}
                   />
                 );
               }

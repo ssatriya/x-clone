@@ -13,16 +13,20 @@ type ImageSliderProps = {
   slides: string[];
   username: string;
   post: ExtendedPost | ExtendedPostWithoutUserTwo;
+  onClose: () => void;
+  isOpen: boolean;
 };
 
 export default function ImageSlider({
   slides,
   username,
   post,
+  onClose,
+  isOpen,
 }: ImageSliderProps) {
   const imagePosition = usePhotoNumber((state) => state.photoNumber);
-  const isOpen = usePhotoModal((state) => state.isOpen);
-  const onClose = usePhotoModal((state) => state.onClose);
+  // const isOpen = usePhotoModal((state) => state.isOpen);
+  // const onClose = usePhotoModal((state) => state.onClose);
   const [currentIndex, setCurrentIndex] = React.useState(imagePosition - 1);
 
   const goToPrevious = () => {
@@ -84,7 +88,10 @@ export default function ImageSlider({
         </Button>
       </div>
 
-      <div className="w-full h-[96%] absolute right-[50%] left-[50%] translate-x-[-50%] top-0 cursor-default flex items-center justify-center">
+      <div
+        className="w-full h-[96%] absolute right-[50%] left-[50%] translate-x-[-50%] top-0 cursor-default flex items-center justify-center"
+        onClick={onClose}
+      >
         {/* The sizing not quite right with Image component */}
         {/* <Image
           priority

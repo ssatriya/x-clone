@@ -16,9 +16,6 @@ export async function GET(req: Request) {
       const allUserPosts = await db.post.findMany({
         where: {
           user_one_id: userId,
-          post_type: {
-            not: "QUOTE",
-          },
         },
         include: {
           user_one: {
@@ -36,6 +33,37 @@ export async function GET(req: Request) {
           replys: true,
           reposts: true,
           likes: true,
+          original_repost: {
+            select: {
+              content: true,
+              createdAt: true,
+              id: true,
+              image_url: true,
+              is_deleted: true,
+              likes: true,
+              original_replied_post_id: true,
+              original_repost: true,
+              post_type: true,
+              replys: true,
+              reposts: true,
+              user_one: {
+                include: {
+                  followers: true,
+                  following: true,
+                },
+              },
+              user_one_id: true,
+              user_two: {
+                include: {
+                  followers: true,
+                  following: true,
+                },
+              },
+              user_two_id: true,
+              userId: true,
+              views: true,
+            },
+          },
         },
         take: INFINITE_SCROLLING_PAGINATION_RESULTS,
         orderBy: {
@@ -48,9 +76,6 @@ export async function GET(req: Request) {
     const allUserPosts = await db.post.findMany({
       where: {
         user_one_id: userId,
-        post_type: {
-          not: "QUOTE",
-        },
       },
       include: {
         user_one: {
@@ -68,6 +93,37 @@ export async function GET(req: Request) {
         replys: true,
         reposts: true,
         likes: true,
+        original_repost: {
+          select: {
+            content: true,
+            createdAt: true,
+            id: true,
+            image_url: true,
+            is_deleted: true,
+            likes: true,
+            original_replied_post_id: true,
+            original_repost: true,
+            post_type: true,
+            replys: true,
+            reposts: true,
+            user_one: {
+              include: {
+                followers: true,
+                following: true,
+              },
+            },
+            user_one_id: true,
+            user_two: {
+              include: {
+                followers: true,
+                following: true,
+              },
+            },
+            user_two_id: true,
+            userId: true,
+            views: true,
+          },
+        },
       },
       take: parseInt(limit),
       skip: (parseInt(page) - 1) * parseInt(limit),

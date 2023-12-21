@@ -68,7 +68,7 @@ export default function Post({
       onClick={(e) => e.stopPropagation()}
     >
       <Link href={postURL} onClick={onPostClick} className="absolute inset-0" />
-      <div className="z-20 h-fit">
+      <div className="z-10 h-fit">
         <UserPostAvatar
           currentUser={currentUser}
           user={post.user_one}
@@ -78,7 +78,7 @@ export default function Post({
       </div>
       <div className="w-full flex flex-col h-full">
         <div className="flex w-full justify-between">
-          <div className="flex items-center gap-2 z-20">
+          <div className="flex items-center gap-2 z-10">
             <UserPostName
               currentUser={currentUser}
               post={post}
