@@ -25,7 +25,6 @@ export default function IconLeftSidebar({
 }: MobileLeftSidebarProps) {
   const username = removeAtSymbol(currentUser.username);
   const path = usePathname();
-
   const router = useRouter();
 
   const handleClick = async () => {

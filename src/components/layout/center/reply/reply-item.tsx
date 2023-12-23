@@ -46,7 +46,7 @@ export default function ReplyItem({
   }
   return (
     <>
-      <div className="relative hover:bg-hover/30 transition-colors cursor-pointer flex justify-between pt-3 px-4 gap-1 border-b">
+      <div className="relative hover:bg-hover/30 transition-colors cursor-pointer flex justify-between pt-3 px-4 gap-2 border-b">
         <Link href={postURL} className="absolute inset-0" />
         <div className="h-fit">
           <UserPostAvatar
@@ -57,7 +57,7 @@ export default function ReplyItem({
           />
         </div>
         <div className="flex flex-col w-full">
-          <div className="w-full flex flex-col ml-2">
+          <div className="w-full flex flex-col">
             <div className="flex items-center gap-2">
               <PostUsername
                 name={post.user_one.username}

@@ -1,7 +1,7 @@
+import { z } from "zod";
+
 import { db } from "@/lib/db";
 import getCurrentSession from "@/lib/getCurrentSession";
-import { PostValidator } from "@/lib/validator/post";
-import { z } from "zod";
 
 export async function GET(req: Request) {
   try {

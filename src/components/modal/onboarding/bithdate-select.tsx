@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Button, Select, SelectItem, Selection } from "@nextui-org/react";
-import { cn, daysInMonths, generateYearArray } from "@/lib/utils";
+import { daysInMonths, generateYearArray } from "@/lib/utils";
 
 const months = [
   { value: "0", label: "January" },

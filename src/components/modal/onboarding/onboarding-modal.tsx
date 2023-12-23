@@ -8,7 +8,6 @@ import {
   ModalHeader,
   ModalBody,
   Selection,
-  Button,
 } from "@nextui-org/react";
 import { Icons } from "../../icons";
 import BirthdateSelect from "./bithdate-select";
@@ -18,7 +17,6 @@ import { useDebouncedValue } from "@mantine/hooks";
 import { OnboardingPayload } from "@/lib/validator/onboarding";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { User } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { UserWithFollowersFollowing } from "@/types/db";
 

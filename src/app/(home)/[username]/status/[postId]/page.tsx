@@ -54,16 +54,52 @@ export default async function PostPage({ params }: PostPageProps) {
       id: params.postId,
     },
     include: {
-      user_one: {},
-      user_two: true,
-      original_repost: {
+      user_one: {
         include: {
-          user_one: true,
+          followers: true,
+          following: true,
+        },
+      },
+      user_two: {
+        include: {
+          followers: true,
+          following: true,
         },
       },
       replys: true,
       reposts: true,
       likes: true,
+      original_repost: {
+        select: {
+          content: true,
+          createdAt: true,
+          id: true,
+          image_url: true,
+          is_deleted: true,
+          likes: true,
+          original_replied_post_id: true,
+          original_repost: true,
+          post_type: true,
+          replys: true,
+          reposts: true,
+          user_one: {
+            include: {
+              followers: true,
+              following: true,
+            },
+          },
+          user_one_id: true,
+          user_two: {
+            include: {
+              followers: true,
+              following: true,
+            },
+          },
+          user_two_id: true,
+          userId: true,
+          views: true,
+        },
+      },
     },
   });
 
@@ -73,12 +109,18 @@ export default async function PostPage({ params }: PostPageProps) {
 
   return (
     <div>
-      {post.post_type === "POST" && (
+      <p>Not available</p>
+      {/* {post.post_type === "POST" && (
         <PostRepost post={post} username={post.user_one.name} />
       )}
       {post.post_type === "QUOTE" && (
-        <PostQuote post={post} currentUser={currentUser} />
-      )}
+        <QuoteSinglePost
+          post={post}
+          userPosted={post.user_one.avatar}
+          currentUser={currentUser}
+          postUserOwner={post.user_two!}
+        />
+      )} */}
     </div>
   );
 }

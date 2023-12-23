@@ -20,6 +20,7 @@ export type ExtendedPost = Post & {
   original_repost:
     | (Post & {
         user_one: User;
+        user_two: User;
         replys: Reply[];
         reposts: Repost[];
         likes: Like[];
@@ -29,24 +30,6 @@ export type ExtendedPost = Post & {
   reposts: Repost[];
   likes: Like[];
 };
-
-// export type OriginalRepost = ExtendedPost & {
-//   user_one: User & {
-//     followers: Follower[];
-//     following: Following[];
-//   };
-//   user_two: User & {
-//     followers: Follower[];
-//     following: Following[];
-//   };
-//   original_repost:
-//     | (Post & {
-//         replys: Reply[];
-//         reposts: Repost[];
-//         likes: Like[];
-//       })
-//     | null;
-// };
 
 export type ExtendedPostWithoutUserTwo = Omit<ExtendedPost, "user_two">;
 

@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  ExtendedPost,
-  ExtendedPostWithoutUserTwo,
-  UserWithFollowersFollowing,
-} from "@/types/db";
+import { ExtendedPost, UserWithFollowersFollowing } from "@/types/db";
 import Link from "next/link";
 import UserTooltip from "../user-tooltip";
 import { Avatar } from "@nextui-org/react";
