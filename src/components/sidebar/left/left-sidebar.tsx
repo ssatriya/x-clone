@@ -168,6 +168,7 @@ const LeftSidebar = ({ photo, name, username }: Props) => {
               alt={username!}
               height={40}
               width={40}
+              priority
               className="flex-shrink-0 rounded-full"
             />
           </div>
@@ -178,6 +179,7 @@ const LeftSidebar = ({ photo, name, username }: Props) => {
                 alt={username!}
                 height={40}
                 width={40}
+                priority
                 className="rounded-full"
               />
               <div className="flex flex-col items-start">

@@ -299,6 +299,7 @@ const ComposeModal = ({ loggedInUser }: Props) => {
                         alt={`${loggedInUser.username} avatar`}
                         width={40}
                         height={40}
+                        priority
                         className="rounded-full"
                       />
                     </div>

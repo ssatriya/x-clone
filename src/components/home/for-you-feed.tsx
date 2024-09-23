@@ -47,7 +47,8 @@ const ForYouFeed = ({ loggedInUser }: Props) => {
 
   useEffect(() => {
     queryClient.resetQueries({ queryKey: ["for-you-feed"] });
-  }, [queryClient]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const lastPostId = posts[0] && posts[0].post.postId;
 

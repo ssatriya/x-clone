@@ -54,6 +54,7 @@ const HomeTab = ({ loggedInUser }: Props) => {
                   src={loggedInUser.photo!}
                   width={32}
                   height={32}
+                  priority
                   alt="user profile"
                   className="rounded-full"
                   onClick={toggleNav}
@@ -104,6 +105,7 @@ const HomeTab = ({ loggedInUser }: Props) => {
             src={loggedInUser.photo!}
             width={40}
             height={40}
+            priority
             className="rounded-full"
             alt="profile photo"
           />

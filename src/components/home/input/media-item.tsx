@@ -49,6 +49,7 @@ const MediaItem = ({
             src={src}
             width={0}
             height={0}
+            priority
             alt="media preview"
             className="h-full w-full object-cover"
           />

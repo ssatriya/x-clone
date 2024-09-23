@@ -149,6 +149,7 @@ const UserTooltip = ({
                     alt={`${username} avatar`}
                     height={64}
                     width={64}
+                    priority
                     className="rounded-full group-hover:opacity-90 transition-opacity"
                   />
                 </Link>

@@ -76,6 +76,7 @@ const UserFollowItem = ({
           alt="avatar"
           height={40}
           width={40}
+          priority
           className="rounded-full"
         />
       </div>

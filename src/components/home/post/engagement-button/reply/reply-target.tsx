@@ -21,6 +21,7 @@ const ReplyTarget = ({ content, name, username, photo, createdAt }: Props) => {
             alt={`${username} avatar`}
             width={40}
             height={40}
+            priority
             className="rounded-full"
           />
         </div>

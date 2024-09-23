@@ -71,6 +71,7 @@ const PostSidebar = ({
                 src={post.post.photo}
                 height={40}
                 width={40}
+                priority
                 alt="avatar"
                 className="rounded-full"
               />

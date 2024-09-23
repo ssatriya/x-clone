@@ -291,6 +291,7 @@ const PostDetail = ({ loggedInUser, username, postId }: Props) => {
                     alt={`${data.post.username} avatar`}
                     height={40}
                     width={40}
+                    priority
                     className="rounded-full"
                   />
                 </div>
