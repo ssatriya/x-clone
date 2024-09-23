@@ -15,6 +15,7 @@ import ViewButton from "./engagement-button/view/view-button";
 import ReplyButton from "./engagement-button/reply/reply-button";
 import ShareButton from "./engagement-button/share/share-button";
 import RepostButton from "./engagement-button/repost/repost-button";
+import BookmarkButton from "./engagement-button/bookmark/bookmark-button";
 
 type Props = {
   loggedInUser: User;
@@ -181,6 +182,7 @@ const PostItem = ({
             />
             <ViewButton size="sm" />
             <div className="flex -space-x-1 -mr-[9px]">
+              <BookmarkButton size="sm" />
               <ShareButton size="sm" />
             </div>
           </div>
