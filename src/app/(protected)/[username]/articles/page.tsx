@@ -1,7 +1,8 @@
+import { eq } from "drizzle-orm";
+
 import db from "@/lib/db";
 import { userTable } from "@/lib/db/schema";
-import { Button } from "@nextui-org/react";
-import { eq } from "drizzle-orm";
+import Button from "@/components/ui/button";
 
 type Props = {
   params: {
@@ -31,7 +32,10 @@ export default function Page() {
       <span className="text-[15px] text-gray leading-5 mb-7">
         You must be subscribed to Premium+ to write Articles on X
       </span>
-      <Button className="bg-secondary-lighter min-w-0 w-fit text-black data-[hover=true]:bg-secondary-lighter/90 h-[52px] px-8 rounded-full font-bold text-[19px] leading-5">
+      <Button
+        variant="secondary"
+        className="w-fit h-[52px] px-8 font-bold text-[19px] leading-5"
+      >
         Upgrade to Premium+
       </Button>
     </div>

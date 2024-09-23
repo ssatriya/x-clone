@@ -79,6 +79,7 @@ const PersonalProfileInfo = ({ user }: Props) => {
         <div className="flex justify-end h-[68px]">
           <Button
             size="sm"
+            variant="ghost"
             className="font-bold bg-transparent border border-muted-foreground h-9 text-[15px] px-4 rounded-full w-auto hover:bg-border/50 mb-3"
           >
             Edit profile
@@ -93,6 +94,7 @@ const PersonalProfileInfo = ({ user }: Props) => {
           </div>
           <Button
             size="sm"
+            variant="ghost"
             className="w-auto gap-0.5 h-6 px-3 py-0 bg-transparent border border-muted-foreground text-sm font-bold rounded-full hover:bg-border/50"
           >
             <span className="w-[16px] h-[16px] mr-[2px]">
