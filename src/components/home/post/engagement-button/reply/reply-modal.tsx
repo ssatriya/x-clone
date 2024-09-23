@@ -75,8 +75,6 @@ const ReplyModal = ({ loggedInUser, setIsOpen, isOpen, post, user }: Props) => {
 
   const { focusPostId } = useCurrentFocusPost();
 
-  const bucketName = "x-clone-media";
-
   const queryKeyReplyCount = ["get-reply-count", post.id];
   const queryKeyDescendantsReply = ["get-descendants-reply", focusPostId];
 
@@ -189,7 +187,7 @@ const ReplyModal = ({ loggedInUser, setIsOpen, isOpen, post, user }: Props) => {
 
     if (files.length > 0) {
       try {
-        const imgURLs = await uploadFilesWithProgress(files, bucketName);
+        const imgURLs = await uploadFilesWithProgress(files);
 
         if (imgURLs && imgURLs.length === files.length) {
           files.forEach((file, i) => {

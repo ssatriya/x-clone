@@ -74,8 +74,6 @@ const PostPhotoModal = ({ photoNumber, post, loggedInUser }: Props) => {
 
   const { newMedia } = useMediaURL(post.post.postMedia);
 
-  const bucketName = "x-clone-media";
-
   const queryKeyReplyCount = ["get-reply-count", post.post.postId];
 
   const { mutate: createReply } = useMutation({
@@ -192,7 +190,7 @@ const PostPhotoModal = ({ photoNumber, post, loggedInUser }: Props) => {
 
     if (files.length > 0) {
       try {
-        const imgURLs = await uploadFilesWithProgress(files, bucketName);
+        const imgURLs = await uploadFilesWithProgress(files);
 
         if (imgURLs && imgURLs.length === files.length) {
           files.forEach((file, i) => {

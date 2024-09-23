@@ -53,8 +53,6 @@ const ComposeModal = ({ loggedInUser }: Props) => {
   const { uploadFilesWithProgress, isUploading, overallProgress } =
     useUploadMedia();
 
-  const bucketName = "x-clone-media";
-
   const { mutate: createPost } = useMutation({
     mutationKey: ["create-post"],
     mutationFn: ({ postType, content, media }: CreatePostPayload) =>
@@ -152,7 +150,7 @@ const ComposeModal = ({ loggedInUser }: Props) => {
 
     if (files.length > 0) {
       try {
-        const imgURLs = await uploadFilesWithProgress(files, bucketName);
+        const imgURLs = await uploadFilesWithProgress(files);
 
         if (imgURLs && imgURLs.length === files.length) {
           files.forEach((file, i) => {

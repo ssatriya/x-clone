@@ -83,8 +83,6 @@ const QuoteModal = ({
   const [files, setFiles] = useState<FileWithPreview[]>([]);
   const [isPending, setIsPending] = useState(false);
 
-  const bucketName = "x-clone-media";
-
   // const quoteHandler = () => {
   // if (postCharCount > 0) {
   //   if (editor && editor.getHTML()) {
@@ -229,7 +227,7 @@ const QuoteModal = ({
 
     if (files.length > 0) {
       try {
-        const imgURLs = await uploadFilesWithProgress(files, bucketName);
+        const imgURLs = await uploadFilesWithProgress(files);
 
         if (imgURLs && imgURLs.length === files.length) {
           files.forEach((file, i) => {

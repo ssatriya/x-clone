@@ -64,8 +64,6 @@ const PostDetail = ({ loggedInUser, username, postId }: Props) => {
     useUploadMedia();
 
   const queryKey = ["post-detail", postId, username];
-  const bucketName = "x-clone-media";
-
   const { data, isLoading } = useQuery({
     queryKey: queryKey,
     queryFn: () =>
@@ -239,7 +237,7 @@ const PostDetail = ({ loggedInUser, username, postId }: Props) => {
 
     if (files.length > 0) {
       try {
-        const imgURLs = await uploadFilesWithProgress(files, bucketName);
+        const imgURLs = await uploadFilesWithProgress(files);
 
         if (imgURLs && imgURLs.length === files.length) {
           files.forEach((file, i) => {
