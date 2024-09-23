@@ -143,6 +143,7 @@ const PhotoCarousel = ({
         {photos.map((image, index) => (
           <div key={index} className="w-full h-full flex-shrink-0">
             <div className="h-full w-full flex items-center justify-center">
+              {/* eslint-disable @next/next/no-img-element */}
               <img
                 src={`https://wsrv.nl/?url=${image.url}&h=${1200}&output=jpeg`}
                 alt={`Photo ${index + 1}`}

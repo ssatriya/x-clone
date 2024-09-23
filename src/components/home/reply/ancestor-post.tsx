@@ -60,12 +60,14 @@ const AncestorPost = ({ postId, loggedInUser }: Props) => {
         window.scrollTo({ top: totalScroll });
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
 
   useEffect(() => {
     return () => {
       queryClient.resetQueries({ queryKey });
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

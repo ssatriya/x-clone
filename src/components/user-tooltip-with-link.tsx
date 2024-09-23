@@ -79,7 +79,7 @@ const UserTooltipWithLink = ({
         popperInstance.destroy();
       }
     };
-  }, []);
+  }, [popperInstance]);
 
   useEffect(() => {
     if (popperInstance) {

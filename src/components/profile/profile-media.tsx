@@ -102,6 +102,7 @@ const ProfileMedia = ({ username }: Props) => {
                     }}
                     className="relative"
                   >
+                    {/* eslint-disable @next/next/no-img-element */}
                     <img
                       src={`https://wsrv.nl/?url=${
                         parsedMedia[0].url

@@ -24,6 +24,7 @@ const CompactQuoteMedia = ({ mediaURL }: Props) => {
         if (fileType === "image") {
           return (
             <div key={index} className="w-full h-full">
+              {/* eslint-disable @next/next/no-img-element */}
               <img
                 src={`https://wsrv.nl/?url=${media.url}&w=${150}&output=jpeg`}
                 alt="image"

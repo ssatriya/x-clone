@@ -50,7 +50,7 @@ const usePopperInstance = (
         popperInstance.destroy();
       }
     };
-  }, []);
+  }, [popperInstance, referenceRef, tooltipRef]);
 
   useEffect(() => {
     if (popperInstance) {

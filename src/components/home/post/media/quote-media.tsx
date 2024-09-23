@@ -74,6 +74,7 @@ const QuoteMedia = ({ mediaURLs, fullWidthImage }: Props) => {
                   width: "100%",
                 }}
               >
+                {/* eslint-disable @next/next/no-img-element */}
                 <img
                   src={`https://wsrv.nl/?url=${media.url}&w=${600}&output=jpeg`}
                   alt="img"

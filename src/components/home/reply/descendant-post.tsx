@@ -29,6 +29,7 @@ const DescendantPost = ({ postId, loggedInUser }: Props) => {
     return () => {
       queryClient.resetQueries({ queryKey });
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
