@@ -50,7 +50,8 @@ const usePopperInstance = (
         popperInstance.destroy();
       }
     };
-  }, [popperInstance, referenceRef, tooltipRef]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (popperInstance) {
