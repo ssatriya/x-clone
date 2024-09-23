@@ -9,7 +9,7 @@ import { LikeInfo } from "@/types";
 import Icons from "@/components/icons";
 import StatNumber from "../stat-number";
 import { CreateLikePayload } from "@/lib/zod-schema";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/button";
 
 type Props = {
   postId: string;

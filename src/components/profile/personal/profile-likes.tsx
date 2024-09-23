@@ -143,35 +143,34 @@ const ProfileLikes = ({ loggedInUser, username }: Props) => {
                 loggedInUser={loggedInUser}
                 post={{
                   id: p.postId,
-                  content: p.postContent,
-                  createdAt: p.postCreatedAt,
-                  media: p.postMedia,
-                  parentPostId: p.parentPostId,
-                  postType: p.postType,
-                  rootPostId: p.postRootPostId,
-                  replyCount: post.replyCount,
-                  repost: post.repost,
                   like: post.like,
                   quote: post.quote,
+                  media: p.postMedia,
+                  repost: post.repost,
+                  postType: p.postType,
+                  content: p.postContent,
+                  createdAt: p.postCreatedAt,
+                  replyCount: post.replyCount,
+                  parentPostId: p.parentPostId,
+                  rootPostId: p.postRootPostId,
                 }}
                 user={{
                   id: p.userId,
                   name: p.name,
-                  username: p.username,
                   photo: p.photo,
-                  bio: "",
+                  username: p.username,
                 }}
                 quotedPost={{
                   id: originalPostId,
-                  content: originalPostContent,
                   media: originalPostMedia,
+                  content: originalPostContent,
                   createdAt: originalPostCreatedAt,
                 }}
                 quotedUser={{
                   id: originalUserId,
                   name: originalName,
-                  username: originalUsername,
                   photo: originalPhoto,
+                  username: originalUsername,
                 }}
               />
             );
@@ -184,20 +183,19 @@ const ProfileLikes = ({ loggedInUser, username }: Props) => {
                 user={{
                   id: p.userId,
                   name: p.name,
-                  username: p.username,
                   photo: p.photo,
-                  bio: "",
+                  username: p.username,
                 }}
                 quotedPost={{
                   id: originalPostId,
-                  content: originalPostContent || "",
+                  like: originalLike,
+                  quote: originalQuote,
+                  repost: originalRepost,
                   media: originalPostMedia,
-                  createdAt: originalPostCreatedAt,
+                  content: originalPostContent,
                   replyCount: originalReplyCount,
                   rootPostId: originalRootPostId,
-                  like: originalLike,
-                  repost: originalRepost,
-                  quote: originalQuote,
+                  createdAt: originalPostCreatedAt,
                 }}
                 quotedUser={{
                   id: originalUserId,

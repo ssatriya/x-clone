@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 import { UserInfo } from "@/types";
 import Icons from "@/components/icons";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/button";
 
 type Props = {
   user: Omit<UserInfo, "isFollowing">;

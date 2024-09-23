@@ -7,7 +7,7 @@ interface CurrentFocusPostState {
 
 const useCurrentFocusPost = create<CurrentFocusPostState>()((set) => ({
   focusPostId: "",
-  setFocusPost: (id) => set((state) => ({ focusPostId: id })),
+  setFocusPost: (id) => set(() => ({ focusPostId: id })),
 }));
 
 export default useCurrentFocusPost;

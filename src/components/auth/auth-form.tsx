@@ -3,7 +3,7 @@
 import Link from "next/link";
 
 import Icons from "@/components/icons";
-import { Button } from "../ui/button";
+import Button from "../ui/button";
 
 const AuthForm = () => {
   return (

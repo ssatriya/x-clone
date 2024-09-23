@@ -1,61 +1,62 @@
 "use client";
 
-import Divider from "@/components/ui/divider";
-import InputReply from "../../input/input-reply";
-import ShareButton from "../../post/engagement-button/share/share-button";
-import ViewButton from "../../post/engagement-button/view/view-button";
-import LikeButton from "../../post/engagement-button/like/like-button";
-import RepostButton from "../../post/engagement-button/repost/repost-button";
-import ReplyButton from "../../post/engagement-button/reply/reply-button";
-import Linkify from "@/components/linkify";
-import { Button } from "@/components/ui/button";
-import Icons from "@/components/icons";
-import Image from "next/image";
-import { FileWithPreview, ForYouFeedPost } from "@/types";
-import { formatTimestamp } from "@/lib/utils";
 import { User } from "lucia";
-import DescendantPost from "../../reply/descendant-post";
+import Image from "next/image";
 import { RefObject, SetStateAction } from "react";
 import { DropzoneInputProps } from "react-dropzone";
 
+import Icons from "@/components/icons";
+import Button from "@/components/ui/button";
+import Linkify from "@/components/linkify";
+import Divider from "@/components/ui/divider";
+import { formatTimestamp } from "@/lib/utils";
+import { FileWithPreview, ForYouFeedPost } from "@/types";
+import InputReply from "@/components/home/input/input-reply";
+import DescendantPost from "@/components/home/reply/descendant-post";
+import ViewButton from "@/components/home/post/engagement-button/view/view-button";
+import LikeButton from "@/components/home/post/engagement-button/like/like-button";
+import ReplyButton from "@/components/home/post/engagement-button/reply/reply-button";
+import ShareButton from "@/components/home/post/engagement-button/share/share-button";
+import RepostButton from "@/components/home/post/engagement-button/repost/repost-button";
+
 type Props = {
-  post: ForYouFeedPost;
+  photo: string;
+  isPosting: boolean;
+  inputValue: string;
   loggedInUser: User;
   classNames?: string;
+  post: ForYouFeedPost;
   isInputFocus: boolean;
-  isPosting: boolean;
-  photo: string;
-  inputRef: RefObject<HTMLTextAreaElement>;
-  mediaRef: RefObject<HTMLInputElement>;
-  inputValue: string;
-  setIsInputFocus: (value: SetStateAction<boolean>) => void;
-  setInputValue: (value: SetStateAction<string>) => void;
-  setInputCount: (value: SetStateAction<number>) => void;
+  handleMedia: () => void;
+  files: FileWithPreview[];
   isButtonDisabled: boolean;
   submitHandler: () => Promise<void>;
-  files: FileWithPreview[];
+  mediaRef: RefObject<HTMLInputElement>;
+  inputRef: RefObject<HTMLTextAreaElement>;
   handleRemove: (mediaId: string) => void;
-  handleMedia: () => void;
+  setInputValue: (value: SetStateAction<string>) => void;
+  setInputCount: (value: SetStateAction<number>) => void;
+  setIsInputFocus: (value: SetStateAction<boolean>) => void;
   getInputProps: <T extends DropzoneInputProps>(props?: T) => T;
 };
 
 const PostSidebar = ({
   post,
-  loggedInUser,
-  isInputFocus,
-  isPosting,
+  files,
   inputRef,
   mediaRef,
+  isPosting,
   inputValue,
-  setIsInputFocus,
+  handleMedia,
+  loggedInUser,
+  isInputFocus,
+  handleRemove,
   setInputValue,
   setInputCount,
-  isButtonDisabled,
   submitHandler,
-  files,
-  handleRemove,
-  handleMedia,
   getInputProps,
+  setIsInputFocus,
+  isButtonDisabled,
 }: Props) => {
   return (
     <div
@@ -94,7 +95,7 @@ const PostSidebar = ({
             </div>
           </div>
           <div className="pt-3">
-            {post.post.postContent !== null && (
+            {post.post.postContent && (
               <div className="leading-5">
                 <Linkify>
                   <span className="text-[15px] text-text text-pretty whitespace-pre-wrap break-words">
@@ -122,15 +123,15 @@ const PostSidebar = ({
               loggedInUser={loggedInUser}
               post={{
                 id: post.post.postId,
+                replyCount: post.replyCount,
                 content: post.post.postContent,
                 createdAt: post.post.postCreatedAt,
                 rootPostId: post.post.postRootPostId,
-                replyCount: post.replyCount,
               }}
               user={{
                 name: post.post.name,
-                username: post.post.username,
                 photo: post.post.photo,
+                username: post.post.username,
               }}
               initialReplyCount={post.replyCount}
               size="md"
@@ -140,13 +141,13 @@ const PostSidebar = ({
               loggedInUser={loggedInUser}
               size="md"
               originalPost={{
+                name: post.post.name,
+                photo: post.post.photo,
                 userId: post.post.postId,
+                media: post.post.postMedia,
+                username: post.post.username,
                 content: post.post.postContent,
                 createdAt: post.post.postCreatedAt,
-                photo: post.post.photo,
-                username: post.post.username,
-                media: post.post.postMedia,
-                name: post.post.name,
               }}
               initialRepost={{
                 repostCount: post.repost ? post.repost.length : 0,
@@ -175,7 +176,6 @@ const PostSidebar = ({
             <ShareButton size="md" />
           </div>
           <Divider className="bg-border h-[1px]" />
-          {/* --------- */}
           <InputReply
             files={files}
             inputRef={inputRef}
@@ -194,7 +194,6 @@ const PostSidebar = ({
             setIsInputFocus={setIsInputFocus}
             isButtonDisabled={isButtonDisabled}
           />
-          {/* --------- */}
           <Divider className="bg-border h-[1px]" />
         </div>
         <div style={{ minHeight: "200vh" }}>

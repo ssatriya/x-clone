@@ -1,10 +1,11 @@
 "use client";
 
-import Icons from "@/components/icons";
-import { Button } from "@/components/ui/button";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+
 import { cn } from "@/lib/utils";
 import { MediaType } from "@/types";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import Icons from "@/components/icons";
+import Button from "@/components/ui/button";
 
 type Props = {
   photos: MediaType[];

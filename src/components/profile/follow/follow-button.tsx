@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/button";
 
 type Props = {
   isFollowing: boolean;

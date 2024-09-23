@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useMediaQuery } from "@mantine/hooks";
 import { generateIdFromEntropySize, User } from "lucia";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -11,32 +11,22 @@ import { FileRejection, FileWithPath, useDropzone } from "react-dropzone";
 import {
   cn,
   compress,
-  formatTimestamp,
+  updateProgress,
   getImageDimension,
   getVideoDimension,
-  updateProgress,
 } from "@/lib/utils";
 import kyInstance from "@/lib/ky";
-import Icons from "@/components/icons";
-import Linkify from "@/components/linkify";
-import InputReply from "../../input/input-reply";
-import Divider from "@/components/ui/divider";
+import PostSidebar from "./post-sidebar";
+import PhotoCarousel from "./photo-carousel";
 import useMediaURL from "@/hooks/useMediaURL";
-import { Button } from "@/components/ui/button";
-import Progressbar from "@/components/progressbar";
 import { CreateReplyPayload } from "@/lib/zod-schema";
 import { useUploadMedia } from "@/hooks/useUploadMedia";
-import useImageLoadProgress from "@/hooks/useImageLoadProgress";
-import LikeButton from "../../post/engagement-button/like/like-button";
-import ViewButton from "../../post/engagement-button/view/view-button";
 import { FileWithPreview, ForYouFeedPost, MediaType } from "@/types";
-import ReplyButton from "../../post/engagement-button/reply/reply-button";
-import ShareButton from "../../post/engagement-button/share/share-button";
-import RepostButton from "../../post/engagement-button/repost/repost-button";
-import DescendantPost from "../../reply/descendant-post";
-import PhotoCarousel from "./photo-carousel";
-import PostSidebar from "./post-sidebar";
-import { useMediaQuery } from "@mantine/hooks";
+import LikeButton from "@/components/home/post/engagement-button/like/like-button";
+import ViewButton from "@/components/home/post/engagement-button/view/view-button";
+import ReplyButton from "@/components/home/post/engagement-button/reply/reply-button";
+import ShareButton from "@/components/home/post/engagement-button/share/share-button";
+import RepostButton from "@/components/home/post/engagement-button/repost/repost-button";
 
 type Props = {
   photoNumber: number;

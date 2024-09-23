@@ -1,14 +1,15 @@
 import React from "react";
-import useMediaURL from "@/hooks/useMediaURL";
-import PostInfo from "../post-info";
 import Image from "next/image";
-import CompactQuoteMedia from "./compact-post-media";
+
 import { cn } from "@/lib/utils";
+import useMediaURL from "@/hooks/useMediaURL";
+import CompactQuoteMedia from "./compact-post-media";
+import PostInfo from "@/components/home/post/post-info";
 
 type Props = {
   post: {
     postId: string;
-    content: string;
+    content: string | null;
     media: string | null;
     createdAt: Date;
   };

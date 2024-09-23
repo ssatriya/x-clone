@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import Icons from "../../icons";
+import Icons from "@/components/icons";
 import { formatTimeToNow } from "@/lib/utils";
 import UserTooltip from "@/components/user-tooltip";
 import MoreButton from "./engagement-button/more/more-button";
@@ -11,8 +11,8 @@ type Props = {
     createdAt: Date;
   };
   user: {
-    userId: string;
     name: string;
+    userId: string;
     username: string;
   };
   moreButton?: boolean;

@@ -12,7 +12,6 @@ import useMediaURL from "@/hooks/useMediaURL";
 import { cn, getBasePath } from "@/lib/utils";
 import { Like, Quote, Repost } from "@/types";
 import UserTooltip from "@/components/user-tooltip";
-import MoreButton from "./engagement-button/more/more-button";
 import LikeButton from "./engagement-button/like/like-button";
 import ViewButton from "./engagement-button/view/view-button";
 import ShareButton from "./engagement-button/share/share-button";
@@ -26,25 +25,24 @@ type Props = {
     id: string;
     name: string;
     username: string;
-    bio: string | null;
     photo: string | null;
   };
   quotedPost: {
     id: string;
-    content: string;
-    media: string | null;
     createdAt: Date;
     replyCount: number;
     rootPostId: string;
     like: Like[] | null;
-    repost: Repost[] | null;
+    media: string | null;
     quote: Quote[] | null;
+    content: string | null;
+    repost: Repost[] | null;
   };
   quotedUser: {
     id: string;
     name: string;
+    photo: string | null;
     username: string;
-    photo: string;
   };
   showLine?: boolean;
   showBorderBottom?: boolean;
@@ -149,9 +147,8 @@ const RepostItem = ({
                 username: quotedUser.username,
               }}
             />
-            {/* Post content and images */}
             <div className="w-full space-y-3">
-              {quotedPost.content.length > 0 && (
+              {quotedPost.content && (
                 <div className="leading-5">
                   <Linkify>
                     <span className="text-[15px] text-text text-pretty whitespace-pre-wrap break-words">
@@ -168,7 +165,6 @@ const RepostItem = ({
                 />
               )}
             </div>
-            {/* Engagement button action */}
             <div className="flex items-center justify-between w-full gap-4 mt-1">
               <ReplyButton
                 loggedInUser={loggedInUser}
@@ -193,12 +189,12 @@ const RepostItem = ({
                 size="sm"
                 originalPost={{
                   userId: quotedUser.id,
-                  content: quotedPost.content,
-                  createdAt: quotedPost.createdAt,
-                  photo: quotedUser.photo,
-                  username: quotedUser.username,
-                  media: quotedPost.media,
                   name: quotedUser.name,
+                  photo: quotedUser.photo,
+                  media: quotedPost.media,
+                  content: quotedPost.content,
+                  username: quotedUser.username,
+                  createdAt: quotedPost.createdAt,
                 }}
                 initialRepost={{
                   repostCount: quotedPost.repost ? quotedPost.repost.length : 0,

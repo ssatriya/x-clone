@@ -3,15 +3,15 @@
 import Link from "next/link";
 import Image from "next/image";
 
-import PostInfo from "../post-info";
 import { useRouter } from "next/navigation";
-import PostMedia from "../media/post-media";
 import useMediaURL from "@/hooks/useMediaURL";
+import PostInfo from "@/components/home/post/post-info";
+import PostMedia from "@/components/home/post/media/post-media";
 
 type Props = {
   post: {
     id: string;
-    content: string;
+    content: string | null;
     media: string | null;
     createdAt: Date;
     nestedPostId: string | null;

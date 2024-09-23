@@ -13,7 +13,6 @@ import { Like, Quote, Repost } from "@/types";
 import useMediaURL from "@/hooks/useMediaURL";
 import QuotePreview from "./quote-preview/quote-preview";
 import LikeButton from "./engagement-button/like/like-button";
-import MoreButton from "./engagement-button/more/more-button";
 import ViewButton from "./engagement-button/view/view-button";
 import ShareButton from "./engagement-button/share/share-button";
 import ReplyButton from "./engagement-button/reply/reply-button";
@@ -26,27 +25,27 @@ type Props = {
   post: {
     id: string;
     content: string;
-    media: string | null;
     createdAt: Date;
-    parentPostId: string | null;
-    rootPostId: string;
     postType: string;
+    rootPostId: string;
     replyCount: number;
-    repost: Repost[] | null;
     like: Like[] | null;
+    media: string | null;
     quote: Quote[] | null;
+    repost: Repost[] | null;
+    parentPostId: string | null;
   };
   user: {
     id: string;
     name: string;
-    photo: string | null;
     username: string;
+    photo: string | null;
   };
   quotedPost: {
     id: string;
-    media: string | null;
     content: string;
     createdAt: Date;
+    media: string | null;
   };
   quotedUser: {
     id: string;
@@ -94,7 +93,6 @@ const QuoteItem = ({
       role="article"
     >
       <div className="flex h-full pt-3">
-        {/* This div below used to have overflow-clip */}
         <div className="relative mr-2 select-none">
           <div className="w-10 h-10">
             <Image
@@ -149,15 +147,15 @@ const QuoteItem = ({
             <CompactQuotePreview
               post={{
                 postId: quotedPost.id,
-                content: quotedPost.content,
                 media: quotedPost.media,
+                content: quotedPost.content,
                 createdAt: quotedPost.createdAt,
               }}
               user={{
                 userId: quotedUser.id,
                 name: quotedUser.name,
-                username: quotedUser.username,
                 photo: quotedUser.photo,
+                username: quotedUser.username,
               }}
             />
           )}
@@ -165,16 +163,16 @@ const QuoteItem = ({
             <QuotePreview
               post={{
                 id: quotedPost.id,
-                content: quotedPost.content,
                 media: quotedPost.media,
+                content: quotedPost.content,
                 createdAt: quotedPost.createdAt,
                 nestedPostId: null,
               }}
               user={{
                 id: quotedUser.id,
                 name: quotedUser.name,
-                username: quotedUser.username,
                 photo: quotedUser.photo,
+                username: quotedUser.username,
                 nestedUsername: null,
               }}
             />
@@ -192,8 +190,8 @@ const QuoteItem = ({
               }}
               user={{
                 name: user.name,
-                username: user.username,
                 photo: user.photo,
+                username: user.username,
               }}
               initialReplyCount={post.replyCount}
               size="sm"
@@ -204,12 +202,12 @@ const QuoteItem = ({
               size="sm"
               originalPost={{
                 userId: user.id,
-                content: post.content,
-                createdAt: post.createdAt,
-                photo: user.photo,
-                username: user.username,
-                media: post.media,
                 name: user.name,
+                photo: user.photo,
+                media: post.media,
+                content: post.content,
+                username: user.username,
+                createdAt: post.createdAt,
               }}
               initialRepost={{
                 repostCount: post.repost ? post.repost.length : 0,

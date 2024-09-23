@@ -6,33 +6,34 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
-import Icons from "@/components/icons";
-import { FileWithPreview, MediaType, OptionButtonConfig } from "@/types";
+import { User } from "lucia";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { generateIdFromEntropySize } from "lucia";
 import TextareaAutosize from "react-textarea-autosize";
+import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { CreatePostPayload } from "@/lib/zod-schema";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { FileRejection, FileWithPath, useDropzone } from "react-dropzone";
+
 import {
   cn,
   compress,
+  updateProgress,
   getImageDimension,
   getVideoDimension,
-  updateProgress,
 } from "@/lib/utils";
-import { useUploadMedia } from "@/hooks/useUploadMedia";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import kyInstance from "@/lib/ky";
-import { FileRejection, FileWithPath, useDropzone } from "react-dropzone";
-import { generateIdFromEntropySize } from "lucia";
-import Progressbar from "@/components/progressbar";
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import { User } from "lucia";
-import { AnimatePresence, motion } from "framer-motion";
-import MediaPreview from "../input/media-preview";
-import InputOptions from "../input/input-options";
-import ProgressCircle from "../input/progress-circle";
+import Icons from "@/components/icons";
+import Button from "@/components/ui/button";
 import Divider from "@/components/ui/divider";
-import { useRouter } from "next/navigation";
+import Progressbar from "@/components/progressbar";
+import { CreatePostPayload } from "@/lib/zod-schema";
+import { useUploadMedia } from "@/hooks/useUploadMedia";
+import MediaPreview from "@/components/home/input/media-preview";
+import InputOptions from "@/components/home/input/input-options";
+import ProgressCircle from "@/components/home/input/progress-circle";
+import { FileWithPreview, MediaType, OptionButtonConfig } from "@/types";
 
 type Props = {
   loggedInUser: User;
@@ -284,7 +285,6 @@ const ComposeModal = ({ loggedInUser }: Props) => {
               </div>
             </div>
           </DialogTitle>
-          {/* --------- */}
           <div className="flex-grow overflow-y-auto h-fit">
             <div className="px-4">
               <div className="relative flex flex-col w-full gap-1">
@@ -340,8 +340,6 @@ const ComposeModal = ({ loggedInUser }: Props) => {
               </div>
             </div>
           </div>
-          {/* --------- */}
-
           <div className="sticky bottom-0 left-0 right-0 px-4 pt-1 pb-2 bg-black rounded-none sm-plus:rounded-b-2xl">
             {!isPending && (
               <Button

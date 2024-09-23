@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { LinkIt, LinkItUrl } from "react-linkify-it";
-import UserTooltip from "./user-tooltip";
+
 import UserTooltipWithLink from "./user-tooltip-with-link";
 
 interface LinkifyProps {

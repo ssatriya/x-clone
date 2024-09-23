@@ -3,14 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import Icons from "@/components/icons";
 import { cn, getBasePath } from "@/lib/utils";
 
-import Icons from "@/components/icons";
-
 type Props = {
-  label: string;
   icon: string;
   href: string;
+  label: string;
   disabled: boolean;
   ariaLabel: string;
 };

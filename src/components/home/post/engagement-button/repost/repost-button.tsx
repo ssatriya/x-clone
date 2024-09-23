@@ -2,34 +2,33 @@
 
 import { User } from "lucia";
 import { Fragment, useState } from "react";
-import { useDisclosure } from "@nextui-org/react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { cn } from "@/lib/utils";
 import kyInstance from "@/lib/ky";
 import Icons from "@/components/icons";
-import StatNumber from "../stat-number";
-import { Button } from "@/components/ui/button";
+import QuoteModal from "./quote-modal";
+import Button from "@/components/ui/button";
 import { QuoteInfo, RepostInfo } from "@/types";
 import { CreateRepostPayload } from "@/lib/zod-schema";
-import QuoteModal from "./quote-modal";
+import StatNumber from "@/components/home/post/engagement-button/stat-number";
 
 type Props = {
   loggedInUser: User;
   postId: string;
   originalPost: {
-    userId: string;
-    content: string;
-    createdAt: Date;
-    media: string | null;
-    username: string;
     name: string;
+    userId: string;
+    createdAt: Date;
+    username: string;
+    media: string | null;
     photo: string | null;
+    content: string | null;
   };
   size: "sm" | "md";
-  initialRepost: RepostInfo;
   initialQuote: QuoteInfo;
+  initialRepost: RepostInfo;
 };
 
 const RepostButton = ({
@@ -37,15 +36,15 @@ const RepostButton = ({
   postId,
   loggedInUser,
   originalPost,
-  initialRepost,
   initialQuote,
+  initialRepost,
 }: Props) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   const { content, createdAt, media, photo, username, name, userId } =
     originalPost;
 
   const queryClient = useQueryClient();
-  // const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [isOpen, setIsOpen] = useState(false);
 
   const repostQueryKey = ["get-repost", postId];
   const quoteQueryKey = ["get-quote", postId];
@@ -64,14 +63,17 @@ const RepostButton = ({
     enabled: false,
   });
 
-  const [move, setMove] = useState(
+  const hasNewRepostOrQuotes =
     repostData.repostCount > initialRepost.repostCount ||
-      quoteData.quoteCount > initialQuote.quoteCount
-      ? 25
-      : initialRepost.isRepostedByUser || initialQuote.isQuotedByUser
-      ? 25
-      : -25
-  );
+    quoteData.quoteCount > initialQuote.quoteCount;
+
+  const isRepostedOrQuotedByUser =
+    initialRepost.isRepostedByUser || initialQuote.isQuotedByUser;
+
+  const initialMoveValue =
+    hasNewRepostOrQuotes || isRepostedOrQuotedByUser ? 25 : -25;
+
+  const [move, setMove] = useState(initialMoveValue);
 
   const { mutate: repost } = useMutation({
     mutationKey: ["create-repost"],
@@ -126,7 +128,6 @@ const RepostButton = ({
 
   return (
     <div className="flex flex-1">
-      {/* ============================ */}
       <Menu>
         <MenuButton as={Fragment}>
           <Button
@@ -212,7 +213,6 @@ const RepostButton = ({
           </MenuItem>
         </MenuItems>
       </Menu>
-      {/* ============================ */}
       <QuoteModal
         postId={postId}
         isOpen={isOpen}

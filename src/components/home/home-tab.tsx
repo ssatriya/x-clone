@@ -1,19 +1,19 @@
 "use client";
 
 import { User } from "lucia";
+import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useLocalStorage } from "@mantine/hooks";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 
+import { cn } from "@/lib/utils";
+import Icons from "@/components/icons";
 import ForYouFeed from "./for-you-feed";
 import PostInput from "./input/post-input";
+import Button from "@/components/ui/button";
 import FollowingFeed from "./following-feed";
-import Image from "next/image";
-import Icons from "../icons";
-import Link from "next/link";
-import { Button } from "../ui/button";
 import useScrollPosition from "@/hooks/useScrollPosition";
-import { cn } from "@/lib/utils";
 
 type Props = {
   loggedInUser: User;

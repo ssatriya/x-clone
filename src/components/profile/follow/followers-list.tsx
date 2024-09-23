@@ -1,16 +1,11 @@
 "use client";
 
-import {
-  keepPreviousData,
-  useInfiniteQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
 
 import kyInstance from "@/lib/ky";
 import { Following } from "@/types";
-import UserFollowItem from "./user-follow-item";
+import UserFollowItem from "@/components/profile/follow/user-follow-item";
 import InfiniteScrollContainer from "@/components/infinite-scroll-container";
-import { useEffect } from "react";
 
 type Props = {
   username: string;

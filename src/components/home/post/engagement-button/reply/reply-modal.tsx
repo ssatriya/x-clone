@@ -1,11 +1,5 @@
 "use client";
 
-import InputOptions from "@/components/home/input/input-options";
-import Icons from "@/components/icons";
-import TextareaAutosize from "react-textarea-autosize";
-import { Divider } from "@nextui-org/react";
-import { generateIdFromEntropySize, User } from "lucia";
-import Image from "next/image";
 import {
   useRef,
   useState,
@@ -14,33 +8,39 @@ import {
   useCallback,
   SetStateAction,
 } from "react";
-import ReplyTarget from "./reply-target";
-import { FileWithPreview, MediaType, OptionButtonConfig } from "@/types";
-import MediaPreview from "@/components/home/input/media-preview";
-import ProgressCircle from "@/components/home/input/progress-circle";
+import {
+  Dialog,
+  DialogPanel,
+  DialogTitle,
+  DialogBackdrop,
+} from "@headlessui/react";
+import Image from "next/image";
+import TextareaAutosize from "react-textarea-autosize";
+import { generateIdFromEntropySize, User } from "lucia";
+import { AnimatePresence, motion } from "framer-motion";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { FileRejection, FileWithPath, useDropzone } from "react-dropzone";
+
 import {
   cn,
   compress,
+  updateProgress,
   getImageDimension,
   getVideoDimension,
-  updateProgress,
 } from "@/lib/utils";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { CreateReplyPayload } from "@/lib/zod-schema";
 import kyInstance from "@/lib/ky";
-import { FileRejection, FileWithPath, useDropzone } from "react-dropzone";
-import { AnimatePresence, motion } from "framer-motion";
-import useCurrentFocusPost from "@/hooks/useCurrentFocusPost";
-import { useUploadMedia } from "@/hooks/useUploadMedia";
+import Icons from "@/components/icons";
+import ReplyTarget from "./reply-target";
+import Divider from "@/components/ui/divider";
+import Button from "@/components/ui/button";
 import Progressbar from "@/components/progressbar";
-
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  DialogTitle,
-} from "@headlessui/react";
-import { Button } from "@/components/ui/button";
+import { CreateReplyPayload } from "@/lib/zod-schema";
+import { useUploadMedia } from "@/hooks/useUploadMedia";
+import useCurrentFocusPost from "@/hooks/useCurrentFocusPost";
+import InputOptions from "@/components/home/input/input-options";
+import MediaPreview from "@/components/home/input/media-preview";
+import ProgressCircle from "@/components/home/input/progress-circle";
+import { FileWithPreview, MediaType, OptionButtonConfig } from "@/types";
 
 type Props = {
   loggedInUser: User;
@@ -48,7 +48,7 @@ type Props = {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   post: {
     id: string;
-    content: string;
+    content: string | null;
     createdAt: Date;
     rootPostId: string;
   };
@@ -95,12 +95,12 @@ const ReplyModal = ({ loggedInUser, setIsOpen, isOpen, post, user }: Props) => {
       queryClient.invalidateQueries({
         queryKey: queryKeyDescendantsReply,
       });
-      setInputValue("");
-      setInputCount(0);
       setFiles([]);
-      setIsInputFocus(false);
+      setInputCount(0);
       setIsOpen(false);
+      setInputValue("");
       setIsPending(false);
+      setIsInputFocus(false);
     },
   });
 
@@ -306,7 +306,6 @@ const ReplyModal = ({ loggedInUser, setIsOpen, isOpen, post, user }: Props) => {
               </div>
             </div>
           </DialogTitle>
-          {/* --------- */}
           <div className="flex-grow overflow-y-auto h-fit">
             <div className="px-4 pt-4">
               <ReplyTarget
@@ -369,8 +368,6 @@ const ReplyModal = ({ loggedInUser, setIsOpen, isOpen, post, user }: Props) => {
               </div>
             </div>
           </div>
-          {/* --------- */}
-
           <div className="sticky bottom-0 left-0 right-0 px-4 pt-1 pb-2 bg-black rounded-none sm-plus:rounded-b-2xl">
             <AnimatePresence>
               {!isPosting && (

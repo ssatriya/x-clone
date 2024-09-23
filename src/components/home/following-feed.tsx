@@ -2,7 +2,6 @@
 
 import { User } from "lucia";
 import {
-  keepPreviousData,
   useInfiniteQuery,
   useQuery,
   useQueryClient,
@@ -11,12 +10,11 @@ import {
 import kyInstance from "@/lib/ky";
 import { CustomPost } from "@/types";
 import { useEffect } from "react";
-import InfiniteScrollContainer from "../infinite-scroll-container";
 import PostItem from "./post/post-item";
 import QuoteItem from "./post/quote-item";
 import RepostItem from "./post/repost-item";
-import { Button } from "../ui/button";
-import { useLocalStorage } from "@mantine/hooks";
+import Button from "@/components/ui/button";
+import InfiniteScrollContainer from "@/components/infinite-scroll-container";
 
 type Props = {
   loggedInUser: User;
@@ -96,16 +94,16 @@ const FollowingFeed = ({ loggedInUser }: Props) => {
                 loggedInUser={loggedInUser}
                 post={{
                   id: post.postId,
-                  content: post.postContent,
-                  createdAt: post.createdAt,
-                  media: post.postMedia,
-                  parentPostId: post.parentPostId,
-                  postType: post.postType,
-                  rootPostId: post.rootPostId,
-                  replyCount: post.replyCount,
-                  repost: post.repost,
                   like: post.like,
                   quote: post.quote,
+                  repost: post.repost,
+                  media: post.postMedia,
+                  postType: post.postType,
+                  content: post.postContent,
+                  createdAt: post.createdAt,
+                  rootPostId: post.rootPostId,
+                  replyCount: post.replyCount,
+                  parentPostId: post.parentPostId,
                 }}
                 user={{
                   id: post.userId,
@@ -125,22 +123,22 @@ const FollowingFeed = ({ loggedInUser }: Props) => {
                 loggedInUser={loggedInUser}
                 post={{
                   id: post.postId,
-                  content: post.postContent,
-                  createdAt: post.createdAt,
-                  media: post.postMedia,
-                  parentPostId: post.parentPostId,
-                  postType: post.postType,
-                  rootPostId: post.rootPostId,
-                  replyCount: post.replyCount,
-                  repost: post.repost,
                   like: post.like,
                   quote: post.quote,
+                  repost: post.repost,
+                  media: post.postMedia,
+                  postType: post.postType,
+                  content: post.postContent,
+                  createdAt: post.createdAt,
+                  rootPostId: post.rootPostId,
+                  replyCount: post.replyCount,
+                  parentPostId: post.parentPostId,
                 }}
                 user={{
                   id: post.userId,
                   name: post.name,
-                  username: post.username,
                   photo: post.photo,
+                  username: post.username,
                 }}
                 showLine={post.showLine}
                 showBorderBottom={!post.showLine}
@@ -154,34 +152,34 @@ const FollowingFeed = ({ loggedInUser }: Props) => {
                 loggedInUser={loggedInUser}
                 post={{
                   id: post.postId,
-                  content: post.postContent,
-                  createdAt: post.createdAt,
-                  media: post.postMedia,
-                  parentPostId: post.parentPostId,
-                  postType: post.postType,
-                  rootPostId: post.rootPostId,
-                  replyCount: post.replyCount,
-                  repost: post.repost,
                   like: post.like,
                   quote: post.quote,
+                  repost: post.repost,
+                  media: post.postMedia,
+                  postType: post.postType,
+                  content: post.postContent,
+                  createdAt: post.createdAt,
+                  rootPostId: post.rootPostId,
+                  replyCount: post.replyCount,
+                  parentPostId: post.parentPostId,
                 }}
                 user={{
                   id: post.userId,
                   name: post.name,
-                  username: post.username,
                   photo: post.photo,
+                  username: post.username,
                 }}
                 quotedPost={{
                   id: post.originalPostId,
-                  content: post.originalPostContent,
                   media: post.originalPostMedia,
+                  content: post.originalPostContent,
                   createdAt: post.originalPostCreatedAt,
                 }}
                 quotedUser={{
                   id: post.originalUserId,
                   name: post.originalName,
+                  photo: post.originalPhoto,
                   username: post.originalUsername,
-                  photo: post.originalPhoto || "",
                 }}
                 showLine={post.showLine}
                 showBorderBottom={!post.showLine}
@@ -198,24 +196,23 @@ const FollowingFeed = ({ loggedInUser }: Props) => {
                   name: post.name,
                   username: post.username,
                   photo: post.photo,
-                  bio: "",
                 }}
                 quotedPost={{
                   id: post.originalPostId,
-                  content: post.originalPostContent,
+                  like: post.originalLike,
+                  quote: post.originalQuote,
+                  repost: post.originalRepost,
                   media: post.originalPostMedia,
-                  createdAt: post.originalPostCreatedAt,
+                  content: post.originalPostContent,
                   replyCount: post.originalReplyCount,
                   rootPostId: post.originalRootPostId,
-                  like: post.originalLike,
-                  repost: post.originalRepost,
-                  quote: post.originalQuote,
+                  createdAt: post.originalPostCreatedAt,
                 }}
                 quotedUser={{
                   id: post.originalUserId,
                   name: post.originalName,
+                  photo: post.originalPhoto,
                   username: post.originalUsername,
-                  photo: post.originalPhoto || "",
                 }}
               />
             );

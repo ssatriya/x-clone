@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import Icons from "@/components/icons";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/button";
 
 type Props = {
   size: "sm" | "md";

@@ -4,11 +4,11 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
 
-import Icons from "../icons";
 import kyInstance from "@/lib/ky";
+import Icons from "@/components/icons";
 import { formatDuration } from "@/lib/utils";
 import { MediaType, ProfilePostMedia } from "@/types";
-import InfiniteScrollContainer from "../infinite-scroll-container";
+import InfiniteScrollContainer from "@/components/infinite-scroll-container";
 
 type Props = {
   username: string;

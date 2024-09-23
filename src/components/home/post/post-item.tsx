@@ -15,8 +15,6 @@ import ViewButton from "./engagement-button/view/view-button";
 import ReplyButton from "./engagement-button/reply/reply-button";
 import ShareButton from "./engagement-button/share/share-button";
 import RepostButton from "./engagement-button/repost/repost-button";
-import BookmarkButton from "./engagement-button/bookmark/bookmark-button";
-import MoreButton from "./engagement-button/more/more-button";
 
 type Props = {
   loggedInUser: User;
@@ -52,16 +50,10 @@ const PostItem = ({
 }: Props) => {
   const pathname = usePathname();
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
-  // const [scroll] = useWindowScroll();
-  // const { setFromTop } = useScrollHistory((state) => state);
 
   const { newMedia } = useMediaURL(post.media);
 
   const handleClick = () => {
-    if (pathname === "/home") {
-      // setFromTop(scroll.y);
-    }
     const cleanUsername = user.username.slice(1);
     router.push(`/${cleanUsername}/status/${post.id}`);
   };
@@ -115,7 +107,6 @@ const PostItem = ({
               username: user.username,
             }}
           />
-          {/* Post content and images */}
           <div className="w-full space-y-3">
             {post.content !== null && (
               <div className="leading-5">
@@ -134,7 +125,6 @@ const PostItem = ({
               />
             )}
           </div>
-          {/* Engagement button action */}
           <div className="flex items-center justify-between w-full gap-4 mt-1">
             <ReplyButton
               loggedInUser={loggedInUser}
@@ -147,8 +137,8 @@ const PostItem = ({
               }}
               user={{
                 name: user.name,
-                username: user.username,
                 photo: user.photo,
+                username: user.username,
               }}
               initialReplyCount={post.replyCount}
               size="sm"
@@ -159,12 +149,12 @@ const PostItem = ({
               size="sm"
               originalPost={{
                 userId: user.id,
-                content: post.content,
-                createdAt: post.createdAt,
-                photo: user.photo,
-                username: user.username,
-                media: post.media,
                 name: user.name,
+                media: post.media,
+                photo: user.photo,
+                content: post.content,
+                username: user.username,
+                createdAt: post.createdAt,
               }}
               initialRepost={{
                 repostCount: post.repost ? post.repost.length : 0,
@@ -191,7 +181,6 @@ const PostItem = ({
             />
             <ViewButton size="sm" />
             <div className="flex -space-x-1 -mr-[9px]">
-              {/* <BookmarkButton size="sm" /> */}
               <ShareButton size="sm" />
             </div>
           </div>

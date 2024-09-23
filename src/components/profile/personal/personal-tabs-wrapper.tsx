@@ -5,8 +5,8 @@ import { PropsWithChildren, useEffect, useRef, useState } from "react";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 
 import Icons from "@/components/icons";
+import Button from "@/components/ui/button";
 import { getInitialIndex } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 
 type Props = {
   username: string;

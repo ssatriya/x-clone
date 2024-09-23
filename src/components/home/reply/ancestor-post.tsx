@@ -1,12 +1,13 @@
 "use client";
 
+import { User } from "lucia";
+import { useEffect, useRef, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+
 import kyInstance from "@/lib/ky";
 import { ReplyContext } from "@/types";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { User } from "lucia";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import PostItem from "../post/post-item";
-import QuoteItem from "../post/quote-item";
+import PostItem from "@/components/home/post/post-item";
+import QuoteItem from "@/components/home/post/quote-item";
 import useScrollPosition from "@/hooks/useScrollPosition";
 
 type Props = {
@@ -38,7 +39,7 @@ const AncestorPost = ({ postId, loggedInUser }: Props) => {
     return () => clearTimeout(timeout);
   }, []);
 
-  const { data, isLoading, isRefetching } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: queryKey,
     queryFn: () =>
       kyInstance
@@ -76,33 +77,31 @@ const AncestorPost = ({ postId, loggedInUser }: Props) => {
         data?.ancestors.map((ancestor) => {
           if (ancestor.postType === "post") {
             return (
-              // <div key={ancestor.postId} className=" bg-orange-400">
               <PostItem
                 key={ancestor.postId}
                 loggedInUser={loggedInUser}
                 post={{
                   id: ancestor.postId,
-                  content: ancestor.content,
-                  createdAt: ancestor.createdAt,
-                  media: ancestor.media,
-                  parentPostId: ancestor.parentPostId,
-                  rootPostId: ancestor.rootPostId,
-                  postType: ancestor.postType,
                   like: ancestor.like,
+                  media: ancestor.media,
                   quote: ancestor.quote,
                   repost: ancestor.repost,
+                  content: ancestor.content,
+                  postType: ancestor.postType,
+                  createdAt: ancestor.createdAt,
+                  rootPostId: ancestor.rootPostId,
                   replyCount: ancestor.replyCount,
+                  parentPostId: ancestor.parentPostId,
                 }}
                 user={{
                   id: ancestor.userId,
                   name: ancestor.name,
-                  username: ancestor.username,
                   photo: ancestor.photo,
+                  username: ancestor.username,
                 }}
                 showLine={ancestor.showLine}
                 showBorderBottom={!ancestor.showLine}
               />
-              // </div>
             );
           }
           if (ancestor.postType === "reply") {
@@ -112,22 +111,22 @@ const AncestorPost = ({ postId, loggedInUser }: Props) => {
                 loggedInUser={loggedInUser}
                 post={{
                   id: ancestor.postId,
-                  content: ancestor.content,
-                  createdAt: ancestor.createdAt,
-                  media: ancestor.media,
-                  parentPostId: ancestor.parentPostId,
-                  rootPostId: ancestor.rootPostId,
-                  postType: ancestor.postType,
                   like: ancestor.like,
                   quote: ancestor.quote,
+                  media: ancestor.media,
                   repost: ancestor.repost,
+                  content: ancestor.content,
+                  postType: ancestor.postType,
+                  createdAt: ancestor.createdAt,
+                  rootPostId: ancestor.rootPostId,
                   replyCount: ancestor.replyCount,
+                  parentPostId: ancestor.parentPostId,
                 }}
                 user={{
                   id: ancestor.userId,
                   name: ancestor.name,
-                  username: ancestor.username,
                   photo: ancestor.photo,
+                  username: ancestor.username,
                 }}
                 showLine={ancestor.showLine}
                 showBorderBottom={!ancestor.showLine}
@@ -141,34 +140,34 @@ const AncestorPost = ({ postId, loggedInUser }: Props) => {
                 loggedInUser={loggedInUser}
                 post={{
                   id: ancestor.postId,
-                  content: ancestor.content,
-                  createdAt: ancestor.createdAt,
+                  like: ancestor.like,
                   media: ancestor.media,
-                  parentPostId: ancestor.parentPostId,
+                  quote: ancestor.quote,
+                  repost: ancestor.repost,
+                  content: ancestor.content,
                   postType: ancestor.postType,
+                  createdAt: ancestor.createdAt,
                   rootPostId: ancestor.rootPostId,
                   replyCount: ancestor.replyCount,
-                  repost: ancestor.repost,
-                  like: ancestor.like,
-                  quote: ancestor.quote,
+                  parentPostId: ancestor.parentPostId,
                 }}
                 user={{
                   id: ancestor.userId,
                   name: ancestor.name,
-                  username: ancestor.username,
                   photo: ancestor.photo,
+                  username: ancestor.username,
                 }}
                 quotedPost={{
                   id: ancestor.originalPostId,
-                  content: ancestor.originalPostContent,
                   media: ancestor.originalPostMedia,
+                  content: ancestor.originalPostContent,
                   createdAt: ancestor.originalPostCreatedAt,
                 }}
                 quotedUser={{
                   id: ancestor.originalUserId,
                   name: ancestor.originalName,
-                  username: ancestor.originalUsername,
                   photo: ancestor.originalPhoto,
+                  username: ancestor.originalUsername,
                 }}
                 showLine={ancestor.showLine}
                 showBorderBottom={!ancestor.showLine}

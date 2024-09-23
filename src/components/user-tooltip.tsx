@@ -5,13 +5,13 @@ import {
   useCallback,
   PropsWithChildren,
 } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import kyInstance from "@/lib/ky";
 import { UserInfo } from "@/types";
-import { Button } from "./ui/button";
+import Button from "@/components/ui/button";
 import { useCurrentSession } from "./session-provider";
 import usePopperInstance from "@/hooks/usePopperInstance";
 

@@ -4,7 +4,7 @@ import { ButtonHTMLAttributes, forwardRef, ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
-const buttonVariants = cva(
+export const buttonVariants = cva(
   "inline-flex items-center justify-center whitespace-nowrap rounded-full transition-colors disabled:opacity-70",
   {
     variants: {
@@ -51,4 +51,4 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 );
 Button.displayName = "Button";
 
-export { Button, buttonVariants };
+export default Button;

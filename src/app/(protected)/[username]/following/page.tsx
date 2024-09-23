@@ -1,7 +1,7 @@
 import { eq, sql } from "drizzle-orm";
 
 import db from "@/lib/db";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/button";
 import { followerTable, userTable } from "@/lib/db/schema";
 import FollowingList from "@/components/profile/follow/following-list";
 

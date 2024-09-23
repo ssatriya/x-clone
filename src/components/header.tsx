@@ -1,8 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+
 import Icons from "./icons";
-import { Button } from "./ui/button";
+import Button from "./ui/button";
 
 type Props = {
   title: string;

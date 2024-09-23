@@ -7,9 +7,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import kyInstance from "@/lib/ky";
 import { Following } from "@/types";
-import FollowButton from "./follow-button";
 import Linkify from "@/components/linkify";
 import UserTooltip from "@/components/user-tooltip";
+import FollowButton from "@/components/profile/follow/follow-button";
 
 type Props = Following;
 

@@ -1,8 +1,9 @@
-import Header from "@/components/header";
-import PersonalProfileInfo from "./personal-profile-info";
-import db from "@/lib/db";
-import { followerTable, postTable, userTable } from "@/lib/db/schema";
 import { eq, sql } from "drizzle-orm";
+
+import db from "@/lib/db";
+import Header from "@/components/header";
+import { followerTable, postTable, userTable } from "@/lib/db/schema";
+import PersonalProfileInfo from "@/components/profile/personal/personal-profile-info";
 
 type Props = {
   username: string;

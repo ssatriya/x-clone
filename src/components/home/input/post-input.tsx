@@ -24,7 +24,7 @@ import Progressbar from "@/components/progressbar";
 import { CreatePostPayload } from "@/lib/zod-schema";
 import { FileWithPreview, MediaType, OptionButtonConfig } from "@/types";
 import { useUploadMedia } from "@/hooks/useUploadMedia";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/button";
 import ButtonTooltip from "@/components/button-tooltip";
 import Divider from "@/components/ui/divider";
 

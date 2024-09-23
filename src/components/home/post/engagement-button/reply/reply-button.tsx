@@ -11,13 +11,13 @@ import StatNumber from "../stat-number";
 import ReplyModal from "./reply-modal";
 import kyInstance from "@/lib/ky";
 import { ReplyCountInfo } from "@/types";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/button";
 
 type Props = {
   loggedInUser: User;
   post: {
     id: string;
-    content: string;
+    content: string | null;
     createdAt: Date;
     rootPostId: string;
     replyCount: number;

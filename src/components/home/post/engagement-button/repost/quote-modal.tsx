@@ -24,6 +24,7 @@ import { FileRejection, FileWithPath, useDropzone } from "react-dropzone";
 import {
   QuoteInfo,
   MediaType,
+  RepostInfo,
   FileWithPreview,
   OptionButtonConfig,
 } from "@/types";
@@ -36,21 +37,21 @@ import {
 import kyInstance from "@/lib/ky";
 import Icons from "@/components/icons";
 import Divider from "@/components/ui/divider";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/button";
 import Progressbar from "@/components/progressbar";
-import { CreateQuotePayload } from "@/lib/zod-schema";
 import { useUploadMedia } from "@/hooks/useUploadMedia";
-import QuotePreview from "../../quote-preview/quote-preview";
 import MediaPreview from "@/components/home/input/media-preview";
 import InputOptions from "@/components/home/input/input-options";
 import ProgressCircle from "@/components/home/input/progress-circle";
-import CompactQuotePreview from "../../quote-preview/compact-post-preview";
+import { CreateQuotePayload, CreateRepostPayload } from "@/lib/zod-schema";
+import QuotePreview from "@/components/home/post/quote-preview/quote-preview";
+import CompactQuotePreview from "@/components/home/post/quote-preview/compact-post-preview";
 
 type Props = {
   postId: string;
+  isOpen: boolean;
   loggedInUser: User;
   setMove: Dispatch<SetStateAction<number>>;
-  isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   originalPost: {
     userId: string;
@@ -59,7 +60,7 @@ type Props = {
     username: string;
     name: string;
     createdAt: Date;
-    content: string;
+    content: string | null;
   };
 };
 
@@ -83,21 +84,52 @@ const QuoteModal = ({
   const [files, setFiles] = useState<FileWithPreview[]>([]);
   const [isPending, setIsPending] = useState(false);
 
-  // const quoteHandler = () => {
-  // if (postCharCount > 0) {
-  //   if (editor && editor.getHTML()) {
-  //     quoteMutate({
-  //       quoteTargetId: id,
-  //       content: editor.getHTML(),
-  //       postType: "quote",
-  //     });
-  //   }
-  //   return;
-  // } else {
-  //   repost({ repostTargetId: id, postType: "repost" });
-  //   return;
-  // }
-  // };
+  const repostQueryKey = ["get-repost", postId];
+
+  const { mutate: repost } = useMutation({
+    mutationKey: ["create-repost"],
+    mutationFn: ({ repostTargetId, postType }: CreateRepostPayload) =>
+      kyInstance.patch("/api/post/repost", {
+        json: { repostTargetId, postType },
+      }),
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: repostQueryKey });
+      const previousRepost =
+        queryClient.getQueryData<RepostInfo>(repostQueryKey);
+
+      const newCount =
+        (previousRepost?.repostCount || 0) +
+        (previousRepost?.isRepostedByUser ? -1 : 1);
+
+      queryClient.setQueryData<RepostInfo>(repostQueryKey, {
+        repostCount: newCount,
+        isRepostedByUser: !previousRepost?.isRepostedByUser,
+      });
+
+      if (previousRepost) {
+        if (newCount > previousRepost.repostCount) {
+          setMove(25);
+        } else {
+          setMove(-25);
+        }
+      }
+
+      return { previousRepost };
+    },
+    onError: (error, variables, context) => {
+      queryClient.setQueryData<RepostInfo>(
+        repostQueryKey,
+        context?.previousRepost
+      );
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: repostQueryKey });
+    },
+    onSuccess: () => {
+      setIsOpen(false);
+      setIsPending(false);
+    },
+  });
 
   const quoteQueryKey = ["get-quote", postId];
 
@@ -136,10 +168,10 @@ const QuoteModal = ({
       return { previousRepost };
     },
     onSuccess: () => {
-      setInputValue("");
-      setInputCount(0);
       setFiles([]);
+      setInputCount(0);
       setIsOpen(false);
+      setInputValue("");
       setIsPending(false);
     },
   });
@@ -247,22 +279,28 @@ const QuoteModal = ({
         console.error("Error uploading files:", error);
         return;
       }
+      const payload: CreateQuotePayload = {
+        content: inputValue.trim(),
+        postType: "quote",
+        quoteTargetId: postId,
+        ...(media.length > 0 && { media: JSON.stringify(media) }),
+      };
+      quoteMutate(payload);
+    } else {
+      repostHandler();
     }
+  };
 
-    const payload: CreateQuotePayload = {
-      content: inputValue.trim(),
-      postType: "quote",
-      quoteTargetId: postId,
-      ...(media.length > 0 && { media: JSON.stringify(media) }),
-    };
-    quoteMutate(payload);
+  const repostHandler = () => {
+    setTimeout(() => {
+      repost({ repostTargetId: postId, postType: "repost" });
+    }, 200);
   };
 
   useEffect(() => {
     updateProgress(inputCount);
   }, [inputCount]);
 
-  const isButtonDisabled = inputValue.length > 0 || files.length > 0;
   const isPosting = isPending || isUploading;
 
   const optionButtonConfigs: OptionButtonConfig[] = [
@@ -339,7 +377,6 @@ const QuoteModal = ({
               </div>
             </div>
           </DialogTitle>
-
           <div className="flex-grow overflow-y-auto h-fit">
             <div className="flex flex-col w-full gap-1 px-4">
               <div className="flex h-full">
@@ -414,7 +451,6 @@ const QuoteModal = ({
               </div>
             </div>
           </div>
-
           <div className="sticky bottom-0 left-0 right-0 px-4 pt-1 pb-2 bg-black rounded-none sm-plus:rounded-b-2xl">
             {!isPosting && (
               <Button

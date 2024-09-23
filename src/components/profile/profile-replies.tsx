@@ -5,10 +5,10 @@ import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
 
 import kyInstance from "@/lib/ky";
 import { CustomPost } from "@/types";
-import PostItem from "../home/post/post-item";
-import QuoteItem from "../home/post/quote-item";
-import RepostItem from "../home/post/repost-item";
-import InfiniteScrollContainer from "../infinite-scroll-container";
+import PostItem from "@/components/home/post/post-item";
+import QuoteItem from "@/components/home/post/quote-item";
+import RepostItem from "@/components/home/post/repost-item";
+import InfiniteScrollContainer from "@/components/infinite-scroll-container";
 
 type Props = {
   username: string;
@@ -61,22 +61,22 @@ const ProfileReplies = ({ username, loggedInUser }: Props) => {
                 loggedInUser={loggedInUser}
                 post={{
                   id: post.postId,
-                  content: post.postContent,
-                  createdAt: post.createdAt,
-                  media: post.postMedia,
-                  parentPostId: post.parentPostId,
-                  postType: post.postType,
-                  rootPostId: post.rootPostId,
-                  replyCount: post.replyCount,
-                  repost: post.repost,
                   like: post.like,
                   quote: post.quote,
+                  repost: post.repost,
+                  media: post.postMedia,
+                  postType: post.postType,
+                  createdAt: post.createdAt,
+                  content: post.postContent,
+                  replyCount: post.replyCount,
+                  rootPostId: post.rootPostId,
+                  parentPostId: post.parentPostId,
                 }}
                 user={{
                   id: post.userId,
                   name: post.name,
-                  username: post.username,
                   photo: post.photo,
+                  username: post.username,
                 }}
                 showLine={post.showLine}
                 showBorderBottom={!post.showLine}
@@ -90,22 +90,22 @@ const ProfileReplies = ({ username, loggedInUser }: Props) => {
                 loggedInUser={loggedInUser}
                 post={{
                   id: post.postId,
-                  content: post.postContent,
-                  createdAt: post.createdAt,
-                  media: post.postMedia,
-                  parentPostId: post.parentPostId,
-                  postType: post.postType,
-                  rootPostId: post.rootPostId,
-                  replyCount: post.replyCount,
-                  repost: post.repost,
                   like: post.like,
                   quote: post.quote,
+                  repost: post.repost,
+                  media: post.postMedia,
+                  postType: post.postType,
+                  content: post.postContent,
+                  createdAt: post.createdAt,
+                  replyCount: post.replyCount,
+                  rootPostId: post.rootPostId,
+                  parentPostId: post.parentPostId,
                 }}
                 user={{
                   id: post.userId,
                   name: post.name,
-                  username: post.username,
                   photo: post.photo,
+                  username: post.username,
                 }}
                 showLine={post.showLine}
                 showBorderBottom={!post.showLine}
@@ -119,23 +119,22 @@ const ProfileReplies = ({ username, loggedInUser }: Props) => {
                 loggedInUser={loggedInUser}
                 post={{
                   id: post.postId,
-                  content: post.postContent,
-                  createdAt: post.createdAt,
-                  media: post.postMedia,
-                  parentPostId: post.parentPostId,
-                  postType: post.postType,
-                  rootPostId: post.rootPostId,
-                  replyCount: post.replyCount,
-                  repost: post.repost,
                   like: post.like,
                   quote: post.quote,
+                  repost: post.repost,
+                  media: post.postMedia,
+                  postType: post.postType,
+                  content: post.postContent,
+                  createdAt: post.createdAt,
+                  rootPostId: post.rootPostId,
+                  replyCount: post.replyCount,
+                  parentPostId: post.parentPostId,
                 }}
                 user={{
                   id: post.userId,
                   name: post.name,
-                  username: post.username,
                   photo: post.photo,
-                  bio: "",
+                  username: post.username,
                 }}
                 quotedPost={{
                   id: post.originalPostId,
@@ -146,8 +145,8 @@ const ProfileReplies = ({ username, loggedInUser }: Props) => {
                 quotedUser={{
                   id: post.originalUserId,
                   name: post.originalName,
+                  photo: post.originalPhoto,
                   username: post.originalUsername,
-                  photo: post.originalPhoto || "",
                 }}
                 showLine={post.showLine}
                 showBorderBottom={!post.showLine}
@@ -162,26 +161,25 @@ const ProfileReplies = ({ username, loggedInUser }: Props) => {
                 user={{
                   id: post.userId,
                   name: post.name,
-                  username: post.username,
                   photo: post.photo,
-                  bio: "",
+                  username: post.username,
                 }}
                 quotedPost={{
                   id: post.originalPostId,
-                  content: post.originalPostContent,
+                  like: post.originalLike,
+                  quote: post.originalQuote,
+                  repost: post.originalRepost,
                   media: post.originalPostMedia,
-                  createdAt: post.originalPostCreatedAt,
+                  content: post.originalPostContent,
                   replyCount: post.originalReplyCount,
                   rootPostId: post.originalRootPostId,
-                  like: post.originalLike,
-                  repost: post.originalRepost,
-                  quote: post.originalQuote,
+                  createdAt: post.originalPostCreatedAt,
                 }}
                 quotedUser={{
                   id: post.originalUserId,
                   name: post.originalName,
+                  photo: post.originalPhoto,
                   username: post.originalUsername,
-                  photo: post.originalPhoto || "",
                 }}
               />
             );

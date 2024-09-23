@@ -6,14 +6,14 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 import kyInstance from "@/lib/ky";
 import PostItem from "./post/post-item";
 import { ForYouFeedPost } from "@/types";
 import QuoteItem from "./post/quote-item";
-import InfiniteScrollContainer from "../infinite-scroll-container";
-import { Button } from "../ui/button";
-import { useEffect } from "react";
+import Button from "@/components/ui/button";
+import InfiniteScrollContainer from "@/components/infinite-scroll-container";
 
 type Props = {
   loggedInUser: User;

@@ -41,7 +41,6 @@ import ShareButton from "./engagement-button/share/share-button";
 import RepostButton from "./engagement-button/repost/repost-button";
 import { FileWithPreview, ForYouFeedPost, MediaType } from "@/types";
 import BookmarkButton from "./engagement-button/bookmark/bookmark-button";
-import useScrollPosition from "@/hooks/useScrollPosition";
 
 type Props = {
   loggedInUser: User;

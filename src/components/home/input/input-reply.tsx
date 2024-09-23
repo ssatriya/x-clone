@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import Icons from "@/components/icons";
 import { FileWithPreview } from "@/types";
 import MediaPreview from "./media-preview";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/button";
 import ButtonTooltip from "@/components/button-tooltip";
 
 type Props = {
