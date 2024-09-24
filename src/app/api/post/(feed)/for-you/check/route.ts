@@ -1,7 +1,7 @@
-import db from "@/lib/db";
-import { postTable } from "@/lib/db/schema";
-import { and, eq, gt, or, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { NextRequest } from "next/server";
+
+import db from "@/lib/db";
 
 export async function GET(req: NextRequest) {
   try {
@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
     }
 
     const [timestamp] = await db.execute(
-      sql`SELECT id, created_at FROM "post" WHERE post.id = ${lastPostId}`
+      sql`SELECT id, created_at FROM "post" WHERE (post.post_type = 'post' OR post.post_type = 'quote') AND post.id = ${lastPostId}`
     );
 
     const count = await db.execute(

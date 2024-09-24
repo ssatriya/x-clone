@@ -1,0 +1,1 @@
+ALTER TABLE "notification" ALTER COLUMN "read" SET NOT NULL;

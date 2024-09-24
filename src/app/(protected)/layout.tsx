@@ -1,5 +1,9 @@
 import { ReactNode } from "react";
+import { and, eq } from "drizzle-orm";
+import { redirect } from "next/navigation";
 
+import db from "@/lib/db";
+import { notificationTable } from "@/lib/db/schema";
 import { validateRequest } from "@/lib/auth/validate-request";
 import LeftSidebar from "@/components/sidebar/left/left-sidebar";
 import RightSidebar from "@/components/sidebar/right/right-sidebar";
@@ -17,16 +21,26 @@ export default async function Layout({
   postPhotoModal,
   profilePhotoModal,
 }: Props) {
-  const { user } = await validateRequest();
+  const { user: loggedInUser } = await validateRequest();
+
+  if (!loggedInUser) {
+    return redirect("/");
+  }
+
+  const notifications = await db
+    .select()
+    .from(notificationTable)
+    .where(
+      and(
+        eq(notificationTable.recipientId, loggedInUser.id),
+        eq(notificationTable.read, false)
+      )
+    );
 
   return (
     <div className="flex justify-center w-full">
       <div className="relative flex justify-center">
-        <LeftSidebar
-          name={user?.name}
-          username={user?.username}
-          photo={user?.photo}
-        />
+        <LeftSidebar user={loggedInUser} initialNotifications={notifications} />
       </div>
       <section className="relative flex min-h-screen max-md:w-full">
         <div

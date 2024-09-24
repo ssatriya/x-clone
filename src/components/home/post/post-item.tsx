@@ -171,6 +171,7 @@ const PostItem = ({
               }}
             />
             <LikeButton
+              userId={user.id}
               postId={post.id}
               initialLike={{
                 likeCount: post.like ? post.like.length : 0,

@@ -12,12 +12,13 @@ import { CreateLikePayload } from "@/lib/zod-schema";
 import Button from "@/components/ui/button";
 
 type Props = {
+  userId: string;
   postId: string;
   size: "sm" | "md";
   initialLike: LikeInfo;
 };
 
-const LikeButton = ({ postId, initialLike, size }: Props) => {
+const LikeButton = ({ userId, postId, initialLike, size }: Props) => {
   const queryClient = useQueryClient();
 
   const queryKey = ["get-like", postId];
@@ -41,7 +42,7 @@ const LikeButton = ({ postId, initialLike, size }: Props) => {
   const { mutate: likeMutate } = useMutation({
     mutationKey: ["create-like"],
     mutationFn: ({ likeTargetId }: CreateLikePayload) =>
-      kyInstance.patch("/api/post/like", { json: { likeTargetId } }),
+      kyInstance.patch("/api/post/like", { json: { likeTargetId, userId } }),
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: queryKey });
 
@@ -74,7 +75,7 @@ const LikeButton = ({ postId, initialLike, size }: Props) => {
   });
 
   const likeHandler = () => {
-    likeMutate({ likeTargetId: postId });
+    likeMutate({ likeTargetId: postId, userId: userId });
   };
 
   return (

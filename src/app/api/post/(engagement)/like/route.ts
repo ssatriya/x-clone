@@ -2,7 +2,7 @@ import { and, eq } from "drizzle-orm";
 import { NextRequest } from "next/server";
 
 import db from "@/lib/db";
-import { likeTable } from "@/lib/db/schema";
+import { likeTable, notificationTable } from "@/lib/db/schema";
 import { CreateLikeSchema } from "@/lib/zod-schema";
 import { validateRequest } from "@/lib/auth/validate-request";
 import { LikeInfo } from "@/types";
@@ -52,7 +52,7 @@ export async function PATCH(req: NextRequest) {
       return new Response("invalid payload", { status: 400 });
     }
 
-    const { likeTargetId } = payload.data;
+    const { likeTargetId, userId } = payload.data;
 
     const isLiked = await db
       .select()
@@ -65,20 +65,39 @@ export async function PATCH(req: NextRequest) {
       );
 
     if (isLiked.length > 0) {
-      await db
-        .delete(likeTable)
-        .where(
-          and(
-            eq(likeTable.likeTargetId, likeTargetId),
-            eq(likeTable.userOriginId, loggedInUser.id)
-          )
-        );
+      await db.transaction(async (tx) => {
+        await tx
+          .delete(likeTable)
+          .where(
+            and(
+              eq(likeTable.likeTargetId, likeTargetId),
+              eq(likeTable.userOriginId, loggedInUser.id)
+            )
+          );
+        await tx
+          .delete(notificationTable)
+          .where(
+            and(
+              eq(notificationTable.postId, likeTargetId),
+              eq(notificationTable.issuerId, loggedInUser.id),
+              eq(notificationTable.recipientId, userId)
+            )
+          );
+      });
       return new Response("like deleted", { status: 200 });
     }
 
-    await db.insert(likeTable).values({
-      likeTargetId: likeTargetId,
-      userOriginId: loggedInUser.id,
+    await db.transaction(async (tx) => {
+      await tx.insert(likeTable).values({
+        likeTargetId: likeTargetId,
+        userOriginId: loggedInUser.id,
+      });
+      await tx.insert(notificationTable).values({
+        issuerId: loggedInUser.id,
+        recipientId: userId,
+        notificationType: "like",
+        postId: likeTargetId,
+      });
     });
 
     return new Response("liked successfully", { status: 201 });

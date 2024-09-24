@@ -22,6 +22,27 @@
       "when": 1725713896334,
       "tag": "0002_skinny_bishop",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1727136195718,
+      "tag": "0003_absent_nightcrawler",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1727136968188,
+      "tag": "0004_perpetual_namorita",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1727174065256,
+      "tag": "0005_bumpy_champions",
+      "breakpoints": true
     }
   ]
 }

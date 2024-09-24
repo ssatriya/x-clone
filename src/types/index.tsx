@@ -262,3 +262,21 @@ export type OptionButtonConfig = {
   disabled?: boolean;
   ariaLabel: "Media" | "GIF" | "Poll" | "Emoji" | "Schedule" | "Tag Location";
 };
+
+export type NotificationType = "reply" | "like" | "follow";
+
+export interface Notification {
+  id: string;
+  read: boolean;
+  notificationType: NotificationType;
+  userId: string | null;
+  postId: string | null;
+  postType: "reply" | "post" | "repost" | "quote" | null;
+  content: string | null;
+  verified: boolean | null;
+  name: string | null;
+  username: string | null;
+  photo: string | null;
+  createdAt: Date;
+  recipientUsername: string | null;
+}

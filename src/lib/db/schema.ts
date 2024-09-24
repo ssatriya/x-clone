@@ -1,16 +1,61 @@
-import { relations } from "drizzle-orm";
 import {
-  boolean,
+  text,
   date,
   index,
   pgEnum,
-  pgTable,
-  primaryKey,
-  text,
-  timestamp,
-  uniqueIndex,
   varchar,
+  pgTable,
+  boolean,
+  timestamp,
+  primaryKey,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
+import { generateIdFromEntropySize } from "lucia";
+
+export const notificationTypeEnum = pgEnum("notificationType", [
+  "like",
+  "follow",
+  "reply",
+]);
+
+export const notificationTable = pgTable("notification", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => generateIdFromEntropySize(10)),
+  recipientId: text("recipient_id")
+    .references(() => userTable.id, { onDelete: "cascade" })
+    .notNull(),
+  issuerId: text("issuer_id")
+    .references(() => userTable.id, { onDelete: "cascade" })
+    .notNull(),
+  notificationType: notificationTypeEnum("notification_type").notNull(),
+  postId: text("post_id").references(() => postTable.id, {
+    onDelete: "cascade",
+  }),
+  read: boolean("read").default(false).notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const notificationTableRelation = relations(
+  notificationTable,
+  ({ one }) => ({
+    recipientId: one(userTable, {
+      fields: [notificationTable.recipientId],
+      references: [userTable.id],
+      relationName: "recipientId",
+    }),
+    issuerId: one(userTable, {
+      fields: [notificationTable.issuerId],
+      references: [userTable.id],
+      relationName: "issuerId",
+    }),
+    postId: one(postTable, {
+      fields: [notificationTable.postId],
+      references: [postTable.id],
+    }),
+  })
+);
 
 export const userTable = pgTable(
   "user",

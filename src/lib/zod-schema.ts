@@ -32,5 +32,6 @@ export type CreateQuotePayload = z.infer<typeof CreateQuoteSchema>;
 
 export const CreateLikeSchema = z.object({
   likeTargetId: z.string(),
+  userId: z.string(),
 });
 export type CreateLikePayload = z.infer<typeof CreateLikeSchema>;

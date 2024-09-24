@@ -214,6 +214,7 @@ const RepostItem = ({
                 }}
               />
               <LikeButton
+                userId={quotedUser.id}
                 postId={quotedPost.id}
                 initialLike={{
                   likeCount: quotedPost.like ? quotedPost.like.length : 0,

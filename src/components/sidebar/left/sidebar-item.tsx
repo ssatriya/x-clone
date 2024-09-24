@@ -12,9 +12,17 @@ type Props = {
   label: string;
   disabled: boolean;
   ariaLabel: string;
+  hasNotification?: boolean;
 };
 
-const SidebarItem = ({ label, icon, href, disabled, ariaLabel }: Props) => {
+const SidebarItem = ({
+  label,
+  icon,
+  href,
+  disabled,
+  ariaLabel,
+  hasNotification,
+}: Props) => {
   const pathname = usePathname();
 
   const hasStatusPath = (path: string): boolean => {
@@ -25,7 +33,10 @@ const SidebarItem = ({ label, icon, href, disabled, ariaLabel }: Props) => {
   const statusPath = hasStatusPath(pathname);
   const path = getBasePath(pathname);
 
-  const Icon = Icons[icon];
+  const Icon =
+    label === "Notifications" && (hasNotification || path === href)
+      ? Icons["notificationFill"]
+      : Icons[icon];
 
   if (href == "#") {
     return (
@@ -82,24 +93,34 @@ const SidebarItem = ({ label, icon, href, disabled, ariaLabel }: Props) => {
       >
         <div className="flex items-center group-hover:bg-hover rounded-full p-3 justify-start h-full w-fit">
           {path === href && !statusPath ? (
-            <Icon
-              className={cn(
-                "w-[27px] h-[27px] fill-neutral-100",
-                label === "Profile" ||
-                  (label === "Home" && "stroke-neutral-100")
+            <div className="relative">
+              <Icon
+                className={cn(
+                  "w-[27px] h-[27px] fill-neutral-100",
+                  label === "Profile" ||
+                    (label === "Home" && "stroke-neutral-100")
+                )}
+              />
+              {hasNotification && (
+                <div className="w-3 h-3 bg-primary rounded-full absolute top-0 right-0" />
               )}
-            />
+            </div>
           ) : (
-            <Icon
-              strokeWidth={2}
-              className={cn(
-                "w-[27px] h-[27px]",
-                label === "Home" || label === "Profile"
-                  ? "stroke-neutral-100"
-                  : "fill-neutral-100",
-                disabled && "fill-neutral-400"
+            <div className="relative">
+              <Icon
+                strokeWidth={2}
+                className={cn(
+                  "w-[27px] h-[27px]",
+                  label === "Home" || label === "Profile"
+                    ? "stroke-neutral-100"
+                    : "fill-neutral-100",
+                  disabled && "fill-neutral-400"
+                )}
+              />
+              {hasNotification && (
+                <div className="w-3 h-3 bg-primary rounded-full absolute top-0 right-0" />
               )}
-            />
+            </div>
           )}
           <div
             className={cn(

@@ -431,6 +431,7 @@ const PostDetail = ({ loggedInUser, username, postId }: Props) => {
                 />
                 <LikeButton
                   size="md"
+                  userId={data.post.userId}
                   postId={data.post.postId}
                   initialLike={{
                     likeCount: data.like ? data.like.length : 0,

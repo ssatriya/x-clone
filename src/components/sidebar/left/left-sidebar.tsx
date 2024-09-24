@@ -1,27 +1,53 @@
 "use client";
 
 import Link from "next/link";
+import { User } from "lucia";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMediaQuery } from "@mantine/hooks";
+import { useQuery } from "@tanstack/react-query";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
+import kyInstance from "@/lib/ky";
 import Icons from "@/components/icons";
 import SidebarItem from "./sidebar-item";
+import { NotificationType } from "@/types";
 import Button from "@/components/ui/button";
 import { logout } from "@/app/actions/logout";
+import { supabase } from "@/lib/supabase/client";
 
-type Props = {
-  photo?: string | undefined;
-  username?: string | undefined;
-  name?: string | undefined;
+type InitialNotification = {
+  id: string;
+  read: boolean;
+  postId: string | null;
+  issuerId: string;
+  createdAt: string | Date;
+  recipientId: string;
+  notificationType: string | NotificationType;
 };
 
-const LeftSidebar = ({ photo, name, username }: Props) => {
+type Props = {
+  user: User;
+  initialNotifications: InitialNotification[];
+};
+
+const LeftSidebar = ({ user, initialNotifications }: Props) => {
   const router = useRouter();
   const mediaQuery = useMediaQuery("(min-width: 1300px)");
   const [isNormalSidebar, setIsNormalSidebar] = useState(true);
+
+  const { data } = useQuery({
+    queryKey: ["initial-notification"],
+    queryFn: () =>
+      kyInstance
+        .get("/api/notification/all-notification/initial")
+        .json<InitialNotification[]>(),
+    initialData: initialNotifications,
+  });
+
+  const [isNotification, setIsNotification] =
+    useState<InitialNotification[]>(data);
 
   useEffect(() => {
     if (!mediaQuery) {
@@ -30,6 +56,96 @@ const LeftSidebar = ({ photo, name, username }: Props) => {
       setIsNormalSidebar(true);
     }
   }, [mediaQuery]);
+
+  const handleInserts = (payload: any) => {
+    const newPayload: InitialNotification = {
+      id: payload.new.id,
+      read: payload.new.read,
+      postId: payload.new.post_id,
+      createdAt: new Date(payload.new.created_at),
+      issuerId: payload.new.issuer_id,
+      recipientId: payload.new.recipient_id,
+      notificationType: payload.new.notification_type,
+    };
+
+    if (payload.new.recipient_id === user.id) {
+      setIsNotification((prev) => prev.concat(newPayload));
+    }
+  };
+
+  const handleChanges = (payload: any) => {
+    const newPayload: InitialNotification = {
+      id: payload.new.id,
+      read: payload.new.read,
+      postId: payload.new.post_id,
+      createdAt: new Date(payload.new.created_at),
+      issuerId: payload.new.issuer_id,
+      recipientId: payload.new.recipient_id,
+      notificationType: payload.new.notification_type,
+    };
+
+    if (payload.new.recipient_id === user.id && !payload.new.read) {
+      setIsNotification((prev) => prev.concat(newPayload));
+      return;
+    }
+
+    if (payload.new.recipient_id === user.id && payload.new.read) {
+      setIsNotification((prev) => [
+        ...prev.filter((notification) => notification.id !== newPayload.id),
+      ]);
+      return;
+    }
+  };
+
+  const handleDelete = (payload: any) => {
+    const oldId = payload.old.id;
+
+    setIsNotification((prev) => [
+      ...prev.filter((notification) => notification.id !== oldId),
+    ]);
+  };
+
+  // #TODO: Still running when user like it's own post
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("db-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "notification",
+          filter: `recipient_id=eq.${user.id}`,
+        },
+        handleInserts
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "notification",
+          filter: `recipient_id=eq.${user.id}`,
+        },
+        handleChanges
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "DELETE",
+          schema: "public",
+          table: "notification",
+        },
+        handleDelete
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user.id]);
 
   const routes = [
     {
@@ -50,8 +166,9 @@ const LeftSidebar = ({ photo, name, username }: Props) => {
       label: "Notifications",
       ariaLabel: "View notifications",
       icon: "notifications",
-      href: "#",
-      disabled: true,
+      href: "/notifications",
+      disabled: false,
+      hasNotification: isNotification.length > 0,
     },
     {
       label: "Messages",
@@ -92,7 +209,7 @@ const LeftSidebar = ({ photo, name, username }: Props) => {
       label: "Profile",
       ariaLabel: "Your profile",
       icon: "profile",
-      href: `/${username?.slice(1)}`,
+      href: `/${user.username?.slice(1)}`,
       disabled: false,
     },
     {
@@ -128,6 +245,7 @@ const LeftSidebar = ({ photo, name, username }: Props) => {
               href={link.href}
               disabled={link.disabled}
               ariaLabel={link.ariaLabel}
+              hasNotification={link.hasNotification}
             />
           ))}
           <Link
@@ -164,8 +282,8 @@ const LeftSidebar = ({ photo, name, username }: Props) => {
         <MenuButton className="flex items-center justify-between w-full p-3 mb-4 transition-colors rounded-full hover:bg-secondary-lighter/10">
           <div className="min-[1300px]:hidden block">
             <Image
-              src={photo!}
-              alt={username!}
+              src={user.photo!}
+              alt={user.username!}
               height={40}
               width={40}
               priority
@@ -175,17 +293,19 @@ const LeftSidebar = ({ photo, name, username }: Props) => {
           <div className="min-[1300px]:flex justify-between w-full items-center hidden">
             <div className="flex gap-2">
               <Image
-                src={photo!}
-                alt={username!}
+                src={user.photo!}
+                alt={user.username!}
                 height={40}
                 width={40}
                 priority
                 className="rounded-full"
               />
               <div className="flex flex-col items-start">
-                <span className="text-[15px] font-bold leading-5">{name}</span>
+                <span className="text-[15px] font-bold leading-5">
+                  {user.name}
+                </span>
                 <span className="text-[15px] leading-5 text-gray">
-                  {username}
+                  {user.username}
                 </span>
               </div>
             </div>

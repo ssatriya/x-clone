@@ -45,10 +45,10 @@ const ForYouFeed = ({ loggedInUser }: Props) => {
 
   const posts = data?.pages.flatMap((page) => page.posts) || [];
 
-  useEffect(() => {
-    queryClient.resetQueries({ queryKey: ["for-you-feed"] });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   queryClient.resetQueries({ queryKey: ["for-you-feed"] });
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   const lastPostId = posts[0] && posts[0].post.postId;
 
@@ -56,7 +56,7 @@ const ForYouFeed = ({ loggedInUser }: Props) => {
     queryKey: ["check-new-post-for-you", lastPostId],
     queryFn: () =>
       kyInstance
-        .get("/api/post/check", {
+        .get("/api/post/for-you/check", {
           searchParams: {
             postId: lastPostId,
           },

@@ -293,6 +293,7 @@ const PostPhotoModal = ({ photoNumber, post, loggedInUser }: Props) => {
                     }}
                   />
                   <LikeButton
+                    userId={post.post.userId}
                     postId={post.post.postId}
                     initialLike={{
                       likeCount: post.like ? post.like.length : 0,

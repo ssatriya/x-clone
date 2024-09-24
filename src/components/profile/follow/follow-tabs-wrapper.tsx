@@ -12,8 +12,9 @@ type Props = {
 
 const routeIndexMap: Record<string, number> = {
   verified_followers: 0,
-  followers: 1,
-  following: 2,
+  followers_you_follow: 1,
+  followers: 2,
+  following: 3,
 };
 
 const FollowTabsWrapper = ({
@@ -44,8 +45,9 @@ const FollowTabsWrapper = ({
 
     const pathMap: Record<number, string> = {
       0: `/${username}/verified_followers`,
-      1: `/${username}/followers`,
-      2: `/${username}/following`,
+      1: `/${username}/followers_you_follow`,
+      2: `/${username}/followers`,
+      3: `/${username}/following`,
     };
 
     const path = pathMap[index];
@@ -64,10 +66,16 @@ const FollowTabsWrapper = ({
         >
           <TabList className="h-full border-b rounded-none p-0 gap-0 w-full md:w-[598px] z-40 backdrop-blur-md justify-evenly flex items-center">
             <Tab className="relative flex items-center justify-center h-full rounded-none px-4 w-full text-[15px]/5 text-white focus:outline-none data-[hover]:bg-white/5 data-[focus]:outline-1 data-[focus]:outline-white group">
-              <span className="font-medium text-gray group-data-[headlessui-state^=selected]:font-bold group-data-[headlessui-state^=selected]:text-white">
+              <span className="font-medium text-gray group-data-[headlessui-state^=selected]:font-bold group-data-[headlessui-state^=selected]:text-white text-nowrap">
                 Verified Followers
               </span>
               <div className="absolute bottom-0 w-[130px] rounded-full h-1 bg-primary opacity-0 group-data-[headlessui-state^=selected]:opacity-100" />
+            </Tab>
+            <Tab className="relative flex items-center justify-center h-full rounded-none px-4 w-full text-[15px]/5 text-white focus:outline-none data-[hover]:bg-white/5 data-[focus]:outline-1 data-[focus]:outline-white group">
+              <span className="font-medium text-gray group-data-[headlessui-state^=selected]:font-bold group-data-[headlessui-state^=selected]:text-white text-nowrap">
+                Followers you know
+              </span>
+              <div className="absolute bottom-0 w-[141px] rounded-full h-1 bg-primary opacity-0 group-data-[headlessui-state^=selected]:opacity-100" />
             </Tab>
             <Tab className="relative flex items-center justify-center h-full rounded-none px-4 w-full text-[15px]/5 text-white focus:outline-none data-[hover]:bg-white/5 data-[focus]:outline-1 data-[focus]:outline-white group">
               <span className="font-medium text-gray group-data-[headlessui-state^=selected]:font-bold group-data-[headlessui-state^=selected]:text-white">
@@ -83,6 +91,9 @@ const FollowTabsWrapper = ({
             </Tab>
           </TabList>
           <TabPanels>
+            <TabPanel>
+              <div className="md:w-[599px]">{children}</div>
+            </TabPanel>
             <TabPanel>
               <div className="md:w-[599px]">{children}</div>
             </TabPanel>

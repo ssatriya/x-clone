@@ -45,10 +45,10 @@ const FollowingFeed = ({ loggedInUser }: Props) => {
 
   const posts = data?.pages.flatMap((page) => page.followedPosts) || [];
 
-  useEffect(() => {
-    queryClient.resetQueries({ queryKey: ["following-feed"] });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   queryClient.resetQueries({ queryKey: ["following-feed"] });
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   const lastPostId = posts[0] && posts[0].postId;
 
@@ -77,7 +77,7 @@ const FollowingFeed = ({ loggedInUser }: Props) => {
     <InfiniteScrollContainer
       onBottomReached={() => hasNextPage && !isFetching && fetchNextPage()}
     >
-      {newCount && newCount.count > 0 && (
+      {/* {newCount && newCount.count > 0 && (
         <Button
           onClick={() => refetch()}
           variant="ghost"
@@ -85,7 +85,7 @@ const FollowingFeed = ({ loggedInUser }: Props) => {
         >
           Show {newCount.count} {newCount.count > 1 ? "posts" : "post"}
         </Button>
-      )}
+      )} */}
       {!isLoading &&
         posts.map((post) => {
           if (post.postType === "post") {
