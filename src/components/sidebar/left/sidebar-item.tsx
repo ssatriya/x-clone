@@ -13,6 +13,7 @@ type Props = {
   disabled: boolean;
   ariaLabel: string;
   hasNotification?: boolean;
+  count?: number;
 };
 
 const SidebarItem = ({
@@ -22,6 +23,7 @@ const SidebarItem = ({
   disabled,
   ariaLabel,
   hasNotification,
+  count,
 }: Props) => {
   const pathname = usePathname();
 
@@ -34,7 +36,7 @@ const SidebarItem = ({
   const path = getBasePath(pathname);
 
   const Icon =
-    label === "Notifications" && (hasNotification || path === href)
+    label === "Notifications" && path === href
       ? Icons["notificationFill"]
       : Icons[icon];
 
@@ -102,7 +104,9 @@ const SidebarItem = ({
                 )}
               />
               {hasNotification && (
-                <div className="w-3 h-3 bg-primary rounded-full absolute top-0 right-0" />
+                <div className="w-[18px] h-[18px] bg-primary flex items-center justify-center rounded-full absolute -top-[5px] -right-1 border border-black">
+                  <span className="text-[11px] leading-3">{count}</span>
+                </div>
               )}
             </div>
           ) : (
@@ -118,7 +122,9 @@ const SidebarItem = ({
                 )}
               />
               {hasNotification && (
-                <div className="w-3 h-3 bg-primary rounded-full absolute top-0 right-0" />
+                <div className="w-[18px] h-[18px] bg-primary flex items-center justify-center rounded-full absolute -top-[5px] -right-1 border border-black">
+                  <span className="text-[11px] leading-3">{count}</span>
+                </div>
               )}
             </div>
           )}

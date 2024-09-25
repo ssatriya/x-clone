@@ -169,6 +169,7 @@ const LeftSidebar = ({ user, initialNotifications }: Props) => {
       href: "/notifications",
       disabled: false,
       hasNotification: isNotification.length > 0,
+      count: isNotification.length,
     },
     {
       label: "Messages",
@@ -246,6 +247,7 @@ const LeftSidebar = ({ user, initialNotifications }: Props) => {
               disabled={link.disabled}
               ariaLabel={link.ariaLabel}
               hasNotification={link.hasNotification}
+              count={link.count}
             />
           ))}
           <Link
