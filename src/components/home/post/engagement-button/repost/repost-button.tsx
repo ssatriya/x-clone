@@ -10,7 +10,7 @@ import kyInstance from "@/lib/ky";
 import Icons from "@/components/icons";
 import QuoteModal from "./quote-modal";
 import Button from "@/components/ui/button";
-import { QuoteInfo, RepostInfo } from "@/types";
+import { Media, QuoteInfo, RepostInfo } from "@/types";
 import { CreateRepostPayload } from "@/lib/zod-schema";
 import StatNumber from "@/components/home/post/engagement-button/stat-number";
 
@@ -22,7 +22,7 @@ type Props = {
     userId: string;
     createdAt: Date;
     username: string;
-    media: string | null;
+    media: Media[];
     photo: string | null;
     content: string | null;
   };

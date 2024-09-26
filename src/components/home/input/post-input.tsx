@@ -9,24 +9,24 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FileRejection, FileWithPath, useDropzone } from "react-dropzone";
 
+import { MediaFormat, FileWithPreview, OptionButtonConfig } from "@/types";
 import {
   compress,
+  updateProgress,
   getImageDimension,
   getVideoDimension,
-  updateProgress,
 } from "@/lib/utils";
 import kyInstance from "@/lib/ky";
 import Icons from "@/components/icons";
 import MediaPreview from "./media-preview";
 import InputOptions from "./input-options";
+import Button from "@/components/ui/button";
+import Divider from "@/components/ui/divider";
 import ProgressCircle from "./progress-circle";
 import Progressbar from "@/components/progressbar";
 import { CreatePostPayload } from "@/lib/zod-schema";
-import { FileWithPreview, MediaType, OptionButtonConfig } from "@/types";
 import { useUploadMedia } from "@/hooks/useUploadMedia";
-import Button from "@/components/ui/button";
 import ButtonTooltip from "@/components/button-tooltip";
-import Divider from "@/components/ui/divider";
 
 type Props = {
   loggedInUser: User;
@@ -34,8 +34,7 @@ type Props = {
 
 const PostInput = ({ loggedInUser }: Props) => {
   const queryClient = useQueryClient();
-  const { uploadFilesWithProgress, isUploading, overallProgress } =
-    useUploadMedia();
+  const { startUpload, uploadingFiles, insertedMediaId } = useUploadMedia();
 
   const mediaRef = useRef<HTMLInputElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -48,8 +47,8 @@ const PostInput = ({ loggedInUser }: Props) => {
 
   const { mutate: createPost } = useMutation({
     mutationKey: ["create-post"],
-    mutationFn: ({ postType, content, media }: CreatePostPayload) =>
-      kyInstance.post("/api/post", { json: { postType, content, media } }),
+    mutationFn: (payload: CreatePostPayload) =>
+      kyInstance.post("/api/post", { json: payload }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["for-you-feed"] });
       queryClient.invalidateQueries({ queryKey: ["following-feed"] });
@@ -78,8 +77,8 @@ const PostInput = ({ loggedInUser }: Props) => {
   const onDrop = useCallback(
     (acceptedFiles: FileWithPath[], rejectedFiles: FileRejection[]) => {
       acceptedFiles.forEach(async (file) => {
-        const fileType = file.type.split("/")[0] as "image" | "video";
-        if (fileType == "image") {
+        const fileType = file.type.split("/")[1] as MediaFormat;
+        if (fileType == "png" || fileType == "jpeg" || fileType == "jpg") {
           try {
             const compressResult = (await compress(
               file,
@@ -93,11 +92,12 @@ const PostInput = ({ loggedInUser }: Props) => {
             });
             const previewUrl = URL.createObjectURL(compressResult);
             const { height, width } = await getImageDimension(previewUrl);
-            const fileWithPreview = {
+            const fileWithPreview: FileWithPreview = {
               meta: {
                 id: generateIdFromEntropySize(10),
                 preview: previewUrl,
                 dimension: { height, width },
+                format: fileType,
               },
               file: Object.assign(compressedFile, {
                 path: file.path,
@@ -105,31 +105,54 @@ const PostInput = ({ loggedInUser }: Props) => {
             };
 
             setFiles((prev) => [...(prev ?? []), fileWithPreview]);
+            startUpload(fileWithPreview);
           } catch (error) {
             console.log({ error });
           }
         }
-        if (fileType === "video") {
+        if (fileType === "gif") {
           try {
             const previewUrl = URL.createObjectURL(file);
-            const dimension = await getVideoDimension(previewUrl);
-            const fileWithPreview = {
+            const dimension = await getImageDimension(previewUrl);
+
+            const fileWithPreview: FileWithPreview = {
               meta: {
                 id: generateIdFromEntropySize(10),
                 preview: previewUrl,
                 dimension: dimension,
+                format: fileType,
+              },
+              file: file,
+            };
+            setFiles((prev) => [...(prev ?? []), fileWithPreview]);
+            await startUpload(fileWithPreview);
+          } catch (error) {
+            console.error(error);
+          }
+        }
+        if (fileType == "mp4") {
+          try {
+            const previewUrl = URL.createObjectURL(file);
+            const dimension = await getVideoDimension(previewUrl);
+            const fileWithPreview: FileWithPreview = {
+              meta: {
+                id: generateIdFromEntropySize(10),
+                preview: previewUrl,
+                dimension: dimension,
+                format: fileType,
               },
               file: file,
             };
 
             setFiles((prev) => [...(prev ?? []), fileWithPreview]);
+            startUpload(fileWithPreview);
           } catch (error) {
             console.log(error);
           }
         }
       });
     },
-    [setFiles]
+    [setFiles, startUpload]
   );
 
   const { getInputProps } = useDropzone({
@@ -139,37 +162,12 @@ const PostInput = ({ loggedInUser }: Props) => {
   });
 
   const submitHandler = async () => {
-    const media: MediaType[] = [];
     setIsPending(true);
-
-    if (files.length > 0) {
-      try {
-        const imgURLs = await uploadFilesWithProgress(files);
-
-        if (imgURLs && imgURLs.length === files.length) {
-          files.forEach((file, i) => {
-            const { dimension } = file.meta;
-            if (dimension) {
-              const { height, width } = dimension;
-              media.push({
-                url: imgURLs[i],
-                dimension: { height, width },
-                type: file.file.type,
-              });
-            }
-          });
-        }
-      } catch (error) {
-        setIsPending(false);
-        console.error("Error uploading files:", error);
-        return;
-      }
-    }
 
     const payload: CreatePostPayload = {
       content: inputValue.trim(),
       postType: "post",
-      ...(media.length > 0 && { media: JSON.stringify(media) }),
+      mediaId: insertedMediaId,
     };
     createPost(payload);
   };
@@ -235,14 +233,14 @@ const PostInput = ({ loggedInUser }: Props) => {
         inputRef.current?.focus();
       }}
     >
-      {isPending && (
+      {/* {isPending && (
         <Progressbar
           isPending={isPending}
           hasFiles={files.length > 0}
-          overallProgress={overallProgress}
+          overallProgress={30}
           classNames="absolute -top-[5px] right-0 z-50"
         />
-      )}
+      )} */}
       {isPending && (
         <div className="absolute inset-0 z-40 bg-black/60 right-[1px] top-[1px]" />
       )}
@@ -275,7 +273,7 @@ const PostInput = ({ loggedInUser }: Props) => {
                 value={inputValue}
                 onFocus={() => setIsInputFocus(true)}
                 placeholder="What is happening?!"
-                className="w-full min-w-0 outline-none resize-none bg-inherit placeholder:text-muted-foreground text-xl leading-6"
+                className="w-full min-w-0 outline-none resize-none bg-inherit placeholder:text-muted-foreground text-xl leading-6 h-6"
                 maxRows={25}
                 minRows={1}
               />
@@ -284,6 +282,7 @@ const PostInput = ({ loggedInUser }: Props) => {
               files={files}
               handleRemove={handleRemove}
               isPosting={isPending}
+              uploadingFiles={uploadingFiles}
             />
           </div>
           {isInputFocus && !isPending && (
@@ -309,7 +308,6 @@ const PostInput = ({ loggedInUser }: Props) => {
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.3 }}
-                // #TODO: fix overflow-hidden cut outline
                 className="flex items-center justify-between"
               >
                 <input

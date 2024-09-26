@@ -3,14 +3,13 @@ import { generateIdFromEntropySize } from "lucia";
 
 import { FileWithPreview } from "@/types";
 import { supabase } from "@/lib/supabase/client";
+import kyInstance from "@/lib/ky";
+import { CreateMediaSchema } from "@/lib/zod-schema";
 
 const bucketName = process.env.NEXT_PUBLIC_BUCKETNAME!;
 
-const uploadFileWithProgress = async (
-  file: FileWithPreview,
-  fileProgressCallback: (progress: number) => void
-) => {
-  const fileType = file.file.type.split("/")[1];
+const uploadFile = async (file: File) => {
+  const fileType = file.type.split("/")[1];
   const uploadPath = `${generateIdFromEntropySize(10)}.${fileType}`;
 
   const { data: signedUrlData, error: signedUrlError } = await supabase.storage
@@ -25,74 +24,117 @@ const uploadFileWithProgress = async (
   const signedUrl = signedUrlData.signedUrl;
 
   const formData = new FormData();
-  formData.append("file", file.file);
+  formData.append("file", file);
 
-  return new Promise((resolve, reject) => {
+  try {
     const xhr = new XMLHttpRequest();
-
     xhr.open("PUT", signedUrl, true);
 
-    xhr.upload.addEventListener("progress", (event) => {
-      if (event.lengthComputable) {
-        const percentComplete = (event.loaded / event.total) * 100;
-        fileProgressCallback(percentComplete);
-      }
+    return new Promise((resolve, reject) => {
+      xhr.onload = () => {
+        if (xhr.status === 200) {
+          resolve(uploadPath);
+        } else {
+          console.error(`Failed to upload ${file.name}`);
+          reject(xhr.responseText);
+        }
+      };
+
+      xhr.onerror = () => reject("Upload failed");
+      xhr.send(file);
     });
-
-    xhr.onload = () => {
-      if (xhr.status === 200) {
-        resolve(uploadPath);
-      } else {
-        console.error(`Failed to upload ${file.file.name}`);
-        reject(xhr.responseText);
-      }
-    };
-
-    xhr.onerror = () => reject("Upload failed");
-
-    xhr.send(file.file);
-  });
+  } catch (error) {
+    console.error("Upload error:", error);
+    return null;
+  }
 };
 
 export const useUploadMedia = () => {
-  const [isUploading, setIsUploading] = useState(false);
-  const [overallProgress, setOverallProgress] = useState(0);
+  const [uploadingFiles, setUploadingFiles] = useState<{
+    [id: string]: boolean;
+  }>({});
+  const [insertedMediaId, setInsertedMediaId] = useState<string[]>([]);
 
-  const uploadFilesWithProgress = async (files: FileWithPreview[]) => {
-    const fileCount = files.length;
-    let uploadProgress = Array(fileCount).fill(0);
-
-    const updateOverallProgress = () => {
-      const totalProgress =
-        uploadProgress.reduce((acc, curr) => acc + curr, 0) / fileCount;
-      setOverallProgress(totalProgress);
-    };
-
-    setIsUploading(true);
-
-    const uploadPromises = files.map((file, index) =>
-      uploadFileWithProgress(file, (fileProgress) => {
-        uploadProgress[index] = fileProgress;
-        updateOverallProgress();
-      })
-    );
+  const startUpload = async (file: FileWithPreview) => {
+    const fileId = file.meta.id;
+    setUploadingFiles((prev) => ({ ...prev, [fileId]: true }));
 
     try {
-      const uploadPaths = await Promise.all(uploadPromises);
+      if (file.meta.format === "gif") {
+        const uploadPath = await uploadFile(file.file);
+        if (uploadPath) {
+          const { data: publicUrlData } = supabase.storage
+            .from(bucketName)
+            .getPublicUrl(uploadPath as string);
+          const url = `https://wsrv.nl/?url=${publicUrlData.publicUrl}&output=gif&n=-1`;
 
-      const publicUrls = uploadPaths.map((path) => {
-        const { data: publicUrlData } = supabase.storage
-          .from(bucketName)
-          .getPublicUrl(path as string);
-        return publicUrlData.publicUrl;
-      });
+          fetch(url)
+            .then((res) => res.blob())
+            .then(async (blob) => {
+              const gifFile = new File([blob], "image.gif", {
+                type: "image/gif",
+              });
 
-      setIsUploading(false);
-      return publicUrls;
+              const uploadNewGif = await uploadFile(gifFile);
+              const { data: newData } = supabase.storage
+                .from(bucketName)
+                .getPublicUrl(uploadNewGif as string);
+
+              const payload: CreateMediaSchema = {
+                format: file.meta.format,
+                height: file.meta.dimension?.height || 0,
+                width: file.meta.dimension?.width || 0,
+                size: gifFile.size,
+                key: uploadNewGif as string,
+                url: newData.publicUrl,
+              };
+
+              const returningId = await kyInstance
+                .post("/api/post/media", {
+                  body: JSON.stringify(payload),
+                })
+                .json<{ id: string }>();
+
+              setInsertedMediaId((prev) => [returningId.id, ...prev]);
+              setUploadingFiles((prev) => ({ ...prev, [fileId]: false }));
+            })
+            .catch((error) => {
+              console.error("Error fetching or creating file:", error);
+              setUploadingFiles((prev) => ({ ...prev, [fileId]: false }));
+            });
+        }
+      } else {
+        const uploadPath = await uploadFile(file.file);
+        if (uploadPath) {
+          const { data: publicUrlData } = supabase.storage
+            .from(bucketName)
+            .getPublicUrl(uploadPath as string);
+
+          const payload: CreateMediaSchema = {
+            format: file.meta.format,
+            height: file.meta.dimension?.height || 0,
+            width: file.meta.dimension?.width || 0,
+            size: file.file.size,
+            key: `x-clone-media/${uploadPath as string}`,
+            url: publicUrlData.publicUrl,
+          };
+
+          const returningId = await kyInstance
+            .post("/api/post/media", {
+              body: JSON.stringify(payload),
+            })
+            .json<{ id: string }>();
+
+          setInsertedMediaId((prev) => [returningId.id, ...prev]);
+          setUploadingFiles((prev) => ({ ...prev, [fileId]: false }));
+        }
+      }
     } catch (error) {
-      setIsUploading(false);
+      console.error("Error during file upload:", error);
+      setUploadingFiles((prev) => ({ ...prev, [fileId]: false }));
+      return null;
     }
   };
 
-  return { uploadFilesWithProgress, isUploading, overallProgress };
+  return { startUpload, uploadingFiles, insertedMediaId };
 };

@@ -18,123 +18,6 @@ export async function GET(req: NextRequest) {
     if (!postId) {
       return new Response("invalid search params", { status: 400 });
     }
-    // #startregion
-    // const ancestors = await db.execute(sql`
-    //   WITH RECURSIVE
-    //     ancestors AS (
-    //       SELECT
-    //         t.id as "postId",
-    //         t.content,
-    //         t.media,
-    //         t.post_type,
-    //         t.parent_post_id,
-    //         t.root_post_id,
-    //         t.created_at,
-    //         u.name,
-    //         u.username,
-    //         u.photo,
-    //         CASE
-    //           WHEN t.parent_post_id IS NULL THEN true
-    //           ELSE true
-    //         END AS "showLine"
-    //       FROM
-    //         post t
-    //         JOIN "user" u ON t.user_id = u.id
-    //       WHERE
-    //         t.id = (
-    //           SELECT
-    //             parent_post_id
-    //           FROM
-    //             post
-    //           WHERE
-    //             id = ${postId}
-    //         )
-    //       UNION ALL
-    //       SELECT
-    //         t.id as "postId",
-    //         t.content,
-    //         t.media,
-    //         t.post_type,
-    //         t.parent_post_id,
-    //         t.root_post_id,
-    //         t.created_at,
-    //         u.name,
-    //         u.username,
-    //         u.photo,
-    //         true AS "showLine"
-    //       FROM
-    //         post t
-    //         JOIN "user" u ON t.user_id = u.id
-    //         JOIN ancestors a ON t.id = a.parent_post_id
-    //     )
-    //   SELECT
-    //     ancestors.post_type AS "postType",
-    //     ancestors."postId",
-    //     ancestors.content,
-    //     ancestors.media,
-    //     ancestors.parent_post_id AS "parentPostId",
-    //     ancestors.root_post_id AS "rootPostId",
-    //     ancestors.created_at AS "createdAt",
-    //     ancestors.name,
-    //     ancestors.username,
-    //     ancestors.photo,
-    //     ancestors."showLine",
-    //     COUNT(DISTINCT reply.id) AS "replyCount",
-    //     json_agg(
-    //       DISTINCT jsonb_build_object(
-    //         'userOriginId',
-    //         repost.user_origin_id,
-    //         'repostTargetId',
-    //         repost.repost_target_id
-    //       )
-    //     ) FILTER (
-    //       WHERE
-    //         repost.repost_target_id IS NOT NULL
-    //     ) AS repost,
-    //     json_agg(
-    //       DISTINCT jsonb_build_object(
-    //         'userOriginId',
-    //         "like".user_origin_id,
-    //         'likeTargetId',
-    //         "like".like_target_id
-    //       )
-    //     ) FILTER (
-    //       WHERE
-    //         "like".like_target_id IS NOT NULL
-    //     ) AS like,
-    //     json_agg(
-    //       DISTINCT jsonb_build_object(
-    //         'userOriginId',
-    //         quote.user_origin_id,
-    //         'quoteTargetId',
-    //         quote.quote_target_id
-    //       )
-    //     ) FILTER (
-    //       WHERE
-    //         quote.quote_target_id IS NOT NULL
-    //     ) AS quote
-    //   FROM
-    //     ancestors
-    //     LEFT JOIN reply ON ancestors."postId" = reply.reply_target_id
-    //     LEFT JOIN repost ON ancestors."postId" = repost.repost_target_id
-    //     LEFT JOIN "like" ON ancestors."postId" = "like".like_target_id
-    //     LEFT JOIN quote ON ancestors."postId" = quote.quote_target_id
-    //   GROUP BY
-    //     ancestors.post_type,
-    //     ancestors."postId",
-    //     ancestors.content,
-    //     ancestors.parent_post_id,
-    //     ancestors.root_post_id,
-    //     ancestors.media,
-    //     ancestors.created_at,
-    //     ancestors.name,
-    //     ancestors.username,
-    //     ancestors.photo,
-    //     ancestors."showLine"
-    //   ORDER BY
-    //     ancestors.created_at;
-    // `);
-    // #endregion
 
     const ancestors = await db.execute(sql`
 WITH RECURSIVE
@@ -142,7 +25,6 @@ WITH RECURSIVE
     SELECT
       t.id AS "postId",
       t.content,
-      t.media,
       t.post_type,
       t.parent_post_id,
       t.root_post_id,
@@ -172,7 +54,6 @@ WITH RECURSIVE
     SELECT
       t.id AS "postId",
       t.content,
-      t.media,
       t.post_type,
       t.parent_post_id,
       t.root_post_id,
@@ -192,7 +73,6 @@ SELECT
   ancestors.post_type AS "postType",
   ancestors."postId",
   ancestors.content,
-  ancestors.media,
   ancestors.parent_post_id AS "parentPostId",
   ancestors.root_post_id AS "rootPostId",
   ancestors.original_post_id AS "originalPostId",
@@ -204,7 +84,6 @@ SELECT
   ancestors."showLine",
   ogPost.content AS "originalPostContent",
   ogPost.created_at AS "originalPostCreatedAt",
-  ogPost.media AS "originalPostMedia",
   ogUser.id AS "originalUserId",
   ogUser.username AS "originalUsername",
   ogUser.name AS "originalName",
@@ -242,7 +121,20 @@ SELECT
   ) FILTER (
     WHERE
       quote.quote_target_id IS NOT NULL
-  ) AS quote
+  ) AS quote,
+  COALESCE(
+    json_agg(
+      json_build_object(
+        'id', media.id,
+        'url', media.url,
+        'size', media.size,
+        'format', media.format,
+        'width', media.width,
+        'height', media.height
+      )
+    ) FILTER (WHERE media.id IS NOT NULL),
+    '[]'
+  ) AS media
 FROM
   ancestors
   LEFT JOIN post AS ogPost ON ancestors.original_post_id = ogPost.id
@@ -251,6 +143,7 @@ FROM
   LEFT JOIN repost ON ancestors."postId" = repost.repost_target_id
   LEFT JOIN "like" ON ancestors."postId" = "like".like_target_id
   LEFT JOIN quote ON ancestors."postId" = quote.quote_target_id
+  LEFT JOIN media ON ancestors."postId" = media.post_id
 GROUP BY
   ancestors.post_type,
   ancestors."postId",
@@ -258,7 +151,6 @@ GROUP BY
   ancestors.parent_post_id,
   ancestors.root_post_id,
   ancestors.original_post_id,
-  ancestors.media,
   ancestors.created_at,
   ancestors."userId",
   ancestors.name,
@@ -267,7 +159,6 @@ GROUP BY
   ancestors."showLine",
   ogPost.content,
   ogPost.created_at,
-  ogPost.media,
   ogUser.id,
   ogUser.username,
   ogUser.name,

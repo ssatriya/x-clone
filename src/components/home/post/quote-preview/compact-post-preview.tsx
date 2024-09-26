@@ -5,12 +5,13 @@ import { cn } from "@/lib/utils";
 import useMediaURL from "@/hooks/useMediaURL";
 import CompactQuoteMedia from "./compact-post-media";
 import PostInfo from "@/components/home/post/post-info";
+import { Media } from "@/types";
 
 type Props = {
   post: {
     postId: string;
     content: string | null;
-    media: string | null;
+    media: Media[];
     createdAt: Date;
   };
   user: {
@@ -22,8 +23,6 @@ type Props = {
 };
 
 const CompactQuotePreview = ({ post, user }: Props) => {
-  const { newMedia } = useMediaURL(post.media);
-
   return (
     <div className="mt-3 transition-colors border cursor-pointer w-full rounded-2xl hover:bg-hover/30 min-h-16">
       <div className="flex items-start mx-3 mt-3">
@@ -56,15 +55,13 @@ const CompactQuotePreview = ({ post, user }: Props) => {
       </div>
       <div className="mx-3 mb-3 flex">
         <div className="flex-shrink-0">
-          {newMedia && newMedia.length > 0 && (
-            <CompactQuoteMedia mediaURL={newMedia} />
-          )}
+          {post.media.length > 0 && <CompactQuoteMedia mediaURL={post.media} />}
         </div>
         {post.content && (
           <p
             className={cn(
               "text-[15px] text-secondary leading-5 text-pretty whitespace-pre-wrap w-full line-clamp-5",
-              newMedia && newMedia.length > 0 && "ml-3"
+              post.media.length > 0 && "ml-3"
             )}
           >
             {post.content}

@@ -86,7 +86,7 @@ const HomeTab = ({ loggedInUser }: Props) => {
               <TabPanel tabIndex={-1}>
                 <div className="mt-[106px] min-[550px]:mt-[53px] w-full h-full">
                   <PostInput loggedInUser={loggedInUser} />
-                  <FollowingFeed loggedInUser={loggedInUser} />
+                  {/* <FollowingFeed loggedInUser={loggedInUser} /> */}
                 </div>
               </TabPanel>
             </TabPanels>

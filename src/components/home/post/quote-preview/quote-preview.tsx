@@ -7,12 +7,13 @@ import { useRouter } from "next/navigation";
 import useMediaURL from "@/hooks/useMediaURL";
 import PostInfo from "@/components/home/post/post-info";
 import PostMedia from "@/components/home/post/media/post-media";
+import { Media } from "@/types";
 
 type Props = {
   post: {
     id: string;
     content: string | null;
-    media: string | null;
+    media: Media[];
     createdAt: Date;
     nestedPostId: string | null;
   };
@@ -28,8 +29,6 @@ type Props = {
 
 const QuotePreview = ({ post, user, fullWidthImage }: Props) => {
   const router = useRouter();
-
-  const { newMedia } = useMediaURL(post.media);
 
   const handleClick = () => {
     const cleanUsername = user.username.slice(1);
@@ -100,9 +99,9 @@ const QuotePreview = ({ post, user, fullWidthImage }: Props) => {
           </div>
         )}
       </div>
-      {newMedia && newMedia.length > 0 && (
+      {post.media.length > 0 && (
         <PostMedia
-          mediaURLs={newMedia}
+          mediaURLs={post.media}
           fullWidthImage={fullWidthImage}
           postType="quote"
           usernameWithoutAt={user.username.slice(1)}

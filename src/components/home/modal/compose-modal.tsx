@@ -33,7 +33,7 @@ import { useUploadMedia } from "@/hooks/useUploadMedia";
 import MediaPreview from "@/components/home/input/media-preview";
 import InputOptions from "@/components/home/input/input-options";
 import ProgressCircle from "@/components/home/input/progress-circle";
-import { FileWithPreview, MediaType, OptionButtonConfig } from "@/types";
+import { FileWithPreview, MediaFormat, OptionButtonConfig } from "@/types";
 
 type Props = {
   loggedInUser: User;
@@ -51,13 +51,12 @@ const ComposeModal = ({ loggedInUser }: Props) => {
   const [isInputFocus, setIsInputFocus] = useState(true);
   const [files, setFiles] = useState<FileWithPreview[]>([]);
   const [isPending, setIsPending] = useState(false);
-  const { uploadFilesWithProgress, isUploading, overallProgress } =
-    useUploadMedia();
+  const { startUpload, uploadingFiles, insertedMediaId } = useUploadMedia();
 
   const { mutate: createPost } = useMutation({
     mutationKey: ["create-post"],
-    mutationFn: ({ postType, content, media }: CreatePostPayload) =>
-      kyInstance.post("/api/post", { json: { postType, content, media } }),
+    mutationFn: (payload: CreatePostPayload) =>
+      kyInstance.post("/api/post", { json: payload }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["for-you-feed"] });
       setInputValue("");
@@ -85,8 +84,8 @@ const ComposeModal = ({ loggedInUser }: Props) => {
   const onDrop = useCallback(
     (acceptedFiles: FileWithPath[], rejectedFiles: FileRejection[]) => {
       acceptedFiles.forEach(async (file) => {
-        const fileType = file.type.split("/")[0] as "image" | "video";
-        if (fileType == "image") {
+        const fileType = file.type.split("/")[1] as MediaFormat;
+        if (fileType == "png" || fileType == "jpeg" || fileType == "jpg") {
           try {
             const compressResult = (await compress(
               file,
@@ -100,11 +99,12 @@ const ComposeModal = ({ loggedInUser }: Props) => {
             });
             const previewUrl = URL.createObjectURL(compressResult);
             const { height, width } = await getImageDimension(previewUrl);
-            const fileWithPreview = {
+            const fileWithPreview: FileWithPreview = {
               meta: {
                 id: generateIdFromEntropySize(10),
                 preview: previewUrl,
                 dimension: { height, width },
+                format: fileType,
               },
               file: Object.assign(compressedFile, {
                 path: file.path,
@@ -112,31 +112,54 @@ const ComposeModal = ({ loggedInUser }: Props) => {
             };
 
             setFiles((prev) => [...(prev ?? []), fileWithPreview]);
+            startUpload(fileWithPreview);
           } catch (error) {
             console.log({ error });
           }
         }
-        if (fileType === "video") {
+        if (fileType === "gif") {
           try {
             const previewUrl = URL.createObjectURL(file);
-            const dimension = await getVideoDimension(previewUrl);
-            const fileWithPreview = {
+            const dimension = await getImageDimension(previewUrl);
+
+            const fileWithPreview: FileWithPreview = {
               meta: {
                 id: generateIdFromEntropySize(10),
                 preview: previewUrl,
                 dimension: dimension,
+                format: fileType,
+              },
+              file: file,
+            };
+            setFiles((prev) => [...(prev ?? []), fileWithPreview]);
+            await startUpload(fileWithPreview);
+          } catch (error) {
+            console.error(error);
+          }
+        }
+        if (fileType == "mp4") {
+          try {
+            const previewUrl = URL.createObjectURL(file);
+            const dimension = await getVideoDimension(previewUrl);
+            const fileWithPreview: FileWithPreview = {
+              meta: {
+                id: generateIdFromEntropySize(10),
+                preview: previewUrl,
+                dimension: dimension,
+                format: fileType,
               },
               file: file,
             };
 
             setFiles((prev) => [...(prev ?? []), fileWithPreview]);
+            startUpload(fileWithPreview);
           } catch (error) {
             console.log(error);
           }
         }
       });
     },
-    [setFiles]
+    [setFiles, startUpload]
   );
 
   const { getInputProps } = useDropzone({
@@ -146,37 +169,12 @@ const ComposeModal = ({ loggedInUser }: Props) => {
   });
 
   const submitHandler = async () => {
-    const media: MediaType[] = [];
     setIsPending(true);
-
-    if (files.length > 0) {
-      try {
-        const imgURLs = await uploadFilesWithProgress(files);
-
-        if (imgURLs && imgURLs.length === files.length) {
-          files.forEach((file, i) => {
-            const { dimension } = file.meta;
-            if (dimension) {
-              const { height, width } = dimension;
-              media.push({
-                url: imgURLs[i],
-                dimension: { height, width },
-                type: file.file.type,
-              });
-            }
-          });
-        }
-      } catch (error) {
-        setIsPending(false);
-        console.error("Error uploading files:", error);
-        return;
-      }
-    }
 
     const payload: CreatePostPayload = {
       content: inputValue.trim(),
       postType: "post",
-      ...(media.length > 0 && { media: JSON.stringify(media) }),
+      mediaId: insertedMediaId,
     };
     createPost(payload);
   };
@@ -209,7 +207,7 @@ const ComposeModal = ({ loggedInUser }: Props) => {
   }, []);
 
   const isButtonDisabled = inputValue.length > 0 || files.length > 0;
-  const isPosting = isPending || isUploading;
+  const isPosting = isPending;
 
   const optionButtonConfigs: OptionButtonConfig[] = [
     {
@@ -248,14 +246,14 @@ const ComposeModal = ({ loggedInUser }: Props) => {
       <div className="fixed inset-0 flex items-start justify-center w-screen sm-plus:top-12">
         <DialogPanel className="bg-black overflow-clip max-sm:h-full max-w-[600px] w-full h-fit sm-plus:max-h-[680px] sm-plus:rounded-2xl rounded-none relative flex flex-col">
           <DialogTitle className="font-bold h-[53px] flex-shrink-0 flex items-center px-4 sticky top-0 z-20 sm-plus:rounded-2xl rounded-none bg-black/60">
-            {isPending && (
+            {/* {isPending && (
               <Progressbar
                 isPending={isPending}
                 overallProgress={overallProgress}
                 hasFiles={files.length > 0}
                 classNames="absolute right-0 top-0 z-50"
               />
-            )}
+            )} */}
             <div className="flex justify-between w-full">
               <Button
                 onClick={closeHandler}
@@ -334,6 +332,7 @@ const ComposeModal = ({ loggedInUser }: Props) => {
                         files={files}
                         isPosting={isPosting}
                         handleRemove={handleRemove}
+                        uploadingFiles={uploadingFiles}
                       />
                     </div>
                   </div>

@@ -1,8 +1,8 @@
 import { validateRequest } from "@/lib/auth/validate-request";
 import db from "@/lib/db";
-import { postTable, replyTable } from "@/lib/db/schema";
+import { mediaTable, postTable, replyTable } from "@/lib/db/schema";
 import { CreateReplySchema } from "@/lib/zod-schema";
-import { eq, sql } from "drizzle-orm";
+import { eq, inArray, sql } from "drizzle-orm";
 import { generateIdFromEntropySize } from "lucia";
 import { NextRequest } from "next/server";
 
@@ -49,7 +49,8 @@ export async function POST(req: Request) {
       return new Response("invalid payload", { status: 400 });
     }
 
-    const { content, media, postType, parentPostId, rootPostId } = payload.data;
+    const { content, postType, parentPostId, rootPostId, mediaId } =
+      payload.data;
 
     // Checking if other post (type "reply") already using the
     // provided parentPostId
@@ -63,15 +64,83 @@ export async function POST(req: Request) {
     const replyId = generateIdFromEntropySize(10);
 
     if (isParentPostUsed.length > 0) {
+      if (mediaId && mediaId.length > 0) {
+        await db.transaction(async (tx) => {
+          await tx.insert(postTable).values({
+            id: postId,
+            postType: postType,
+            userId: loggedInUser.id,
+            rootPostId: parentPostId,
+            parentPostId: parentPostId,
+            content: content,
+          });
+          await tx.insert(replyTable).values({
+            id: replyId,
+            replyTargetId: parentPostId,
+            userOriginId: loggedInUser.id,
+          });
+          await tx
+            .update(mediaTable)
+            .set({
+              postId: postId,
+            })
+            .where(inArray(mediaTable.id, mediaId));
+        });
+        return new Response("replied successfully", { status: 201 });
+      } else {
+        await db.transaction(async (tx) => {
+          await tx.insert(postTable).values({
+            id: postId,
+            postType: postType,
+            userId: loggedInUser.id,
+            rootPostId: parentPostId,
+            parentPostId: parentPostId,
+            content: content,
+          });
+          await tx.insert(replyTable).values({
+            id: replyId,
+            replyTargetId: parentPostId,
+            userOriginId: loggedInUser.id,
+          });
+        });
+
+        return new Response("replied successfully", { status: 201 });
+      }
+    }
+
+    if (mediaId && mediaId.length > 0) {
       await db.transaction(async (tx) => {
         await tx.insert(postTable).values({
           id: postId,
           postType: postType,
           userId: loggedInUser.id,
-          rootPostId: parentPostId,
+          rootPostId: rootPostId,
           parentPostId: parentPostId,
           content: content,
-          media: media,
+        });
+        await tx.insert(replyTable).values({
+          id: replyId,
+          replyTargetId: parentPostId,
+          userOriginId: loggedInUser.id,
+        });
+        await tx
+          .update(mediaTable)
+          .set({
+            postId: postId,
+          })
+          .where(inArray(mediaTable.id, mediaId));
+      });
+
+      return new Response("replied successfully", { status: 201 });
+    } else {
+      await db.transaction(async (tx) => {
+        await tx.insert(postTable).values({
+          id: postId,
+          postType: postType,
+          userId: loggedInUser.id,
+          rootPostId: rootPostId,
+          parentPostId: parentPostId,
+          content: content,
         });
         await tx.insert(replyTable).values({
           id: replyId,
@@ -82,25 +151,6 @@ export async function POST(req: Request) {
 
       return new Response("replied successfully", { status: 201 });
     }
-
-    await db.transaction(async (tx) => {
-      await tx.insert(postTable).values({
-        id: postId,
-        postType: postType,
-        userId: loggedInUser.id,
-        rootPostId: rootPostId,
-        parentPostId: parentPostId,
-        content: content,
-        media: media,
-      });
-      await tx.insert(replyTable).values({
-        id: replyId,
-        replyTargetId: parentPostId,
-        userOriginId: loggedInUser.id,
-      });
-    });
-
-    return new Response("replied successfully", { status: 201 });
   } catch (error) {
     return new Response("internal server error", { status: 500 });
   }

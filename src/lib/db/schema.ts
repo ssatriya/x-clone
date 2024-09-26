@@ -9,6 +9,7 @@ import {
   timestamp,
   primaryKey,
   uniqueIndex,
+  integer,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { generateIdFromEntropySize } from "lucia";
@@ -264,6 +265,45 @@ export const likeTableRelation = relations(likeTable, ({ one }) => ({
   }),
 }));
 
+export const mediaTable = pgTable(
+  "media",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => generateIdFromEntropySize(10)),
+    userId: text("user_id")
+      .notNull()
+      .references(() => userTable.id, { onDelete: "set null" }),
+    postId: text("post_id").references(() => postTable.id, {
+      onDelete: "set null",
+    }),
+    url: text("url").notNull(),
+    key: text("key").notNull(),
+    size: integer("size").notNull(),
+    format: text("format").notNull(),
+    width: integer("width").notNull(),
+    height: integer("height").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (table) => ({
+    postIdIdx: index("media_post_id_idx").on(table.postId),
+    createdAtIdx: index("media_created_at_idx").on(table.createdAt),
+  })
+);
+
+export type MediaTable = typeof mediaTable.$inferSelect;
+
+export const mediaTableRelation = relations(mediaTable, ({ one }) => ({
+  post: one(postTable, {
+    fields: [mediaTable.postId],
+    references: [postTable.id],
+  }),
+  user: one(userTable, {
+    fields: [mediaTable.userId],
+    references: [userTable.id],
+  }),
+}));
+
 export const postTypeEnum = pgEnum("postType", [
   "post",
   "repost",
@@ -279,7 +319,7 @@ export const postTable = pgTable(
       .notNull()
       .references(() => userTable.id, { onDelete: "cascade" }),
     content: text("content"),
-    media: text("media"),
+    // media: text("media"),
     postType: postTypeEnum("post_type").notNull(),
     rootPostId: text("root_post_id").notNull(),
     parentPostId: text("parent_post_id"),
@@ -321,6 +361,7 @@ export const postTableRelation = relations(postTable, ({ one, many }) => ({
   quote: many(repostTable),
   repost: many(repostTable),
   reply: many(replyTable),
+  media: many(mediaTable),
 }));
 
 export const sessionTable = pgTable("session", {

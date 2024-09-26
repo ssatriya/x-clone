@@ -21,7 +21,7 @@ import PhotoCarousel from "./photo-carousel";
 import useMediaURL from "@/hooks/useMediaURL";
 import { CreateReplyPayload } from "@/lib/zod-schema";
 import { useUploadMedia } from "@/hooks/useUploadMedia";
-import { FileWithPreview, ForYouFeedPost, MediaType } from "@/types";
+import { FileWithPreview, ForYouFeedPost, MediaFormat } from "@/types";
 import LikeButton from "@/components/home/post/engagement-button/like/like-button";
 import ViewButton from "@/components/home/post/engagement-button/view/view-button";
 import ReplyButton from "@/components/home/post/engagement-button/reply/reply-button";
@@ -36,10 +36,12 @@ type Props = {
 
 const PostPhotoModal = ({ photoNumber, post, loggedInUser }: Props) => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const mediaQuery = useMediaQuery("(min-width: 950px)");
   const [isMobile, setIsMobile] = useState(false);
+  const { startUpload, uploadingFiles, insertedMediaId } = useUploadMedia();
 
   useEffect(() => {
     if (!mediaQuery) {
@@ -51,9 +53,6 @@ const PostPhotoModal = ({ photoNumber, post, loggedInUser }: Props) => {
     }
   }, [mediaQuery]);
 
-  const { uploadFilesWithProgress, isUploading, overallProgress } =
-    useUploadMedia();
-  const queryClient = useQueryClient();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const mediaRef = useRef<HTMLInputElement>(null);
   const [inputValue, setInputValue] = useState("");
@@ -62,21 +61,13 @@ const PostPhotoModal = ({ photoNumber, post, loggedInUser }: Props) => {
   const [files, setFiles] = useState<FileWithPreview[]>([]);
   const [isPending, setIsPending] = useState(false);
 
-  const { newMedia } = useMediaURL(post.post.postMedia);
-
   const queryKeyReplyCount = ["get-reply-count", post.post.postId];
 
   const { mutate: createReply } = useMutation({
     mutationKey: ["create-reply"],
-    mutationFn: ({
-      postType,
-      content,
-      media,
-      parentPostId,
-      rootPostId,
-    }: CreateReplyPayload) =>
+    mutationFn: (payload: CreateReplyPayload) =>
       kyInstance.post("/api/post/reply", {
-        json: { postType, content, media, parentPostId, rootPostId },
+        json: payload,
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeyReplyCount });
@@ -105,12 +96,12 @@ const PostPhotoModal = ({ photoNumber, post, loggedInUser }: Props) => {
   const onDrop = useCallback(
     (acceptedFiles: FileWithPath[], rejectedFiles: FileRejection[]) => {
       acceptedFiles.forEach(async (file) => {
-        const fileType = file.type.split("/")[0] as "image" | "video";
-        if (fileType == "image") {
+        const fileType = file.type.split("/")[1] as MediaFormat;
+        if (fileType == "png" || fileType == "jpeg" || fileType == "jpg") {
           try {
             const compressResult = (await compress(
               file,
-              0.8,
+              0.7,
               2000,
               2000
             )) as Blob;
@@ -120,11 +111,12 @@ const PostPhotoModal = ({ photoNumber, post, loggedInUser }: Props) => {
             });
             const previewUrl = URL.createObjectURL(compressResult);
             const { height, width } = await getImageDimension(previewUrl);
-            const fileWithPreview = {
+            const fileWithPreview: FileWithPreview = {
               meta: {
                 id: generateIdFromEntropySize(10),
                 preview: previewUrl,
                 dimension: { height, width },
+                format: fileType,
               },
               file: Object.assign(compressedFile, {
                 path: file.path,
@@ -132,31 +124,54 @@ const PostPhotoModal = ({ photoNumber, post, loggedInUser }: Props) => {
             };
 
             setFiles((prev) => [...(prev ?? []), fileWithPreview]);
+            startUpload(fileWithPreview);
           } catch (error) {
             console.log({ error });
           }
         }
-        if (fileType === "video") {
+        if (fileType === "gif") {
           try {
             const previewUrl = URL.createObjectURL(file);
-            const dimension = await getVideoDimension(previewUrl);
-            const fileWithPreview = {
+            const dimension = await getImageDimension(previewUrl);
+
+            const fileWithPreview: FileWithPreview = {
               meta: {
                 id: generateIdFromEntropySize(10),
                 preview: previewUrl,
                 dimension: dimension,
+                format: fileType,
+              },
+              file: file,
+            };
+            setFiles((prev) => [...(prev ?? []), fileWithPreview]);
+            await startUpload(fileWithPreview);
+          } catch (error) {
+            console.error(error);
+          }
+        }
+        if (fileType == "mp4") {
+          try {
+            const previewUrl = URL.createObjectURL(file);
+            const dimension = await getVideoDimension(previewUrl);
+            const fileWithPreview: FileWithPreview = {
+              meta: {
+                id: generateIdFromEntropySize(10),
+                preview: previewUrl,
+                dimension: dimension,
+                format: fileType,
               },
               file: file,
             };
 
             setFiles((prev) => [...(prev ?? []), fileWithPreview]);
+            startUpload(fileWithPreview);
           } catch (error) {
             console.log(error);
           }
         }
       });
     },
-    [setFiles]
+    [setFiles, startUpload]
   );
 
   const { getInputProps } = useDropzone({
@@ -175,32 +190,7 @@ const PostPhotoModal = ({ photoNumber, post, loggedInUser }: Props) => {
   };
 
   const submitHandler = async () => {
-    const media: MediaType[] = [];
     setIsPending(true);
-
-    if (files.length > 0) {
-      try {
-        const imgURLs = await uploadFilesWithProgress(files);
-
-        if (imgURLs && imgURLs.length === files.length) {
-          files.forEach((file, i) => {
-            const { dimension } = file.meta;
-            if (dimension) {
-              const { height, width } = dimension;
-              media.push({
-                url: imgURLs[i],
-                dimension: { height, width },
-                type: file.file.type,
-              });
-            }
-          });
-        }
-      } catch (error) {
-        setIsPending(false);
-        console.error("Error uploading files:", error);
-        return;
-      }
-    }
 
     try {
       const payload: CreateReplyPayload = {
@@ -208,7 +198,7 @@ const PostPhotoModal = ({ photoNumber, post, loggedInUser }: Props) => {
         postType: "reply",
         parentPostId: post.post.postId,
         rootPostId: post.post.postRootPostId,
-        ...(media.length > 0 && { media: JSON.stringify(media) }),
+        mediaId: insertedMediaId,
       };
       createReply(payload);
     } catch (error) {
@@ -218,12 +208,15 @@ const PostPhotoModal = ({ photoNumber, post, loggedInUser }: Props) => {
   };
 
   const isButtonDisabled = inputValue.length > 0 || files.length > 0;
-  const isPosting = isPending || isUploading;
+  const isPosting = isPending;
 
   return (
     <Dialog open={isOpen} onClose={closeHandler} className="relative z-50">
       <DialogBackdrop
         className={cn("fixed inset-0", isMobile ? "bg-black" : "bg-black/90")}
+        onClick={() => {
+          closeHandler();
+        }}
       />
       <div className="fixed inset-0 flex w-screen h-screen items-center justify-center">
         <DialogPanel className="w-screen h-screen">
@@ -240,8 +233,9 @@ const PostPhotoModal = ({ photoNumber, post, loggedInUser }: Props) => {
                 isSidebarOpen={isSidebarOpen}
                 onClose={closeHandler}
                 setIsSidebarOpen={setIsSidebarOpen}
-                photos={newMedia}
+                photos={post.media}
                 isMobile={isMobile}
+                photoNumber={photoNumber}
               />
               <div className="absolute bottom-0 left-0 right-0 bg-black/90 w-full h-12 flex items-center justify-center">
                 <div className="flex items-center justify-between h-full px-4 max-w-[600px] w-full">
@@ -272,7 +266,7 @@ const PostPhotoModal = ({ photoNumber, post, loggedInUser }: Props) => {
                       createdAt: post.post.postCreatedAt,
                       photo: post.post.photo,
                       username: post.post.username,
-                      media: post.post.postMedia,
+                      media: post.media,
                       name: post.post.name,
                     }}
                     initialRepost={{
@@ -327,6 +321,7 @@ const PostPhotoModal = ({ photoNumber, post, loggedInUser }: Props) => {
                 setInputCount={setInputCount}
                 submitHandler={submitHandler}
                 getInputProps={getInputProps}
+                uploadingFiles={uploadingFiles}
                 setIsInputFocus={setIsInputFocus}
                 isButtonDisabled={isButtonDisabled}
               />

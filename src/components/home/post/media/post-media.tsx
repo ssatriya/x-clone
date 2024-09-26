@@ -9,12 +9,15 @@ import {
   MAX_GROUP_MEDIA_HEIGHT,
 } from "@/constants";
 import { cn } from "@/lib/utils";
-import { MediaType } from "@/types";
+import { Media, mediaFormat, MediaType } from "@/types";
+import Video from "@/components/video";
+import GIFPlayer from "@/components/gif-player";
+import Image from "next/image";
 
 type Props = {
   postId: string;
   usernameWithoutAt: string;
-  mediaURLs: MediaType[];
+  mediaURLs: Media[];
   fullWidthImage?: boolean;
   postType?: "post" | "quote";
 };
@@ -39,12 +42,12 @@ const PostMedia = ({
   );
 
   if (mediaURLs.length === 1) {
-    const { height, width } = mediaURLs[0].dimension;
+    const { height, width } = mediaURLs[0];
 
     const ASPECT_RATIO = width / height;
     const newWidth = ASPECT_RATIO * MAX_HEIGHT_MEDIA;
 
-    const fileType = mediaURLs[0].type.split("/")[0] as "image" | "video";
+    const fileType = mediaURLs[0].format as mediaFormat;
 
     const isLandscape = ASPECT_RATIO > 1;
     const isSquare = ASPECT_RATIO === 1;
@@ -59,7 +62,13 @@ const PostMedia = ({
         maxWidth: fullWidthImage ? MAX_WIDTH_SINGLE_POST : MAX_WIDTH_MEDIA,
         aspectRatio: 1 / 1,
       };
-    } else if (isLandscape || fileType === "image") {
+    } else if (
+      isLandscape ||
+      fileType === "jpeg" ||
+      fileType === "jpg" ||
+      fileType === "png" ||
+      fileType === "gif"
+    ) {
       containerStyles = {
         maxWidth: fullWidthImage ? MAX_WIDTH_SINGLE_POST : newWidth,
         aspectRatio: ASPECT_RATIO,
@@ -84,7 +93,7 @@ const PostMedia = ({
             index + 1
           }`;
           /* eslint-disable @next/next/no-img-element */
-          if (fileType === "image") {
+          if (fileType === "jpeg" || fileType === "jpg" || fileType === "png") {
             return (
               <div
                 key={index}
@@ -111,8 +120,22 @@ const PostMedia = ({
               </div>
             );
           }
+          if (fileType === "gif") {
+            return (
+              <div
+                key={index}
+                className={fillInnerClass}
+                style={{
+                  height: "100%",
+                  width: "100%",
+                }}
+              >
+                <GIFPlayer src={media.url} />
+              </div>
+            );
+          }
 
-          if (fileType === "video") {
+          if (fileType === "mp4") {
             return (
               <div
                 key={index}
@@ -123,14 +146,15 @@ const PostMedia = ({
                   width: "100%",
                 }}
               >
-                <video
+                {/* <video
                   controls
                   loop
                   playsInline
                   className="object-contain h-full w-full focus-visible:outline-none"
                 >
                   <source src={media.url} />
-                </video>
+                </video> */}
+                <Video src={media.url} />
               </div>
             );
           }
@@ -151,7 +175,7 @@ const PostMedia = ({
         className={containerGridClass}
       >
         {mediaURLs.map((media, index) => {
-          const fileType = media.type.split("/")[0] as "image" | "video";
+          const fileType = media.format as mediaFormat;
           const fill = mediaURLs.length === 3 && index === 0;
 
           const fillInnerClass = cn("overflow-hidden", {
@@ -162,7 +186,7 @@ const PostMedia = ({
             index + 1
           }`;
 
-          if (fileType === "image") {
+          if (fileType === "jpeg" || fileType === "jpg" || fileType === "png") {
             return (
               <div
                 key={index}
@@ -190,7 +214,29 @@ const PostMedia = ({
             );
           }
 
-          if (fileType === "video") {
+          if (fileType === "gif") {
+            return (
+              <div
+                key={index}
+                className={fillInnerClass}
+                style={{
+                  height: "100%",
+                  width: "100%",
+                }}
+              >
+                <Image
+                  src={media.url}
+                  width={0}
+                  height={0}
+                  priority
+                  alt="media preview"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            );
+          }
+
+          if (fileType === "mp4") {
             return (
               <div
                 key={index}

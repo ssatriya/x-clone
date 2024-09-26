@@ -1,6 +1,8 @@
-import { LikeTable, PostTable } from "@/lib/db/schema";
+import { MediaTable } from "@/lib/db/schema";
 import { Session, User } from "lucia";
 import { FileWithPath } from "react-dropzone";
+
+export type MediaFormat = "png" | "gif" | "jpeg" | "jpg" | "mp4";
 
 export type FileWithPreview = {
   file: FileWithPath;
@@ -8,6 +10,7 @@ export type FileWithPreview = {
     preview: string;
     id: string;
     dimension: { height: number; width: number } | null;
+    format: MediaFormat;
   };
 };
 
@@ -16,7 +19,7 @@ export type PostType = "post" | "quote" | "reply" | "repost";
 export type MediaType = {
   url: string;
   dimension: { height: number; width: number };
-  type: string;
+  type: MediaFormat;
 };
 
 export interface RepostInfo {
@@ -53,12 +56,13 @@ export interface Quote {
   userOriginId: string;
 }
 
+export type Media = Omit<MediaTable, "key">;
+
 export interface ForYouFeedPost {
   post: {
     postId: string;
     postContent: string;
     postCreatedAt: Date;
-    postMedia: string | null;
     postParentPostId: string | null;
     postRootPostId: string;
     postType: string;
@@ -72,12 +76,13 @@ export interface ForYouFeedPost {
     originalPostId: string;
     originalPostContent: string;
     originalPostCreatedAt: Date;
-    originalPostMedia: string | null;
     originalUserId: string;
     originalUsername: string;
     originalName: string;
     originalPhoto: string;
   };
+  media: Media[];
+  ogMedia: Media[];
   replyCount: number;
   repost: Repost[] | null;
   quote: Quote[] | null;
@@ -124,7 +129,7 @@ export interface ReplyContext {
   postId: string;
   content: string;
   createdAt: Date;
-  media: string | null;
+  media: Media[];
   name: string;
   parentPostId: string | null;
   photo: string | null;

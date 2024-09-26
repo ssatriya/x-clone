@@ -43,6 +43,27 @@
       "when": 1727174065256,
       "tag": "0005_bumpy_champions",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1727314426367,
+      "tag": "0006_safe_the_renegades",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1727315463549,
+      "tag": "0007_brief_hulk",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1727316231048,
+      "tag": "0008_deep_drax",
+      "breakpoints": true
     }
   ]
 }

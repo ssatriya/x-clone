@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useDisclosure } from "@nextui-org/react";
 
 import { User } from "lucia";
 import { cn } from "@/lib/utils";

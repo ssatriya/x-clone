@@ -39,7 +39,12 @@ import LikeButton from "./engagement-button/like/like-button";
 import ReplyButton from "./engagement-button/reply/reply-button";
 import ShareButton from "./engagement-button/share/share-button";
 import RepostButton from "./engagement-button/repost/repost-button";
-import { FileWithPreview, ForYouFeedPost, MediaType } from "@/types";
+import {
+  FileWithPreview,
+  ForYouFeedPost,
+  mediaFormat,
+  MediaType,
+} from "@/types";
 import BookmarkButton from "./engagement-button/bookmark/bookmark-button";
 
 type Props = {
@@ -59,8 +64,7 @@ const PostDetail = ({ loggedInUser, username, postId }: Props) => {
   const [isInputFocus, setIsInputFocus] = useState(false);
   const [files, setFiles] = useState<FileWithPreview[]>([]);
   const { setFocusPost } = useCurrentFocusPost();
-  const { uploadFilesWithProgress, isUploading, overallProgress } =
-    useUploadMedia();
+  const { startUpload, uploadingFiles, insertedMediaId } = useUploadMedia();
 
   const queryKey = ["post-detail", postId, username];
   const { data, isLoading } = useQuery({
@@ -77,15 +81,9 @@ const PostDetail = ({ loggedInUser, username, postId }: Props) => {
 
   const { mutate: createReply } = useMutation({
     mutationKey: ["create-reply"],
-    mutationFn: ({
-      postType,
-      content,
-      media,
-      parentPostId,
-      rootPostId,
-    }: CreateReplyPayload) =>
+    mutationFn: (payload: CreateReplyPayload) =>
       kyInstance.post("/api/post/reply", {
-        json: { postType, content, media, parentPostId, rootPostId },
+        json: payload,
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeyReplyCount });
@@ -117,12 +115,12 @@ const PostDetail = ({ loggedInUser, username, postId }: Props) => {
   const onDrop = useCallback(
     (acceptedFiles: FileWithPath[], rejectedFiles: FileRejection[]) => {
       acceptedFiles.forEach(async (file) => {
-        const fileType = file.type.split("/")[0] as "image" | "video";
-        if (fileType == "image") {
+        const fileType = file.type.split("/")[1] as mediaFormat;
+        if (fileType == "png" || fileType == "jpeg" || fileType == "jpg") {
           try {
             const compressResult = (await compress(
               file,
-              0.8,
+              0.7,
               2000,
               2000
             )) as Blob;
@@ -132,11 +130,12 @@ const PostDetail = ({ loggedInUser, username, postId }: Props) => {
             });
             const previewUrl = URL.createObjectURL(compressResult);
             const { height, width } = await getImageDimension(previewUrl);
-            const fileWithPreview = {
+            const fileWithPreview: FileWithPreview = {
               meta: {
                 id: generateIdFromEntropySize(10),
                 preview: previewUrl,
                 dimension: { height, width },
+                format: fileType,
               },
               file: Object.assign(compressedFile, {
                 path: file.path,
@@ -144,31 +143,54 @@ const PostDetail = ({ loggedInUser, username, postId }: Props) => {
             };
 
             setFiles((prev) => [...(prev ?? []), fileWithPreview]);
+            startUpload(fileWithPreview);
           } catch (error) {
             console.log({ error });
           }
         }
-        if (fileType === "video") {
+        if (fileType === "gif") {
           try {
             const previewUrl = URL.createObjectURL(file);
-            const dimension = await getVideoDimension(previewUrl);
-            const fileWithPreview = {
+            const dimension = await getImageDimension(previewUrl);
+
+            const fileWithPreview: FileWithPreview = {
               meta: {
                 id: generateIdFromEntropySize(10),
                 preview: previewUrl,
                 dimension: dimension,
+                format: fileType,
+              },
+              file: file,
+            };
+            setFiles((prev) => [...(prev ?? []), fileWithPreview]);
+            await startUpload(fileWithPreview);
+          } catch (error) {
+            console.error(error);
+          }
+        }
+        if (fileType == "mp4") {
+          try {
+            const previewUrl = URL.createObjectURL(file);
+            const dimension = await getVideoDimension(previewUrl);
+            const fileWithPreview: FileWithPreview = {
+              meta: {
+                id: generateIdFromEntropySize(10),
+                preview: previewUrl,
+                dimension: dimension,
+                format: fileType,
               },
               file: file,
             };
 
             setFiles((prev) => [...(prev ?? []), fileWithPreview]);
+            startUpload(fileWithPreview);
           } catch (error) {
             console.log(error);
           }
         }
       });
     },
-    [setFiles]
+    [setFiles, startUpload]
   );
 
   const { getInputProps } = useDropzone({
@@ -185,22 +207,8 @@ const PostDetail = ({ loggedInUser, username, postId }: Props) => {
     if (data) {
       setFocusPost(data.post.postId);
     }
-    // setIsInputLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  let media = null;
-
-  if (data?.post.postMedia) {
-    media = data.post.postMedia;
-  }
-
-  const { newMedia } = useMediaURL(media);
-
-  // useEffect(() => {
-  // window.scrollTo({ top: fromTop });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
 
   useLayoutEffect(() => {
     setTimeout(() => divRef.current?.scrollIntoView(), 0);
@@ -231,50 +239,20 @@ const PostDetail = ({ loggedInUser, username, postId }: Props) => {
   }
 
   const submitHandler = async () => {
-    const media: MediaType[] = [];
     setIsPending(true);
 
-    if (files.length > 0) {
-      try {
-        const imgURLs = await uploadFilesWithProgress(files);
-
-        if (imgURLs && imgURLs.length === files.length) {
-          files.forEach((file, i) => {
-            const { dimension } = file.meta;
-            if (dimension) {
-              const { height, width } = dimension;
-              media.push({
-                url: imgURLs[i],
-                dimension: { height, width },
-                type: file.file.type,
-              });
-            }
-          });
-        }
-      } catch (error) {
-        setIsPending(false);
-        console.error("Error uploading files:", error);
-        return;
-      }
-    }
-
-    try {
-      const payload: CreateReplyPayload = {
-        content: inputValue.trim(),
-        postType: "reply",
-        parentPostId: data.post.postId,
-        rootPostId: data.post.postRootPostId,
-        ...(media.length > 0 && { media: JSON.stringify(media) }),
-      };
-      createReply(payload);
-    } catch (error) {
-      console.error("Error creating post:", error);
-      setIsPending(false);
-    }
+    const payload: CreateReplyPayload = {
+      content: inputValue.trim(),
+      postType: "reply",
+      parentPostId: data.post.postId,
+      rootPostId: data.post.postRootPostId,
+      mediaId: insertedMediaId,
+    };
+    createReply(payload);
   };
 
   const isButtonDisabled = inputValue.length > 0 || files.length > 0;
-  const isPosting = isPending || isUploading;
+  const isPosting = isPending;
 
   return (
     <>
@@ -340,9 +318,9 @@ const PostDetail = ({ loggedInUser, username, postId }: Props) => {
                     </Linkify>
                   </div>
                 )}
-                {newMedia && newMedia.length > 0 && (
+                {data.media.length > 0 && (
                   <PostMedia
-                    mediaURLs={newMedia}
+                    mediaURLs={data.media}
                     fullWidthImage={true}
                     usernameWithoutAt={username}
                     postId={postId}
@@ -353,7 +331,7 @@ const PostDetail = ({ loggedInUser, username, postId }: Props) => {
                     post={{
                       id: data.quoted.originalPostId,
                       content: data.quoted.originalPostContent,
-                      media: data.quoted.originalPostMedia,
+                      media: data.ogMedia,
                       createdAt: data.quoted.originalPostCreatedAt,
                       nestedPostId: null,
                     }}
@@ -406,7 +384,7 @@ const PostDetail = ({ loggedInUser, username, postId }: Props) => {
                   originalPost={{
                     userId: data.post.userId,
                     content: data.post.postContent,
-                    media: data.post.postMedia,
+                    media: data.media,
                     createdAt: data.post.postCreatedAt,
                     name: data.post.name,
                     username: data.post.username,

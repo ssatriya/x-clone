@@ -2,6 +2,7 @@ import { validateRequest } from "@/lib/auth/validate-request";
 import db from "@/lib/db";
 import {
   likeTable,
+  mediaTable,
   postTable,
   quoteTable,
   replyTable,
@@ -10,7 +11,7 @@ import {
 } from "@/lib/db/schema";
 import { sleep } from "@/lib/utils";
 import { CreatePostSchema } from "@/lib/zod-schema";
-import { aliasedTable, and, eq, sql } from "drizzle-orm";
+import { aliasedTable, and, eq, inArray, sql } from "drizzle-orm";
 import { generateIdFromEntropySize } from "lucia";
 import { NextRequest } from "next/server";
 
@@ -29,9 +30,29 @@ export async function POST(req: NextRequest) {
       return new Response("invalid payload", { status: 400 });
     }
 
-    const { content, postType, media } = payload.data;
+    const { content, postType, mediaId } = payload.data;
 
     const postId = generateIdFromEntropySize(10);
+
+    if (mediaId && mediaId.length > 0) {
+      await db.transaction(async (tx) => {
+        await tx.insert(postTable).values({
+          id: postId,
+          postType: postType,
+          userId: loggedInUser.id,
+          rootPostId: postId,
+          content: content,
+        });
+
+        await tx
+          .update(mediaTable)
+          .set({
+            postId: postId,
+          })
+          .where(inArray(mediaTable.id, mediaId));
+      });
+      return new Response(null, { status: 201 });
+    }
 
     await db.insert(postTable).values({
       id: postId,
@@ -39,7 +60,6 @@ export async function POST(req: NextRequest) {
       userId: loggedInUser.id,
       rootPostId: postId,
       content: content,
-      media: media,
     });
 
     return new Response(null, { status: 201 });
@@ -65,6 +85,7 @@ export async function GET(req: NextRequest) {
 
     const ogPost = aliasedTable(postTable, "ogPost");
     const ogUser = aliasedTable(userTable, "ogUser");
+    const ogMedia = aliasedTable(mediaTable, "ogMedia");
 
     const [post] = await db
       .select({
@@ -72,7 +93,6 @@ export async function GET(req: NextRequest) {
           postId: postTable.id,
           postContent: postTable.content,
           postCreatedAt: postTable.createdAt,
-          postMedia: postTable.media,
           postParentPostId: postTable.parentPostId,
           postRootPostId: postTable.rootPostId,
           postType: postTable.postType,
@@ -86,7 +106,6 @@ export async function GET(req: NextRequest) {
           originalPostId: ogPost.id,
           originalPostContent: ogPost.content,
           originalPostCreatedAt: ogPost.createdAt,
-          originalPostMedia: ogPost.media,
           originalUserId: ogUser.id,
           originalUsername: ogUser.username,
           originalName: ogUser.name,
@@ -117,6 +136,54 @@ export async function GET(req: NextRequest) {
               'likeTargetId', ${likeTable.likeTargetId}
             )
               ) FILTER (WHERE ${likeTable.likeTargetId} IS NOT NULL)`,
+        media: sql<
+          {
+            id: string;
+            url: string;
+            size: number;
+            format: string;
+            width: number;
+            height: number;
+          }[]
+        >`
+              COALESCE(
+                json_agg(
+                  json_build_object(
+                    'id', ${mediaTable.id},
+                    'url', ${mediaTable.url},
+                    'size', ${mediaTable.size},
+                    'format', ${mediaTable.format},
+                    'width', ${mediaTable.width},
+                    'height', ${mediaTable.height}
+                  )
+                ) FILTER (WHERE ${mediaTable.id} IS NOT NULL),
+                '[]'
+              )
+            `,
+        ogMedia: sql<
+          {
+            id: string;
+            url: string;
+            size: number;
+            format: string;
+            width: number;
+            height: number;
+          }[]
+        >`
+            COALESCE(
+              json_agg(
+                json_build_object(
+                  'id', ${ogMedia.id},
+                  'url', ${ogMedia.url},
+                  'size', ${ogMedia.size},
+                  'format', ${ogMedia.format},
+                  'width', ${ogMedia.width},
+                  'height', ${ogMedia.height}
+                )
+              ) FILTER (WHERE ${ogMedia.id} IS NOT NULL),
+              '[]'
+            )
+          `,
       })
       .from(postTable)
       .innerJoin(userTable, eq(postTable.userId, userTable.id))
@@ -126,6 +193,8 @@ export async function GET(req: NextRequest) {
       .leftJoin(repostTable, eq(postTable.id, repostTable.repostTargetId))
       .leftJoin(quoteTable, eq(postTable.id, quoteTable.quoteTargetId))
       .leftJoin(likeTable, eq(postTable.id, likeTable.likeTargetId))
+      .leftJoin(mediaTable, eq(postTable.id, mediaTable.postId))
+      .leftJoin(ogMedia, eq(ogPost.id, ogMedia.postId))
       .where(
         and(eq(postTable.id, postId), eq(userTable.username, `@${username}`))
       )
@@ -138,7 +207,6 @@ export async function GET(req: NextRequest) {
         ogPost.id,
         ogPost.content,
         ogPost.createdAt,
-        ogPost.media,
         ogUser.id,
         ogUser.name,
         ogUser.username,

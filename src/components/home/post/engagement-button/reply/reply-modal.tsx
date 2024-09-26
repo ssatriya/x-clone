@@ -40,7 +40,12 @@ import useCurrentFocusPost from "@/hooks/useCurrentFocusPost";
 import InputOptions from "@/components/home/input/input-options";
 import MediaPreview from "@/components/home/input/media-preview";
 import ProgressCircle from "@/components/home/input/progress-circle";
-import { FileWithPreview, MediaType, OptionButtonConfig } from "@/types";
+import {
+  FileWithPreview,
+  mediaFormat,
+  MediaType,
+  OptionButtonConfig,
+} from "@/types";
 
 type Props = {
   loggedInUser: User;
@@ -61,8 +66,7 @@ type Props = {
 
 const ReplyModal = ({ loggedInUser, setIsOpen, isOpen, post, user }: Props) => {
   const queryClient = useQueryClient();
-  const { uploadFilesWithProgress, isUploading, overallProgress } =
-    useUploadMedia();
+  const { startUpload, uploadingFiles, insertedMediaId } = useUploadMedia();
 
   const mediaRef = useRef<HTMLInputElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -80,15 +84,9 @@ const ReplyModal = ({ loggedInUser, setIsOpen, isOpen, post, user }: Props) => {
 
   const { mutate: createReply } = useMutation({
     mutationKey: ["create-reply"],
-    mutationFn: ({
-      postType,
-      content,
-      media,
-      parentPostId,
-      rootPostId,
-    }: CreateReplyPayload) =>
+    mutationFn: (payload: CreateReplyPayload) =>
       kyInstance.post("/api/post/reply", {
-        json: { postType, content, media, parentPostId, rootPostId },
+        json: payload,
       }),
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: queryKeyReplyCount });
@@ -121,12 +119,12 @@ const ReplyModal = ({ loggedInUser, setIsOpen, isOpen, post, user }: Props) => {
   const onDrop = useCallback(
     (acceptedFiles: FileWithPath[], rejectedFiles: FileRejection[]) => {
       acceptedFiles.forEach(async (file) => {
-        const fileType = file.type.split("/")[0] as "image" | "video";
-        if (fileType == "image") {
+        const fileType = file.type.split("/")[1] as mediaFormat;
+        if (fileType == "png" || fileType == "jpeg" || fileType == "jpg") {
           try {
             const compressResult = (await compress(
               file,
-              0.8,
+              0.7,
               2000,
               2000
             )) as Blob;
@@ -136,11 +134,12 @@ const ReplyModal = ({ loggedInUser, setIsOpen, isOpen, post, user }: Props) => {
             });
             const previewUrl = URL.createObjectURL(compressResult);
             const { height, width } = await getImageDimension(previewUrl);
-            const fileWithPreview = {
+            const fileWithPreview: FileWithPreview = {
               meta: {
                 id: generateIdFromEntropySize(10),
                 preview: previewUrl,
                 dimension: { height, width },
+                format: fileType,
               },
               file: Object.assign(compressedFile, {
                 path: file.path,
@@ -148,31 +147,54 @@ const ReplyModal = ({ loggedInUser, setIsOpen, isOpen, post, user }: Props) => {
             };
 
             setFiles((prev) => [...(prev ?? []), fileWithPreview]);
+            startUpload(fileWithPreview);
           } catch (error) {
             console.log({ error });
           }
         }
-        if (fileType === "video") {
+        if (fileType === "gif") {
           try {
             const previewUrl = URL.createObjectURL(file);
-            const dimension = await getVideoDimension(previewUrl);
-            const fileWithPreview = {
+            const dimension = await getImageDimension(previewUrl);
+
+            const fileWithPreview: FileWithPreview = {
               meta: {
                 id: generateIdFromEntropySize(10),
                 preview: previewUrl,
                 dimension: dimension,
+                format: fileType,
+              },
+              file: file,
+            };
+            setFiles((prev) => [...(prev ?? []), fileWithPreview]);
+            await startUpload(fileWithPreview);
+          } catch (error) {
+            console.error(error);
+          }
+        }
+        if (fileType == "mp4") {
+          try {
+            const previewUrl = URL.createObjectURL(file);
+            const dimension = await getVideoDimension(previewUrl);
+            const fileWithPreview: FileWithPreview = {
+              meta: {
+                id: generateIdFromEntropySize(10),
+                preview: previewUrl,
+                dimension: dimension,
+                format: fileType,
               },
               file: file,
             };
 
             setFiles((prev) => [...(prev ?? []), fileWithPreview]);
+            startUpload(fileWithPreview);
           } catch (error) {
             console.log(error);
           }
         }
       });
     },
-    [setFiles]
+    [setFiles, startUpload]
   );
 
   const { getInputProps } = useDropzone({
@@ -182,32 +204,7 @@ const ReplyModal = ({ loggedInUser, setIsOpen, isOpen, post, user }: Props) => {
   });
 
   const submitHandler = async () => {
-    const media: MediaType[] = [];
     setIsPending(true);
-
-    if (files.length > 0) {
-      try {
-        const imgURLs = await uploadFilesWithProgress(files);
-
-        if (imgURLs && imgURLs.length === files.length) {
-          files.forEach((file, i) => {
-            const { dimension } = file.meta;
-            if (dimension) {
-              const { height, width } = dimension;
-              media.push({
-                url: imgURLs[i],
-                dimension: { height, width },
-                type: file.file.type,
-              });
-            }
-          });
-        }
-      } catch (error) {
-        setIsPending(false);
-        console.error("Error uploading files:", error);
-        return;
-      }
-    }
 
     try {
       const payload: CreateReplyPayload = {
@@ -215,7 +212,7 @@ const ReplyModal = ({ loggedInUser, setIsOpen, isOpen, post, user }: Props) => {
         postType: "reply",
         parentPostId: post.id,
         rootPostId: post.rootPostId,
-        ...(media.length > 0 && { media: JSON.stringify(media) }),
+        mediaId: insertedMediaId,
       };
       createReply(payload);
     } catch (error) {
@@ -229,7 +226,7 @@ const ReplyModal = ({ loggedInUser, setIsOpen, isOpen, post, user }: Props) => {
   }, [inputCount]);
 
   const isButtonDisabled = inputValue.length > 0 || files.length > 0;
-  const isPosting = isPending || isUploading;
+  const isPosting = isPending;
 
   const optionButtonConfigs: OptionButtonConfig[] = [
     {
@@ -269,14 +266,14 @@ const ReplyModal = ({ loggedInUser, setIsOpen, isOpen, post, user }: Props) => {
       <div className="fixed inset-0 flex items-start justify-center w-screen top-0 sm-plus:top-12">
         <DialogPanel className="bg-black overflow-clip max-sm:h-full max-w-[600px] w-full h-fit sm-plus:max-h-[680px] sm-plus:rounded-2xl rounded-none relative flex flex-col">
           <DialogTitle className="font-bold h-[53px] flex-shrink-0 flex items-center px-4 sticky top-0 z-20 sm-plus:rounded-2xl rounded-none bg-black/60">
-            {isPosting && (
+            {/* {isPosting && (
               <Progressbar
                 isPending={isPosting}
                 overallProgress={overallProgress}
                 hasFiles={files.length > 0}
                 classNames="absolute right-0 top-0 z-50"
               />
-            )}
+            )} */}
             <div className="flex justify-between w-full">
               <Button
                 onClick={() => setIsOpen(false)}
@@ -362,6 +359,7 @@ const ReplyModal = ({ loggedInUser, setIsOpen, isOpen, post, user }: Props) => {
                         files={files}
                         isPosting={isPosting}
                         handleRemove={handleRemove}
+                        uploadingFiles={uploadingFiles}
                       />
                     </div>
                   </div>

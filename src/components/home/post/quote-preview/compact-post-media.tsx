@@ -1,8 +1,8 @@
 import { cn } from "@/lib/utils";
-import { MediaType } from "@/types";
+import { Media, mediaFormat, MediaType } from "@/types";
 
 type Props = {
-  mediaURL: MediaType[];
+  mediaURL: Media[];
 };
 
 const CompactQuoteMedia = ({ mediaURL }: Props) => {
@@ -19,9 +19,14 @@ const CompactQuoteMedia = ({ mediaURL }: Props) => {
   return (
     <div className={classNames}>
       {mediaURL.map((media, index) => {
-        const fileType = media.type.split("/")[0] as "image" | "video";
+        const fileType = media.format as mediaFormat;
 
-        if (fileType === "image") {
+        if (
+          fileType === "jpeg" ||
+          fileType === "jpg" ||
+          fileType === "png" ||
+          fileType === "gif"
+        ) {
           return (
             <div key={index} className="w-full h-full">
               {/* eslint-disable @next/next/no-img-element */}
@@ -34,7 +39,7 @@ const CompactQuoteMedia = ({ mediaURL }: Props) => {
           );
         }
 
-        if (fileType === "video") {
+        if (fileType === "mp4") {
           return (
             <video
               key={index}

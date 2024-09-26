@@ -196,14 +196,21 @@ export function formatTimestamp(timestamp: string | number | Date): string {
   return `${formattedTime} · ${formattedDate}`;
 }
 
-export const formatDuration = (seconds: number): string => {
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = Math.floor(seconds % 60);
+// export const formatDuration = (seconds: number): string => {
+//   const minutes = Math.floor(seconds / 60);
+//   const remainingSeconds = Math.floor(seconds % 60);
 
-  const formattedSeconds =
-    remainingSeconds < 10 ? `0${remainingSeconds}` : remainingSeconds;
+//   const formattedSeconds =
+//     remainingSeconds < 10 ? `0${remainingSeconds}` : remainingSeconds;
 
-  return `${minutes}:${formattedSeconds}`;
+//   return `${minutes}:${formattedSeconds}`;
+// };
+export const formatDuration = (time: number) => {
+  const minutes = Math.floor(time / 60);
+  const seconds = Math.floor(time % 60)
+    .toString()
+    .padStart(2, "0");
+  return `${minutes}:${seconds}`;
 };
 
 export const getInitialIndex = ({

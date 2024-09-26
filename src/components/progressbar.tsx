@@ -1,4 +1,4 @@
-import { Progress } from "@nextui-org/react";
+// import { Progress } from "@nextui-org/react";
 
 const Progressbar = ({
   overallProgress,
@@ -17,14 +17,15 @@ const Progressbar = ({
       : 10
     : 100;
   return (
-    <Progress
-      size="sm"
-      aria-label="Posting..."
-      value={computedProgress}
-      radius="none"
-      classNames={{ track: "bg-transparent" }}
-      className={classNames}
-    />
+    <div>progressbar wip change</div>
+    // <Progress
+    //   size="sm"
+    //   aria-label="Posting..."
+    //   value={computedProgress}
+    //   radius="none"
+    //   classNames={{ track: "bg-transparent" }}
+    //   className={classNames}
+    // />
   );
 };
 

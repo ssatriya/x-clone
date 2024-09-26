@@ -1,7 +1,6 @@
 import { User } from "lucia";
 import Image from "next/image";
-import { useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import PostInfo from "./post-info";
@@ -9,13 +8,14 @@ import Linkify from "@/components/linkify";
 import PostMedia from "./media/post-media";
 import useMediaURL from "@/hooks/useMediaURL";
 import Divider from "@/components/ui/divider";
-import { Like, Quote, Repost } from "@/types";
+import { Like, Media, Quote, Repost } from "@/types";
 import LikeButton from "./engagement-button/like/like-button";
 import ViewButton from "./engagement-button/view/view-button";
 import ReplyButton from "./engagement-button/reply/reply-button";
 import ShareButton from "./engagement-button/share/share-button";
 import RepostButton from "./engagement-button/repost/repost-button";
 import BookmarkButton from "./engagement-button/bookmark/bookmark-button";
+import { MediaTable } from "@/lib/db/schema";
 
 type Props = {
   loggedInUser: User;
@@ -27,7 +27,7 @@ type Props = {
     replyCount: number;
     rootPostId: string;
     like: Like[] | null;
-    media: string | null;
+    media: Media[];
     quote: Quote[] | null;
     repost: Repost[] | null;
     parentPostId: string | null;
@@ -49,10 +49,7 @@ const PostItem = ({
   showLine = false,
   showBorderBottom = true,
 }: Props) => {
-  const pathname = usePathname();
   const router = useRouter();
-
-  const { newMedia } = useMediaURL(post.media);
 
   const handleClick = () => {
     const cleanUsername = user.username.slice(1);
@@ -118,9 +115,9 @@ const PostItem = ({
                 </Linkify>
               </div>
             )}
-            {newMedia && newMedia.length > 0 && (
+            {post.media.length > 0 && (
               <PostMedia
-                mediaURLs={newMedia}
+                mediaURLs={post.media}
                 usernameWithoutAt={user.username.slice(1)}
                 postId={post.id}
               />

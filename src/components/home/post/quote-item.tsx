@@ -3,13 +3,12 @@
 import { User } from "lucia";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Divider } from "@nextui-org/react";
 
 import { cn } from "@/lib/utils";
 import PostInfo from "./post-info";
 import PostMedia from "./media/post-media";
 import Linkify from "@/components/linkify";
-import { Like, Quote, Repost } from "@/types";
+import { Like, Media, Quote, Repost } from "@/types";
 import useMediaURL from "@/hooks/useMediaURL";
 import QuotePreview from "./quote-preview/quote-preview";
 import LikeButton from "./engagement-button/like/like-button";
@@ -19,6 +18,7 @@ import ReplyButton from "./engagement-button/reply/reply-button";
 import RepostButton from "./engagement-button/repost/repost-button";
 import CompactQuotePreview from "./quote-preview/compact-post-preview";
 import BookmarkButton from "./engagement-button/bookmark/bookmark-button";
+import Divider from "@/components/ui/divider";
 
 type Props = {
   loggedInUser: User;
@@ -30,7 +30,7 @@ type Props = {
     rootPostId: string;
     replyCount: number;
     like: Like[] | null;
-    media: string | null;
+    media: Media[];
     quote: Quote[] | null;
     repost: Repost[] | null;
     parentPostId: string | null;
@@ -45,7 +45,7 @@ type Props = {
     id: string;
     content: string;
     createdAt: Date;
-    media: string | null;
+    media: Media[];
   };
   quotedUser: {
     id: string;
@@ -67,8 +67,6 @@ const QuoteItem = ({
   showBorderBottom = true,
 }: Props) => {
   const router = useRouter();
-
-  const { newMedia } = useMediaURL(post.media);
 
   const handleClick = () => {
     const cleanUsername = user.username.slice(1);
@@ -135,15 +133,15 @@ const QuoteItem = ({
                 </p>
               </Linkify>
             )}
-            {newMedia && newMedia.length > 0 && (
+            {post.media.length > 0 && (
               <PostMedia
-                mediaURLs={newMedia}
+                mediaURLs={post.media}
                 usernameWithoutAt={user.username}
                 postId={post.id}
               />
             )}
           </div>
-          {newMedia && (
+          {post.media && (
             <CompactQuotePreview
               post={{
                 postId: quotedPost.id,
@@ -159,7 +157,7 @@ const QuoteItem = ({
               }}
             />
           )}
-          {!newMedia && (
+          {!post.media && (
             <QuotePreview
               post={{
                 id: quotedPost.id,

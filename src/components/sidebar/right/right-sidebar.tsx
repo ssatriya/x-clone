@@ -1,7 +1,5 @@
 "use client";
 
-import { Card, CardBody } from "@nextui-org/react";
-
 import Search from "./search";
 import UserItem from "./user-item";
 import TrendItem from "./trend-item";
@@ -12,42 +10,26 @@ const RightSidebar = () => {
       <div className="w-full space-y-4 bottom-20">
         <div className="fixed w-auto top-0 z-40 space-y-4 min-w-[288px] min-[1111px]:min-w-[348px]">
           <Search />
-          <Card
-            classNames={{
-              base: "bg-transparent border border-border w-full",
-            }}
-          >
-            <CardBody className="px-0">
-              <div className="flex flex-col gap-[10px]">
-                <p className="px-5 text-xl font-bold">Who to follow</p>
-                <div>
-                  <UserItem />
-                  <UserItem />
-                </div>
+          <div className="border w-full rounded-2xl py-3">
+            <div className="flex flex-col gap-[10px]">
+              <p className="px-4 text-xl font-bold">Who to follow</p>
+              <div>
+                <UserItem />
+                <UserItem />
               </div>
-            </CardBody>
-          </Card>
-          <Card
-            classNames={{
-              base: "bg-transparent border border-border",
-            }}
-          >
-            <CardBody className="px-0">
-              <div className="flex flex-col gap-[10px]">
-                <p className="px-5 text-xl font-bold">Trends for you</p>
-                <div>
-                  <TrendItem />
-                  <TrendItem />
-                  <TrendItem />
-                  <TrendItem />
-                  <TrendItem />
-                  <TrendItem />
-                  <TrendItem />
-                  <TrendItem />
-                </div>
+            </div>
+          </div>
+          <div className="border w-full rounded-2xl py-3">
+            <div className="flex flex-col gap-[10px]">
+              <p className="px-4 text-xl font-bold">Trends for you</p>
+              <div>
+                <TrendItem />
+                <TrendItem />
+                <TrendItem />
+                <TrendItem />
               </div>
-            </CardBody>
-          </Card>
+            </div>
+          </div>
         </div>
       </div>
     </aside>

@@ -14,43 +14,45 @@ import Button from "@/components/ui/button";
 import ButtonTooltip from "@/components/button-tooltip";
 
 type Props = {
+  photo: string;
+  username: string;
+  inputValue: string;
+  isPosting: boolean;
   classNames?: string;
   isInputFocus: boolean;
-  isPosting: boolean;
-  username: string;
-  photo: string;
-  inputRef: RefObject<HTMLTextAreaElement>;
-  mediaRef: RefObject<HTMLInputElement>;
-  inputValue: string;
-  setIsInputFocus: (value: SetStateAction<boolean>) => void;
-  setInputValue: (value: SetStateAction<string>) => void;
-  setInputCount: (value: SetStateAction<number>) => void;
+  handleMedia: () => void;
+  files: FileWithPreview[];
   isButtonDisabled: boolean;
   submitHandler: () => Promise<void>;
-  files: FileWithPreview[];
+  mediaRef: RefObject<HTMLInputElement>;
   handleRemove: (mediaId: string) => void;
-  handleMedia: () => void;
+  inputRef: RefObject<HTMLTextAreaElement>;
+  uploadingFiles: { [id: string]: boolean };
+  setInputValue: (value: SetStateAction<string>) => void;
+  setInputCount: (value: SetStateAction<number>) => void;
+  setIsInputFocus: (value: SetStateAction<boolean>) => void;
   getInputProps: <T extends DropzoneInputProps>(props?: T) => T;
 };
 
 const InputReply = ({
-  classNames,
-  isInputFocus,
-  isPosting,
-  username,
+  files,
   photo,
+  username,
   inputRef,
   mediaRef,
+  isPosting,
   inputValue,
-  setIsInputFocus,
+  classNames,
+  handleMedia,
+  handleRemove,
+  isInputFocus,
   setInputValue,
   setInputCount,
-  isButtonDisabled,
-  submitHandler,
-  files,
-  handleRemove,
-  handleMedia,
   getInputProps,
+  submitHandler,
+  uploadingFiles,
+  setIsInputFocus,
+  isButtonDisabled,
 }: Props) => {
   return (
     <div className={cn(classNames, "flex flex-col justify-center w-full py-3")}>
@@ -112,6 +114,7 @@ const InputReply = ({
             files={files}
             handleRemove={handleRemove}
             isPosting={isPosting}
+            uploadingFiles={uploadingFiles}
           />
         </div>
         <AnimatePresence initial={false}>
@@ -132,17 +135,17 @@ const InputReply = ({
                 ref={mediaRef}
               />
               <div className="flex -ml-[10px] py-2">
-                <ButtonTooltip content="Media">
-                  <Button
-                    onClick={handleMedia}
-                    aria-label="Media"
-                    size="icon"
-                    variant="ghost"
-                    className="w-[34px] h-[34px] hover:bg-primary/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring"
-                  >
-                    <Icons.media className="fill-primary w-5 h-5" />
-                  </Button>
-                </ButtonTooltip>
+                {/* <ButtonTooltip content="Media"> */}
+                <Button
+                  onClick={handleMedia}
+                  aria-label="Media"
+                  size="icon"
+                  variant="ghost"
+                  className="w-[34px] h-[34px] hover:bg-primary/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring"
+                >
+                  <Icons.media className="fill-primary w-5 h-5" />
+                </Button>
+                {/* </ButtonTooltip> */}
                 <ButtonTooltip content="GIF">
                   <Button
                     aria-label="GIF"

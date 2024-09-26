@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { User } from "lucia";
 import Image from "next/image";
-import { Divider } from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
 
 import PostInfo from "./post-info";
@@ -18,6 +17,7 @@ import ShareButton from "./engagement-button/share/share-button";
 import ReplyButton from "./engagement-button/reply/reply-button";
 import RepostButton from "./engagement-button/repost/repost-button";
 import BookmarkButton from "./engagement-button/bookmark/bookmark-button";
+import Divider from "@/components/ui/divider";
 
 type Props = {
   loggedInUser: User;

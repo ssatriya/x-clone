@@ -32,6 +32,7 @@ type Props = {
   isButtonDisabled: boolean;
   submitHandler: () => Promise<void>;
   mediaRef: RefObject<HTMLInputElement>;
+  uploadingFiles: { [id: string]: boolean };
   inputRef: RefObject<HTMLTextAreaElement>;
   handleRemove: (mediaId: string) => void;
   setInputValue: (value: SetStateAction<string>) => void;
@@ -55,6 +56,7 @@ const PostSidebar = ({
   setInputCount,
   submitHandler,
   getInputProps,
+  uploadingFiles,
   setIsInputFocus,
   isButtonDisabled,
 }: Props) => {
@@ -145,7 +147,7 @@ const PostSidebar = ({
                 name: post.post.name,
                 photo: post.post.photo,
                 userId: post.post.postId,
-                media: post.post.postMedia,
+                media: post.media,
                 username: post.post.username,
                 content: post.post.postContent,
                 createdAt: post.post.postCreatedAt,
@@ -193,6 +195,7 @@ const PostSidebar = ({
             setInputCount={setInputCount}
             submitHandler={submitHandler}
             getInputProps={getInputProps}
+            uploadingFiles={uploadingFiles}
             setIsInputFocus={setIsInputFocus}
             isButtonDisabled={isButtonDisabled}
           />

@@ -1,11 +1,11 @@
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { NextRequest } from "next/server";
 import { generateIdFromEntropySize } from "lucia";
 
 import db from "@/lib/db";
 import { QuoteInfo } from "@/types";
 import { CreateQuoteSchema } from "@/lib/zod-schema";
-import { postTable, quoteTable } from "@/lib/db/schema";
+import { mediaTable, postTable, quoteTable } from "@/lib/db/schema";
 import { validateRequest } from "@/lib/auth/validate-request";
 
 export async function GET(req: NextRequest) {
@@ -53,29 +53,54 @@ export async function POST(req: NextRequest) {
       return new Response("invalid payload", { status: 400 });
     }
 
-    const { content, media, postType, quoteTargetId } = payload.data;
+    const { content, mediaId, postType, quoteTargetId } = payload.data;
 
     const postId = generateIdFromEntropySize(10);
     const quoteId = generateIdFromEntropySize(10);
 
-    await db.transaction(async (tx) => {
-      await tx.insert(postTable).values({
-        id: postId,
-        postType: postType,
-        content: content,
-        media: media,
-        userId: loggedInUser.id,
-        rootPostId: postId,
-        originalPostId: quoteTargetId,
+    if (mediaId && mediaId.length > 0) {
+      await db.transaction(async (tx) => {
+        await tx.insert(postTable).values({
+          id: postId,
+          postType: postType,
+          content: content,
+          userId: loggedInUser.id,
+          rootPostId: postId,
+          originalPostId: quoteTargetId,
+        });
+        await tx.insert(quoteTable).values({
+          id: quoteId,
+          quoteTargetId: quoteTargetId,
+          userOriginId: loggedInUser.id,
+        });
+        await tx
+          .update(mediaTable)
+          .set({
+            postId: postId,
+          })
+          .where(inArray(mediaTable.id, mediaId));
       });
-      await tx.insert(quoteTable).values({
-        id: quoteId,
-        quoteTargetId: quoteTargetId,
-        userOriginId: loggedInUser.id,
-      });
-    });
 
-    return new Response("quoted successfully", { status: 201 });
+      return new Response("quoted successfully", { status: 201 });
+    } else {
+      await db.transaction(async (tx) => {
+        await tx.insert(postTable).values({
+          id: postId,
+          postType: postType,
+          content: content,
+          userId: loggedInUser.id,
+          rootPostId: postId,
+          originalPostId: quoteTargetId,
+        });
+        await tx.insert(quoteTable).values({
+          id: quoteId,
+          quoteTargetId: quoteTargetId,
+          userOriginId: loggedInUser.id,
+        });
+      });
+
+      return new Response("quoted successfully", { status: 201 });
+    }
   } catch (error) {
     return new Response("internal server error", { status: 500 });
   }

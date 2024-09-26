@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { formatTimeToNow } from "@/lib/utils";
-
-import { Divider } from "@nextui-org/react";
+import Divider from "@/components/ui/divider";
 
 type Props = {
   name: string;

@@ -6,7 +6,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { Fragment, useEffect } from "react";
 
 import kyInstance from "@/lib/ky";
 import PostItem from "./post/post-item";
@@ -20,8 +20,6 @@ type Props = {
 };
 
 const ForYouFeed = ({ loggedInUser }: Props) => {
-  const queryClient = useQueryClient();
-
   const { data, isLoading, hasNextPage, isFetching, fetchNextPage, refetch } =
     useInfiniteQuery({
       queryKey: ["for-you-feed"],
@@ -44,11 +42,6 @@ const ForYouFeed = ({ loggedInUser }: Props) => {
     });
 
   const posts = data?.pages.flatMap((page) => page.posts) || [];
-
-  // useEffect(() => {
-  //   queryClient.resetQueries({ queryKey: ["for-you-feed"] });
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
 
   const lastPostId = posts[0] && posts[0].post.postId;
 
@@ -101,7 +94,7 @@ const ForYouFeed = ({ loggedInUser }: Props) => {
                     id: p.postId,
                     content: p.postContent,
                     createdAt: p.postCreatedAt,
-                    media: p.postMedia,
+                    media: post.media,
                     parentPostId: p.postParentPostId,
                     postType: p.postType,
                     rootPostId: p.postRootPostId,
@@ -127,7 +120,7 @@ const ForYouFeed = ({ loggedInUser }: Props) => {
                     id: p.postId,
                     content: p.postContent,
                     createdAt: p.postCreatedAt,
-                    media: p.postMedia,
+                    media: post.media,
                     parentPostId: p.postParentPostId,
                     postType: p.postType,
                     rootPostId: p.postRootPostId,
@@ -144,7 +137,7 @@ const ForYouFeed = ({ loggedInUser }: Props) => {
                   }}
                   quotedPost={{
                     id: q.originalPostId,
-                    media: q.originalPostMedia,
+                    media: post.ogMedia,
                     content: q.originalPostContent,
                     createdAt: q.originalPostCreatedAt,
                   }}

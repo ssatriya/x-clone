@@ -27,6 +27,8 @@ import {
   RepostInfo,
   FileWithPreview,
   OptionButtonConfig,
+  mediaFormat,
+  Media,
 } from "@/types";
 import {
   compress,
@@ -55,7 +57,7 @@ type Props = {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   originalPost: {
     userId: string;
-    media: string | null;
+    media: Media[];
     photo: string | null;
     username: string;
     name: string;
@@ -73,8 +75,6 @@ const QuoteModal = ({
   originalPost,
 }: Props) => {
   const queryClient = useQueryClient();
-  const { uploadFilesWithProgress, isUploading, overallProgress } =
-    useUploadMedia();
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const mediaRef = useRef<HTMLInputElement>(null);
@@ -83,14 +83,15 @@ const QuoteModal = ({
   const [inputValue, setInputValue] = useState("");
   const [files, setFiles] = useState<FileWithPreview[]>([]);
   const [isPending, setIsPending] = useState(false);
+  const { startUpload, uploadingFiles, insertedMediaId } = useUploadMedia();
 
   const repostQueryKey = ["get-repost", postId];
 
   const { mutate: repost } = useMutation({
     mutationKey: ["create-repost"],
-    mutationFn: ({ repostTargetId, postType }: CreateRepostPayload) =>
+    mutationFn: (payload: CreateRepostPayload) =>
       kyInstance.patch("/api/post/repost", {
-        json: { repostTargetId, postType },
+        json: payload,
       }),
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: repostQueryKey });
@@ -135,14 +136,9 @@ const QuoteModal = ({
 
   const { mutate: quoteMutate } = useMutation({
     mutationKey: ["create-quote"],
-    mutationFn: ({
-      quoteTargetId,
-      content,
-      media,
-      postType,
-    }: CreateQuotePayload) =>
+    mutationFn: (payload: CreateQuotePayload) =>
       kyInstance.post("/api/post/quote", {
-        json: { quoteTargetId, content, media, postType },
+        json: payload,
       }),
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: quoteQueryKey });
@@ -193,8 +189,8 @@ const QuoteModal = ({
   const onDrop = useCallback(
     (acceptedFiles: FileWithPath[], rejectedFiles: FileRejection[]) => {
       acceptedFiles.forEach(async (file) => {
-        const fileType = file.type.split("/")[0] as "image" | "video";
-        if (fileType == "image") {
+        const fileType = file.type.split("/")[1] as mediaFormat;
+        if (fileType == "png" || fileType == "jpeg" || fileType == "jpg") {
           try {
             const compressResult = (await compress(
               file,
@@ -208,11 +204,12 @@ const QuoteModal = ({
             });
             const previewUrl = URL.createObjectURL(compressResult);
             const { height, width } = await getImageDimension(previewUrl);
-            const fileWithPreview = {
+            const fileWithPreview: FileWithPreview = {
               meta: {
                 id: generateIdFromEntropySize(10),
                 preview: previewUrl,
                 dimension: { height, width },
+                format: fileType,
               },
               file: Object.assign(compressedFile, {
                 path: file.path,
@@ -220,31 +217,54 @@ const QuoteModal = ({
             };
 
             setFiles((prev) => [...(prev ?? []), fileWithPreview]);
+            startUpload(fileWithPreview);
           } catch (error) {
             console.log({ error });
           }
         }
-        if (fileType === "video") {
+        if (fileType === "gif") {
           try {
             const previewUrl = URL.createObjectURL(file);
-            const dimension = await getVideoDimension(previewUrl);
-            const fileWithPreview = {
+            const dimension = await getImageDimension(previewUrl);
+
+            const fileWithPreview: FileWithPreview = {
               meta: {
                 id: generateIdFromEntropySize(10),
                 preview: previewUrl,
                 dimension: dimension,
+                format: fileType,
+              },
+              file: file,
+            };
+            setFiles((prev) => [...(prev ?? []), fileWithPreview]);
+            await startUpload(fileWithPreview);
+          } catch (error) {
+            console.error(error);
+          }
+        }
+        if (fileType == "mp4") {
+          try {
+            const previewUrl = URL.createObjectURL(file);
+            const dimension = await getVideoDimension(previewUrl);
+            const fileWithPreview: FileWithPreview = {
+              meta: {
+                id: generateIdFromEntropySize(10),
+                preview: previewUrl,
+                dimension: dimension,
+                format: fileType,
               },
               file: file,
             };
 
             setFiles((prev) => [...(prev ?? []), fileWithPreview]);
+            startUpload(fileWithPreview);
           } catch (error) {
             console.log(error);
           }
         }
       });
     },
-    [setFiles]
+    [setFiles, startUpload]
   );
 
   const { getInputProps } = useDropzone({
@@ -254,36 +274,14 @@ const QuoteModal = ({
   });
 
   const submitHandler = async () => {
-    const media: MediaType[] = [];
     setIsPending(true);
 
     if (files.length > 0) {
-      try {
-        const imgURLs = await uploadFilesWithProgress(files);
-
-        if (imgURLs && imgURLs.length === files.length) {
-          files.forEach((file, i) => {
-            const { dimension } = file.meta;
-            if (dimension) {
-              const { height, width } = dimension;
-              media.push({
-                url: imgURLs[i],
-                dimension: { height, width },
-                type: file.file.type,
-              });
-            }
-          });
-        }
-      } catch (error) {
-        setIsPending(false);
-        console.error("Error uploading files:", error);
-        return;
-      }
       const payload: CreateQuotePayload = {
         content: inputValue.trim(),
         postType: "quote",
         quoteTargetId: postId,
-        ...(media.length > 0 && { media: JSON.stringify(media) }),
+        mediaId: insertedMediaId,
       };
       quoteMutate(payload);
     } else {
@@ -301,7 +299,7 @@ const QuoteModal = ({
     updateProgress(inputCount);
   }, [inputCount]);
 
-  const isPosting = isPending || isUploading;
+  const isPosting = isPending;
 
   const optionButtonConfigs: OptionButtonConfig[] = [
     {
@@ -341,14 +339,14 @@ const QuoteModal = ({
       <div className="fixed inset-0 flex items-start justify-center w-screen top-0 sm-plus:top-12">
         <DialogPanel className="bg-black overflow-clip max-sm:h-full max-w-[600px] w-full h-fit sm-plus:max-h-[680px] sm-plus:rounded-2xl rounded-none relative flex flex-col">
           <DialogTitle className="font-bold h-[53px] flex-shrink-0 flex items-center px-4 sticky top-0 z-20 sm-plus:rounded-2xl rounded-none bg-black/60">
-            {isPending && (
+            {/* {isPending && (
               <Progressbar
                 isPending={isPending}
                 overallProgress={overallProgress}
                 hasFiles={files.length > 0}
                 classNames="absolute right-0 top-0 z-50"
               />
-            )}
+            )} */}
             <div className="flex justify-between w-full">
               <Button
                 onClick={() => setIsOpen(false)}
@@ -413,6 +411,7 @@ const QuoteModal = ({
                     files={files}
                     isPosting={isPosting}
                     handleRemove={handleRemove}
+                    uploadingFiles={{}}
                   />
                   {files.length > 0 && (
                     <CompactQuotePreview

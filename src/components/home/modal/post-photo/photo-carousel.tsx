@@ -3,16 +3,17 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
-import { MediaType } from "@/types";
+import { Media } from "@/types";
 import Icons from "@/components/icons";
 import Button from "@/components/ui/button";
 
 type Props = {
-  photos: MediaType[];
+  photos: Media[];
   onClose: () => void;
   setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
   isSidebarOpen: boolean;
   isMobile: boolean;
+  photoNumber: number;
 };
 
 const PhotoCarousel = ({
@@ -21,8 +22,9 @@ const PhotoCarousel = ({
   setIsSidebarOpen,
   isSidebarOpen,
   isMobile,
+  photoNumber,
 }: Props) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(photoNumber - 1);
   const [isAnimating, setIsAnimating] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
 
@@ -52,7 +54,10 @@ const PhotoCarousel = ({
   }, [currentIndex]);
 
   return (
-    <div className="w-auto h-[calc(100vh-48px)] relative overflow-hidden">
+    <div
+      className="w-auto h-[calc(100vh-48px)] relative overflow-hidden"
+      onClick={(e) => e.stopPropagation()}
+    >
       <div className="absolute top-0 left-0 p-3 z-10">
         <Button
           variant="ghost"

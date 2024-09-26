@@ -3,6 +3,7 @@ import { aliasedTable, and, desc, eq, lte, or, sql } from "drizzle-orm";
 
 import {
   likeTable,
+  mediaTable,
   postTable,
   quoteTable,
   replyTable,
@@ -28,6 +29,7 @@ export async function GET(req: NextRequest) {
 
     const ogPost = aliasedTable(postTable, "ogPost");
     const ogUser = aliasedTable(userTable, "ogUser");
+    const ogMedia = aliasedTable(mediaTable, "ogMedia");
 
     let filter = or(
       eq(postTable.postType, "post"),
@@ -47,7 +49,6 @@ export async function GET(req: NextRequest) {
           postId: postTable.id,
           postContent: postTable.content,
           postCreatedAt: postTable.createdAt,
-          postMedia: postTable.media,
           postParentPostId: postTable.parentPostId,
           postRootPostId: postTable.rootPostId,
           postType: postTable.postType,
@@ -61,7 +62,6 @@ export async function GET(req: NextRequest) {
           originalPostId: ogPost.id,
           originalPostContent: ogPost.content,
           originalPostCreatedAt: ogPost.createdAt,
-          originalPostMedia: ogPost.media,
           originalUserId: ogUser.id,
           originalUsername: ogUser.username,
           originalName: ogUser.name,
@@ -92,6 +92,54 @@ export async function GET(req: NextRequest) {
             'likeTargetId', ${likeTable.likeTargetId}
           )
 		    ) FILTER (WHERE ${likeTable.likeTargetId} IS NOT NULL)`,
+        media: sql<
+          {
+            id: string;
+            url: string;
+            size: number;
+            format: string;
+            width: number;
+            height: number;
+          }[]
+        >`
+          COALESCE(
+            json_agg(
+              json_build_object(
+                'id', ${mediaTable.id},
+                'url', ${mediaTable.url},
+                'size', ${mediaTable.size},
+                'format', ${mediaTable.format},
+                'width', ${mediaTable.width},
+                'height', ${mediaTable.height}
+              )
+            ) FILTER (WHERE ${mediaTable.id} IS NOT NULL),
+            '[]'
+          )
+        `,
+        ogMedia: sql<
+          {
+            id: string;
+            url: string;
+            size: number;
+            format: string;
+            width: number;
+            height: number;
+          }[]
+        >`
+        COALESCE(
+          json_agg(
+            json_build_object(
+              'id', ${ogMedia.id},
+              'url', ${ogMedia.url},
+              'size', ${ogMedia.size},
+              'format', ${ogMedia.format},
+              'width', ${ogMedia.width},
+              'height', ${ogMedia.height}
+            )
+          ) FILTER (WHERE ${ogMedia.id} IS NOT NULL),
+          '[]'
+        )
+      `,
       })
       .from(postTable)
       .innerJoin(userTable, eq(postTable.userId, userTable.id))
@@ -101,6 +149,8 @@ export async function GET(req: NextRequest) {
       .leftJoin(repostTable, eq(postTable.id, repostTable.repostTargetId))
       .leftJoin(quoteTable, eq(postTable.id, quoteTable.quoteTargetId))
       .leftJoin(likeTable, eq(postTable.id, likeTable.likeTargetId))
+      .leftJoin(mediaTable, eq(postTable.id, mediaTable.postId))
+      .leftJoin(ogMedia, eq(ogPost.id, ogMedia.postId))
       .where(filter)
       .groupBy(
         postTable.id,
@@ -111,7 +161,6 @@ export async function GET(req: NextRequest) {
         ogPost.id,
         ogPost.content,
         ogPost.createdAt,
-        ogPost.media,
         ogUser.id,
         ogUser.name,
         ogUser.username,
@@ -119,6 +168,8 @@ export async function GET(req: NextRequest) {
       )
       .orderBy(desc(postTable.createdAt))
       .limit(pageSize);
+
+    console.log(JSON.stringify(posts));
 
     const nextCursor =
       posts.length === pageSize
