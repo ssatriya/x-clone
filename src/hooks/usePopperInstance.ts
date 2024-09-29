@@ -1,11 +1,5 @@
 import { createPopper, type Instance as PopperInstance } from "@popperjs/core";
-import {
-  Dispatch,
-  RefObject,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
+import { RefObject, useEffect, useState } from "react";
 
 const usePopperInstance = (
   referenceRef: RefObject<HTMLDivElement>,
@@ -20,6 +14,7 @@ const usePopperInstance = (
     if (referenceRef.current && tooltipRef.current) {
       const instance = createPopper(referenceRef.current, tooltipRef.current, {
         placement: "bottom",
+        strategy: "fixed",
         modifiers: [
           {
             name: "offset",

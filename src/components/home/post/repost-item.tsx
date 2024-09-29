@@ -9,7 +9,7 @@ import Linkify from "@/components/linkify";
 import PostMedia from "./media/post-media";
 import useMediaURL from "@/hooks/useMediaURL";
 import { cn, getBasePath } from "@/lib/utils";
-import { Like, Quote, Repost } from "@/types";
+import { Like, Media, Quote, Repost } from "@/types";
 import UserTooltip from "@/components/user-tooltip";
 import LikeButton from "./engagement-button/like/like-button";
 import ViewButton from "./engagement-button/view/view-button";
@@ -33,7 +33,7 @@ type Props = {
     replyCount: number;
     rootPostId: string;
     like: Like[] | null;
-    media: string | null;
+    media: Media[];
     quote: Quote[] | null;
     content: string | null;
     repost: Repost[] | null;
@@ -58,7 +58,6 @@ const RepostItem = ({
 }: Props) => {
   const pathname = usePathname();
   const router = useRouter();
-  const { newMedia } = useMediaURL(quotedPost.media);
 
   const basePath = getBasePath(pathname);
 
@@ -157,9 +156,9 @@ const RepostItem = ({
                   </Linkify>
                 </div>
               )}
-              {newMedia && newMedia.length > 0 && (
+              {quotedPost.media.length > 0 && (
                 <PostMedia
-                  mediaURLs={newMedia}
+                  mediaURLs={quotedPost.media}
                   usernameWithoutAt={quotedUser.username.slice(1)}
                   postId={quotedPost.id}
                 />

@@ -8,10 +8,11 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import { cn } from "@/lib/utils";
 import Icons from "@/components/icons";
-import { FileWithPreview } from "@/types";
+import { FileWithPreview, OptionButtonConfig } from "@/types";
 import MediaPreview from "./media-preview";
 import Button from "@/components/ui/button";
 import ButtonTooltip from "@/components/button-tooltip";
+import InputOptions from "./input-options";
 
 type Props = {
   photo: string;
@@ -54,6 +55,27 @@ const InputReply = ({
   setIsInputFocus,
   isButtonDisabled,
 }: Props) => {
+  const optionButtonConfigs: OptionButtonConfig[] = [
+    {
+      ariaLabel: "Media",
+      icon: Icons.media,
+      onClick: handleMedia,
+      disabled: files.length >= 4,
+    },
+    {
+      ariaLabel: "GIF",
+      icon: Icons.gif,
+    },
+    {
+      ariaLabel: "Emoji",
+      icon: Icons.emoji,
+    },
+    {
+      ariaLabel: "Tag Location",
+      icon: Icons.tagLocation,
+    },
+  ];
+
   return (
     <div className={cn(classNames, "flex flex-col justify-center w-full py-3")}>
       {isInputFocus && (
@@ -134,49 +156,10 @@ const InputReply = ({
                 className="hidden"
                 ref={mediaRef}
               />
-              <div className="flex -ml-[10px] py-2">
-                {/* <ButtonTooltip content="Media"> */}
-                <Button
-                  onClick={handleMedia}
-                  aria-label="Media"
-                  size="icon"
-                  variant="ghost"
-                  className="w-[34px] h-[34px] hover:bg-primary/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring"
-                >
-                  <Icons.media className="fill-primary w-5 h-5" />
-                </Button>
-                {/* </ButtonTooltip> */}
-                <ButtonTooltip content="GIF">
-                  <Button
-                    aria-label="GIF"
-                    size="icon"
-                    variant="ghost"
-                    className="w-[34px] h-[34px] hover:bg-primary/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring"
-                  >
-                    <Icons.gif className="fill-primary w-5 h-5" />
-                  </Button>
-                </ButtonTooltip>
-                <ButtonTooltip content="Emoji">
-                  <Button
-                    aria-label="Emoji"
-                    size="icon"
-                    variant="ghost"
-                    className="w-[34px] h-[34px] hover:bg-primary/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring"
-                  >
-                    <Icons.emoji className="fill-primary w-5 h-5" />
-                  </Button>
-                </ButtonTooltip>
-                <ButtonTooltip content="Tag Location">
-                  <Button
-                    aria-label="Tag Location"
-                    size="icon"
-                    variant="ghost"
-                    className="w-[34px] h-[34px] hover:bg-primary/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring"
-                  >
-                    <Icons.tagLocation className="fill-primary w-5 h-5" />
-                  </Button>
-                </ButtonTooltip>
-              </div>
+              <InputOptions
+                containerClassNames="flex -ml-[10px] py-2"
+                buttons={optionButtonConfigs}
+              />
             </motion.div>
           )}
         </AnimatePresence>

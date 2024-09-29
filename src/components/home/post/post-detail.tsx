@@ -26,7 +26,6 @@ import Linkify from "@/components/linkify";
 import PostMedia from "./media/post-media";
 import Divider from "@/components/ui/divider";
 import InputReply from "../input/input-reply";
-import useMediaURL from "@/hooks/useMediaURL";
 import AncestorPost from "../reply/ancestor-post";
 import UserTooltip from "@/components/user-tooltip";
 import DescendantPost from "../reply/descendant-post";
@@ -39,12 +38,7 @@ import LikeButton from "./engagement-button/like/like-button";
 import ReplyButton from "./engagement-button/reply/reply-button";
 import ShareButton from "./engagement-button/share/share-button";
 import RepostButton from "./engagement-button/repost/repost-button";
-import {
-  FileWithPreview,
-  ForYouFeedPost,
-  mediaFormat,
-  MediaType,
-} from "@/types";
+import { ForYouFeedPost, FileWithPreview, MediaFormat } from "@/types";
 import BookmarkButton from "./engagement-button/bookmark/bookmark-button";
 
 type Props = {
@@ -115,7 +109,7 @@ const PostDetail = ({ loggedInUser, username, postId }: Props) => {
   const onDrop = useCallback(
     (acceptedFiles: FileWithPath[], rejectedFiles: FileRejection[]) => {
       acceptedFiles.forEach(async (file) => {
-        const fileType = file.type.split("/")[1] as mediaFormat;
+        const fileType = file.type.split("/")[1] as MediaFormat;
         if (fileType == "png" || fileType == "jpeg" || fileType == "jpg") {
           try {
             const compressResult = (await compress(
@@ -444,6 +438,7 @@ const PostDetail = ({ loggedInUser, username, postId }: Props) => {
           setInputCount={setInputCount}
           submitHandler={submitHandler}
           getInputProps={getInputProps}
+          uploadingFiles={uploadingFiles}
           setIsInputFocus={setIsInputFocus}
           isButtonDisabled={isButtonDisabled}
         />

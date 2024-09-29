@@ -22,13 +22,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FileRejection, FileWithPath, useDropzone } from "react-dropzone";
 
 import {
+  Media,
   QuoteInfo,
-  MediaType,
+  MediaFormat,
   RepostInfo,
   FileWithPreview,
   OptionButtonConfig,
-  mediaFormat,
-  Media,
 } from "@/types";
 import {
   compress,
@@ -189,7 +188,7 @@ const QuoteModal = ({
   const onDrop = useCallback(
     (acceptedFiles: FileWithPath[], rejectedFiles: FileRejection[]) => {
       acceptedFiles.forEach(async (file) => {
-        const fileType = file.type.split("/")[1] as mediaFormat;
+        const fileType = file.type.split("/")[1] as MediaFormat;
         if (fileType == "png" || fileType == "jpeg" || fileType == "jpg") {
           try {
             const compressResult = (await compress(
@@ -487,7 +486,10 @@ const QuoteModal = ({
                     accept="image/png, image/gif, image/jpeg, image/jpg, video/mp4"
                     multiple
                   />
-                  <InputOptions buttons={optionButtonConfigs} />
+                  <InputOptions
+                    containerClassNames="flex items-center -ml-2 py-[3px] mt-2"
+                    buttons={optionButtonConfigs}
+                  />
                   <div className="flex items-center h-full gap-2">
                     {inputCount > 0 && (
                       <div className="flex items-center justify-center">

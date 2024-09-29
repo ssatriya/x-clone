@@ -9,7 +9,7 @@ export type FileWithPreview = {
   meta: {
     preview: string;
     id: string;
-    dimension: { height: number; width: number } | null;
+    dimension: { height: number; width: number };
     format: MediaFormat;
   };
 };
@@ -171,7 +171,7 @@ export interface CustomPost {
   parentPostId: string | null;
   rootPostId: string;
   createdAt: Date;
-  postMedia: string | null;
+  media: Media[];
   postType: string;
   username: string;
   userId: string;
@@ -183,7 +183,7 @@ export interface CustomPost {
   originalPostId: string;
   originalPostContent: string;
   originalPostCreatedAt: Date;
-  originalPostMedia: string | null;
+  originalMedia: Media[];
   originalUserId: string;
   originalUsername: string;
   originalName: string;
@@ -211,7 +211,7 @@ export type UserSession =
 
 export type ProfilePostMedia = {
   id: string;
-  media: string;
+  media: Media[];
   postCreatedAt: Date;
 };
 
@@ -285,3 +285,13 @@ export interface Notification {
   createdAt: Date;
   recipientUsername: string | null;
 }
+
+export type InitialNotification = {
+  id: string;
+  read: boolean;
+  postId: string | null;
+  issuerId: string;
+  createdAt: string | Date;
+  recipientId: string;
+  notificationType: string | NotificationType;
+};

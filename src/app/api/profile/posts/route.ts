@@ -51,7 +51,6 @@ export async function GET(req: NextRequest) {
         post.parent_post_id AS "parentPostId",
         post.root_post_id AS "rootPostId",
         post.created_at AS "createdAt",
-        post.media AS "postMedia",
         post.post_type AS "postType",
         "user".id AS "userId",
         "user".username,
@@ -64,7 +63,6 @@ export async function GET(req: NextRequest) {
         ogPost.id AS "originalPostId",
         ogPost.content AS "originalPostContent",
         ogPost.created_at AS "originalPostCreatedAt",
-        ogPost.media AS "originalPostMedia",
         ogUser.id AS "originalUserId",
         ogUser.username AS "originalUsername",
         ogUser.name AS "originalName",
@@ -95,7 +93,6 @@ export async function GET(req: NextRequest) {
         post.parent_post_id AS "parentPostId",
         post.root_post_id AS "rootPostId",
         post.created_at AS "createdAt",
-        post.media AS "postMedia",
         post.post_type AS "postType",
         "user".id AS "userId",
         "user".username,
@@ -107,7 +104,6 @@ export async function GET(req: NextRequest) {
         ogPost.id AS "originalPostId",
         ogPost.content AS "originalPostContent",
         ogPost.created_at AS "originalPostCreatedAt",
-        ogPost.media AS "originalPostMedia",
         ogUser.id AS "originalUserId",
         ogUser.username AS "originalUsername",
         ogUser.name AS "originalName",
@@ -134,7 +130,6 @@ export async function GET(req: NextRequest) {
       ph."parentPostId",
       ph."rootPostId",
       ph."createdAt",
-      ph."postMedia",
       ph."postType",
       ph."userId",
       ph.username,
@@ -147,7 +142,6 @@ export async function GET(req: NextRequest) {
       ph."originalPostId",
       ph."originalPostContent",
       ph."originalPostCreatedAt",
-      ph."originalPostMedia",
       ph."originalUserId",
       ph."originalUsername",
       ph."originalName",
@@ -184,6 +178,33 @@ export async function GET(req: NextRequest) {
         )
       FROM "like"
       WHERE "like".like_target_id = ph."postId") AS "like",
+      COALESCE(
+        json_agg(
+          DISTINCT jsonb_build_object(
+            'id', media.id,
+            'url', media.url,
+            'size', media.size,
+            'format', media.format,
+            'width', media.width,
+            'height', media.height
+          )
+        ) FILTER (WHERE media.id IS NOT NULL),
+        '[]'
+      ) AS media,
+      -- Aggregated media for the original post
+      COALESCE(
+        json_agg(
+          DISTINCT jsonb_build_object(
+            'id', ogMedia.id,
+            'url', ogMedia.url,
+            'size', ogMedia.size,
+            'format', ogMedia.format,
+            'width', ogMedia.width,
+            'height', ogMedia.height
+          )
+        ) FILTER (WHERE ogMedia.id IS NOT NULL),
+        '[]'
+      ) AS "originalMedia",
       -- Aggregated JSON arrays for original post
       (SELECT json_agg(
           DISTINCT jsonb_build_object(
@@ -229,6 +250,8 @@ export async function GET(req: NextRequest) {
       LEFT JOIN repost AS ogRepost ON ph."originalPostId" = ogRepost.repost_target_id
       LEFT JOIN "like" AS ogLike ON ph."originalPostId" = ogLike.like_target_id
       LEFT JOIN quote AS ogQuote ON ph."originalPostId" = ogQuote.quote_target_id
+      LEFT JOIN media ON media.post_id = ph."postId"
+      LEFT JOIN media AS ogMedia ON ogMedia.post_id = ph."originalPostId"
     WHERE COALESCE(${decodedCursor}::timestamp, NULL) IS NULL OR ph."createdAt" < ${decodedCursor}::timestamp
     GROUP BY
       ph."postId",
@@ -242,14 +265,12 @@ export async function GET(req: NextRequest) {
       ph."originalPostId",
       ph."originalRootPostId",
       ph."postContent",
-      ph."postMedia",
       ph."postType",
       ph.username,
       ph.name,
       ph.photo,
       ph."originalPostContent",
       ph."originalPostCreatedAt",
-      ph."originalPostMedia",
       ph."originalUserId",
       ph."originalUsername",
       ph."originalName",

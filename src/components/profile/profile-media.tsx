@@ -7,7 +7,7 @@ import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
 import kyInstance from "@/lib/ky";
 import Icons from "@/components/icons";
 import { formatDuration } from "@/lib/utils";
-import { MediaType, ProfilePostMedia } from "@/types";
+import { MediaFormat, ProfilePostMedia } from "@/types";
 import InfiniteScrollContainer from "@/components/infinite-scroll-container";
 
 type Props = {
@@ -81,21 +81,23 @@ const ProfileMedia = ({ username }: Props) => {
         }}
       >
         {!isLoading &&
-          media.map((m) => {
-            const parsedMedia: MediaType[] = JSON.parse(m.media);
-            const fileType = parsedMedia[0].type.split("/")[0] as
-              | "image"
-              | "video";
+          media?.map((m) => {
+            const fileType = m.media[0].format as MediaFormat;
 
-            const postURL = `/${username}/status/${m.id}/${
-              fileType === "image" ? "photo" : fileType
+            const photoType =
+              fileType === "jpeg" || fileType === "jpg" || fileType === "png";
+            const GIFType = fileType === "gif";
+
+            const postModal = `/${username}/status/${m.id}/${
+              photoType ? "photo" : fileType
             }/1`;
+            const postDetail = `/${username}/status/${m.id}`;
 
-            if (fileType === "image") {
-              if (parsedMedia.length > 1) {
+            if (photoType) {
+              if (m.media.length > 1) {
                 return (
                   <Link
-                    href={postURL}
+                    href={postModal}
                     key={m.id}
                     style={{
                       aspectRatio: 1 / 1,
@@ -105,7 +107,7 @@ const ProfileMedia = ({ username }: Props) => {
                     {/* eslint-disable @next/next/no-img-element */}
                     <img
                       src={`https://wsrv.nl/?url=${
-                        parsedMedia[0].url
+                        m.media[0].url
                       }&w=${500}&output=jpeg`}
                       alt="img"
                       className="h-full w-full object-cover"
@@ -116,7 +118,7 @@ const ProfileMedia = ({ username }: Props) => {
               } else {
                 return (
                   <Link
-                    href={postURL}
+                    href={postModal}
                     key={m.id}
                     style={{
                       aspectRatio: 1 / 1,
@@ -124,11 +126,72 @@ const ProfileMedia = ({ username }: Props) => {
                   >
                     <img
                       src={`https://wsrv.nl/?url=${
-                        parsedMedia[0].url
+                        m.media[0].url
                       }&w=${500}&output=jpeg`}
                       alt="img"
                       className="h-full w-full object-cover"
                     />
+                  </Link>
+                );
+              }
+            } else if (GIFType) {
+              if (m.media.length > 1) {
+                return (
+                  <Link
+                    href={postDetail}
+                    key={m.id}
+                    style={{
+                      aspectRatio: 1 / 1,
+                    }}
+                    className="relative"
+                  >
+                    <video
+                      style={{ opacity: isLoading ? 0 : 100 }}
+                      className="object-cover h-full w-full focus-visible:outline-none"
+                      preload="metadata"
+                      ref={videoRef}
+                      onLoadedMetadata={handleLoadedMetadata}
+                    >
+                      <source src={m.media[0].url} />
+                    </video>
+                    <div
+                      className="absolute bottom-2 left-2 bg-black/70 h-5 flex items-center justify-center px-2.5 rounded-[4px]"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                    >
+                      <span className="text-xs leading-3 font-bold">GIF</span>
+                    </div>
+                    <Icons.multiFile className="h-5 w-5 fill-white absolute right-2 bottom-2" />
+                  </Link>
+                );
+              } else {
+                return (
+                  <Link
+                    href={postDetail}
+                    key={m.id}
+                    style={{
+                      aspectRatio: 1 / 1,
+                      position: "relative",
+                    }}
+                  >
+                    <video
+                      style={{ opacity: isLoading ? 0 : 100 }}
+                      className="object-cover h-full w-full focus-visible:outline-none"
+                      preload="metadata"
+                      ref={videoRef}
+                      onLoadedMetadata={handleLoadedMetadata}
+                    >
+                      <source src={m.media[0].url} />
+                    </video>
+                    <div
+                      className="absolute bottom-2 left-2 bg-black/70 h-5 flex items-center justify-center px-2.5 rounded-[4px]"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                    >
+                      <span className="text-xs leading-3 font-bold">GIF</span>
+                    </div>
                   </Link>
                 );
               }
@@ -138,10 +201,10 @@ const ProfileMedia = ({ username }: Props) => {
 
               const isLoading = !videoDuration[currentVideoIndex];
 
-              if (parsedMedia.length > 1) {
+              if (m.media.length > 1) {
                 return (
                   <Link
-                    href={postURL}
+                    href={postDetail}
                     key={m.id}
                     style={{
                       aspectRatio: 1 / 1,
@@ -160,12 +223,12 @@ const ProfileMedia = ({ username }: Props) => {
                       ref={videoRef}
                       onLoadedMetadata={handleLoadedMetadata}
                     >
-                      <source src={parsedMedia[0].url} />
+                      <source src={m.media[0].url} />
                     </video>
                     <Icons.multiFile className="h-5 w-5 fill-white absolute right-2 bottom-2" />
                     <div
                       style={{ opacity: isLoading ? 0 : 100 }}
-                      className="h-fit px-2 leading-3 bg-black/70 rounded-md absolute bottom-2 left-2"
+                      className="h-fit px-2 leading-3 bg-black/70 rounded-[4px] absolute bottom-2 left-2"
                     >
                       <span className="text-sm">
                         {formatDuration(videoDuration[currentVideoIndex])}
@@ -176,7 +239,7 @@ const ProfileMedia = ({ username }: Props) => {
               } else {
                 return (
                   <Link
-                    href={postURL}
+                    href={postDetail}
                     key={m.id}
                     style={{
                       aspectRatio: 1 / 1,
@@ -196,11 +259,11 @@ const ProfileMedia = ({ username }: Props) => {
                       ref={videoRef}
                       onLoadedMetadata={handleLoadedMetadata}
                     >
-                      <source src={parsedMedia[0].url} />
+                      <source src={m.media[0].url} />
                     </video>
                     <div
                       style={{ opacity: isLoading ? 0 : 100 }}
-                      className="h-fit px-2 leading-3 bg-black/70 rounded-md absolute bottom-2 left-2"
+                      className="h-fit px-2 leading-3 bg-black/70 rounded-[4px] absolute bottom-2 left-2"
                     >
                       <span className="text-sm">
                         {formatDuration(videoDuration[currentVideoIndex])}

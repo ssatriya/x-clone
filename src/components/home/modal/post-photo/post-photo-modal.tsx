@@ -18,7 +18,6 @@ import {
 import kyInstance from "@/lib/ky";
 import PostSidebar from "./post-sidebar";
 import PhotoCarousel from "./photo-carousel";
-import useMediaURL from "@/hooks/useMediaURL";
 import { CreateReplyPayload } from "@/lib/zod-schema";
 import { useUploadMedia } from "@/hooks/useUploadMedia";
 import { FileWithPreview, ForYouFeedPost, MediaFormat } from "@/types";

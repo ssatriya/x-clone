@@ -169,8 +169,6 @@ export async function GET(req: NextRequest) {
       .orderBy(desc(postTable.createdAt))
       .limit(pageSize);
 
-    console.log(JSON.stringify(posts));
-
     const nextCursor =
       posts.length === pageSize
         ? posts[posts.length - 1].post.postCreatedAt

@@ -1,15 +1,11 @@
-import Header from "@/components/header";
-import PersonalInfoWrapper from "@/components/profile/personal/personal-info-wrapper";
-import PersonalProfileInfo from "@/components/profile/personal/personal-profile-info";
-import PersonalTabsWrapper from "@/components/profile/personal/personal-tabs-wrapper";
-import PublicInfoWrapper from "@/components/profile/public/public-info-wrapper";
-import PublicTabsWrapper from "@/components/profile/public/public-tabs-wrapper";
-import { validateRequest } from "@/lib/auth/validate-request";
-import db from "@/lib/db";
-import { postTable, userTable } from "@/lib/db/schema";
+import { PropsWithChildren } from "react";
 import { redirect } from "next/navigation";
 
-import { PropsWithChildren } from "react";
+import { validateRequest } from "@/lib/auth/validate-request";
+import PublicInfoWrapper from "@/components/profile/public/public-info-wrapper";
+import PublicTabsWrapper from "@/components/profile/public/public-tabs-wrapper";
+import PersonalTabsWrapper from "@/components/profile/personal/personal-tabs-wrapper";
+import PersonalInfoWrapper from "@/components/profile/personal/personal-info-wrapper";
 
 type Props = {
   params: { username: string };
@@ -26,7 +22,7 @@ export default async function Layout({
   const isOwnProfile = loggedInUser.username === `@${username}`;
 
   return (
-    <div className="relative border-x w-full" style={{ height: "1200%" }}>
+    <div className="relative border-x w-full" style={{ height: "800%" }}>
       {isOwnProfile && (
         <>
           <PersonalInfoWrapper username={username} />

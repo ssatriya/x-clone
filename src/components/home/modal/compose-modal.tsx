@@ -376,7 +376,10 @@ const ComposeModal = ({ loggedInUser }: Props) => {
                     accept="image/png, image/gif, image/jpeg, image/jpg, video/mp4"
                     multiple
                   />
-                  <InputOptions buttons={optionButtonConfigs} />
+                  <InputOptions
+                    containerClassNames="flex items-center -ml-2 py-[3px] mt-2"
+                    buttons={optionButtonConfigs}
+                  />
                   <div className="flex items-center h-full gap-2">
                     {inputCount > 0 && (
                       <div className="flex items-center justify-center">

@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { and, eq } from "drizzle-orm";
+import { Toaster } from "react-hot-toast";
 import { redirect } from "next/navigation";
 
 import db from "@/lib/db";
@@ -48,6 +49,7 @@ export default async function Layout({
           aria-label="Home timeline"
           tabIndex={0}
         >
+          <Toaster />
           {children}
           {composeModal}
           {postPhotoModal}

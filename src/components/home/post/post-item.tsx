@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 import PostInfo from "./post-info";
 import Linkify from "@/components/linkify";
 import PostMedia from "./media/post-media";
-import useMediaURL from "@/hooks/useMediaURL";
 import Divider from "@/components/ui/divider";
 import { Like, Media, Quote, Repost } from "@/types";
 import LikeButton from "./engagement-button/like/like-button";
@@ -15,7 +14,6 @@ import ReplyButton from "./engagement-button/reply/reply-button";
 import ShareButton from "./engagement-button/share/share-button";
 import RepostButton from "./engagement-button/repost/repost-button";
 import BookmarkButton from "./engagement-button/bookmark/bookmark-button";
-import { MediaTable } from "@/lib/db/schema";
 
 type Props = {
   loggedInUser: User;

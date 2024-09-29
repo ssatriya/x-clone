@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { toast } from "react-hot-toast";
 import TextareaAutosize from "react-textarea-autosize";
 import { AnimatePresence, motion } from "framer-motion";
 import { generateIdFromEntropySize, User } from "lucia";
@@ -34,7 +35,8 @@ type Props = {
 
 const PostInput = ({ loggedInUser }: Props) => {
   const queryClient = useQueryClient();
-  const { startUpload, uploadingFiles, insertedMediaId } = useUploadMedia();
+  const { startUpload, uploadingFiles, insertedMediaId, setInsertedMediaId } =
+    useUploadMedia();
 
   const mediaRef = useRef<HTMLInputElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -57,6 +59,7 @@ const PostInput = ({ loggedInUser }: Props) => {
       setFiles([]);
       setIsInputFocus(false);
       setIsPending(false);
+      setInsertedMediaId([]);
     },
   });
 
@@ -127,7 +130,12 @@ const PostInput = ({ loggedInUser }: Props) => {
             setFiles((prev) => [...(prev ?? []), fileWithPreview]);
             await startUpload(fileWithPreview);
           } catch (error) {
-            console.error(error);
+            if (error) {
+              toast.error("Failed to upload GIF, try again later.", {
+                position: "bottom-center",
+              });
+              console.error(error);
+            }
           }
         }
         if (fileType == "mp4") {
@@ -244,7 +252,7 @@ const PostInput = ({ loggedInUser }: Props) => {
       {isPending && (
         <div className="absolute inset-0 z-40 bg-black/60 right-[1px] top-[1px]" />
       )}
-      <div className="relative flex gap-2 justify-between px-4 pb-2 overflow-y-hidden">
+      <div className="relative flex gap-2 justify-between px-4 pb-2 overflow-hidden">
         <div className="pt-3 h-fit relative">
           <Link
             href={`/${loggedInUser.username.slice(1)}`}
@@ -318,7 +326,10 @@ const PostInput = ({ loggedInUser }: Props) => {
                   accept="image/png, image/gif, image/jpeg, image/jpg, video/mp4"
                   multiple
                 />
-                <InputOptions buttons={optionButtonConfigs} />
+                <InputOptions
+                  containerClassNames="flex items-center -ml-2 py-[3px] mt-2"
+                  buttons={optionButtonConfigs}
+                />
                 <div className="flex items-center h-full">
                   {inputCount > 0 && (
                     <div className="flex items-center justify-center mt-2">

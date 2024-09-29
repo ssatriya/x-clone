@@ -1,11 +1,16 @@
 "use client";
 
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
-import { cn } from "@/lib/utils";
 import { Media } from "@/types";
+import { cn } from "@/lib/utils";
 import Icons from "@/components/icons";
 import Button from "@/components/ui/button";
+import GIFPlayer from "@/components/gif-player";
+import { MediaPlayState } from "../../post/media/post-media";
+import { usePathname, useRouter } from "next/navigation";
+import ModalGIFPlayer from "./modal-gif-player";
 
 type Props = {
   photos: Media[];
@@ -24,34 +29,17 @@ const PhotoCarousel = ({
   isMobile,
   photoNumber,
 }: Props) => {
+  const router = useRouter();
+  const pathname = usePathname();
   const [currentIndex, setCurrentIndex] = useState(photoNumber - 1);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const carouselRef = useRef<HTMLDivElement>(null);
 
   const goToNext = () => {
-    if (currentIndex < photos.length - 1 && !isAnimating) {
-      setIsAnimating(true);
-      setCurrentIndex((prev) => prev + 1);
-    }
+    setCurrentIndex((prev) => prev + 1);
   };
 
   const goToPrev = () => {
-    if (currentIndex > 0 && !isAnimating) {
-      setIsAnimating(true);
-      setCurrentIndex((prev) => prev - 1);
-    }
+    setCurrentIndex((prev) => prev - 1);
   };
-
-  useEffect(() => {
-    if (carouselRef.current) {
-      carouselRef.current.style.transition = "transform 0.3s ease-in-out";
-      carouselRef.current.style.transform = `translateX(-${
-        currentIndex * 100
-      }%)`;
-      const timer = setTimeout(() => setIsAnimating(false), 300);
-      return () => clearTimeout(timer);
-    }
-  }, [currentIndex]);
 
   return (
     <div
@@ -142,22 +130,26 @@ const PhotoCarousel = ({
         )}
       </div>
 
-      <div
-        className="flex h-full transition-transform duration-300 ease-in-out"
-        ref={carouselRef}
-      >
-        {photos.map((image, index) => (
-          <div key={index} className="w-full h-full flex-shrink-0">
+      <div className="h-full w-full flex items-center justify-center">
+        {photos[currentIndex].format === "gif" && (
+          <div key={currentIndex} className="w-fit h-fit flex-shrink-0">
+            <ModalGIFPlayer src={photos[currentIndex].url} />
+          </div>
+        )}
+        {photos[currentIndex].format !== "gif" && (
+          <div key={currentIndex} className="w-full h-full flex-shrink-0">
             <div className="h-full w-full flex items-center justify-center">
-              {/* eslint-disable @next/next/no-img-element */}
-              <img
-                src={`https://wsrv.nl/?url=${image.url}&h=${1200}&output=jpeg`}
-                alt={`Photo ${index + 1}`}
-                className="max-h-full max-w-full object-contain"
+              <Image
+                src={photos[currentIndex].url}
+                width={photos[currentIndex].width}
+                height={photos[currentIndex].height}
+                priority
+                alt="media preview"
+                className="object-cover"
               />
             </div>
           </div>
-        ))}
+        )}
       </div>
     </div>
   );

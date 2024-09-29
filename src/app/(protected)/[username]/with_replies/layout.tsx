@@ -1,10 +1,11 @@
-import PersonalInfoWrapper from "@/components/profile/personal/personal-info-wrapper";
-import PersonalTabsWrapper from "@/components/profile/personal/personal-tabs-wrapper";
+import { PropsWithChildren } from "react";
+import { redirect } from "next/navigation";
+
+import { validateRequest } from "@/lib/auth/validate-request";
 import PublicInfoWrapper from "@/components/profile/public/public-info-wrapper";
 import PublicTabsWrapper from "@/components/profile/public/public-tabs-wrapper";
-import { validateRequest } from "@/lib/auth/validate-request";
-import { redirect } from "next/navigation";
-import { PropsWithChildren } from "react";
+import PersonalInfoWrapper from "@/components/profile/personal/personal-info-wrapper";
+import PersonalTabsWrapper from "@/components/profile/personal/personal-tabs-wrapper";
 
 type Props = {
   params: { username: string };
@@ -21,7 +22,7 @@ export default async function Layout({
   const isOwnProfile = loggedInUser.username === `@${username}`;
 
   return (
-    <div className="relative border-x min-h-screen">
+    <div className="relative border-x min-h-screen" style={{ height: "800%" }}>
       {isOwnProfile && (
         <>
           <PersonalInfoWrapper username={username} />

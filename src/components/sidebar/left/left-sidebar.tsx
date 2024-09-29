@@ -12,20 +12,10 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import kyInstance from "@/lib/ky";
 import Icons from "@/components/icons";
 import SidebarItem from "./sidebar-item";
-import { NotificationType } from "@/types";
+import { InitialNotification, NotificationType } from "@/types";
 import Button from "@/components/ui/button";
 import { logout } from "@/app/actions/logout";
 import { supabase } from "@/lib/supabase/client";
-
-type InitialNotification = {
-  id: string;
-  read: boolean;
-  postId: string | null;
-  issuerId: string;
-  createdAt: string | Date;
-  recipientId: string;
-  notificationType: string | NotificationType;
-};
 
 type Props = {
   user: User;

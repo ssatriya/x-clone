@@ -63,7 +63,6 @@ export async function GET(req: NextRequest) {
             post.parent_post_id AS "parentPostId",
             post.root_post_id AS "rootPostId",
             post.created_at AS "createdAt",
-            post.media AS "postMedia",
             post.post_type AS "postType",
             "user".id AS "userId",
             "user".username,
@@ -75,7 +74,6 @@ export async function GET(req: NextRequest) {
             COALESCE(post.original_post_id, post.id) AS "displayPostId",
             ogPost.content AS "originalPostContent",
             ogPost.created_at AS "originalPostCreatedAt",
-            ogPost.media AS "originalPostMedia",
             ogUser.id AS "originalUserId",
             ogUser.username AS "originalUsername",
             ogUser.name AS "originalName",
@@ -95,7 +93,8 @@ export async function GET(req: NextRequest) {
             JOIN conversation_roots cr ON post.id = cr.root_id
             LEFT JOIN post AS ogPost ON post.original_post_id = ogPost.id
             LEFT JOIN "user" AS ogUser ON ogPost.user_id = ogUser.id
-          
+            LEFT JOIN media ON media.post_id = post.id
+            LEFT JOIN media AS ogMedia ON ogMedia.post_id = post.original_post_id
           UNION ALL
           
           SELECT
@@ -104,7 +103,6 @@ export async function GET(req: NextRequest) {
             post.parent_post_id AS "parentPostId",
             post.root_post_id AS "rootPostId",
             post.created_at AS "createdAt",
-            post.media AS "postMedia",
             post.post_type AS "postType",
             "user".id AS "userId",
             "user".username,
@@ -116,7 +114,6 @@ export async function GET(req: NextRequest) {
             COALESCE(post.original_post_id, post.id) AS "displayPostId",
             ogPost.content AS "originalPostContent",
             ogPost.created_at AS "originalPostCreatedAt",
-            ogPost.media AS "originalPostMedia",
             ogUser.id AS "originalUserId",
             ogUser.username AS "originalUsername",
             ogUser.name AS "originalName",
@@ -152,7 +149,6 @@ export async function GET(req: NextRequest) {
         ph."parentPostId",
         ph."rootPostId",
         ph."createdAt",
-        ph."postMedia",
         ph."postType",
         ph."userId",
         ph.username,
@@ -164,7 +160,6 @@ export async function GET(req: NextRequest) {
         ph."displayPostId" AS "originalPostId",
         ph."originalPostContent",
         ph."originalPostCreatedAt",
-        ph."originalPostMedia",
         ph."originalUserId",
         ph."originalUsername",
         ph."originalName",
@@ -278,6 +273,36 @@ export async function GET(req: NextRequest) {
           WHERE
             ogLike.like_target_id = ph."displayPostId"
         ) AS "originalLike",
+        (
+          SELECT COALESCE(json_agg(
+            DISTINCT jsonb_build_object(
+              'id', media.id,
+              'url', media.url,
+              'size', media.size,
+              'format', media.format,
+              'width', media.width,
+              'height', media.height
+            )
+          ) FILTER (WHERE media.id IS NOT NULL), '[]'::json)
+          FROM media
+          WHERE media.post_id = ph."postId"
+        ) AS media,
+        (
+          SELECT COALESCE(json_agg(
+            DISTINCT jsonb_build_object(
+              'id', ogMedia.id,
+              'url', ogMedia.url,
+              'size', ogMedia.size,
+              'format', ogMedia.format,
+              'width', ogMedia.width,
+              'height', ogMedia.height
+            )
+          ) FILTER (
+            WHERE ogMedia.id IS NOT NULL AND ph."displayPostId" != ph."postId"
+          ), '[]'::json)
+          FROM media AS ogMedia
+          WHERE ogMedia.post_id = ph."displayPostId"
+        ) AS "originalMedia",
         (SELECT COUNT(*) FROM reply WHERE reply.reply_target_id = ph."postId") AS "replyCount",
         (SELECT COUNT(*) FROM reply WHERE reply.reply_target_id = ph."displayPostId") AS "originalReplyCount"
       FROM

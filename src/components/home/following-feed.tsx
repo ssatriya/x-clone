@@ -50,20 +50,20 @@ const FollowingFeed = ({ loggedInUser }: Props) => {
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, []);
 
-  const lastPostId = posts[0] && posts[0].postId;
+  // const lastPostId = posts[0] && posts[0].postId;
 
-  const { data: newCount } = useQuery({
-    queryKey: ["check-new-post-following", lastPostId],
-    queryFn: () =>
-      kyInstance
-        .get("/api/post/check", {
-          searchParams: {
-            postId: lastPostId,
-          },
-        })
-        .json<{ count: number }>(),
-    enabled: lastPostId !== undefined,
-  });
+  // const { data: newCount } = useQuery({
+  //   queryKey: ["check-new-post-following", lastPostId],
+  //   queryFn: () =>
+  //     kyInstance
+  //       .get("/api/post/check", {
+  //         searchParams: {
+  //           postId: lastPostId,
+  //         },
+  //       })
+  //       .json<{ count: number }>(),
+  //   enabled: lastPostId !== undefined,
+  // });
 
   if (isLoading) {
     return (
@@ -98,7 +98,7 @@ const FollowingFeed = ({ loggedInUser }: Props) => {
                   like: post.like,
                   quote: post.quote,
                   repost: post.repost,
-                  media: post.postMedia,
+                  media: post.media,
                   postType: post.postType,
                   content: post.postContent,
                   createdAt: post.createdAt,
@@ -127,7 +127,7 @@ const FollowingFeed = ({ loggedInUser }: Props) => {
                   like: post.like,
                   quote: post.quote,
                   repost: post.repost,
-                  media: post.postMedia,
+                  media: post.media,
                   postType: post.postType,
                   content: post.postContent,
                   createdAt: post.createdAt,
@@ -156,7 +156,7 @@ const FollowingFeed = ({ loggedInUser }: Props) => {
                   like: post.like,
                   quote: post.quote,
                   repost: post.repost,
-                  media: post.postMedia,
+                  media: post.media,
                   postType: post.postType,
                   content: post.postContent,
                   createdAt: post.createdAt,
@@ -172,7 +172,7 @@ const FollowingFeed = ({ loggedInUser }: Props) => {
                 }}
                 quotedPost={{
                   id: post.originalPostId,
-                  media: post.originalPostMedia,
+                  media: post.originalMedia,
                   content: post.originalPostContent,
                   createdAt: post.originalPostCreatedAt,
                 }}
@@ -203,7 +203,7 @@ const FollowingFeed = ({ loggedInUser }: Props) => {
                   like: post.originalLike,
                   quote: post.originalQuote,
                   repost: post.originalRepost,
-                  media: post.originalPostMedia,
+                  media: post.media,
                   content: post.originalPostContent,
                   replyCount: post.originalReplyCount,
                   rootPostId: post.originalRootPostId,

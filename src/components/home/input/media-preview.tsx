@@ -48,7 +48,7 @@ const MediaPreview = ({
             fill={files.length === 3 && i === 0}
             handleRemove={handleRemove}
             isPosting={isPosting}
-            isUploading={isUploading}
+            isUploading={false}
           />
         );
       })}

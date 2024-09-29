@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { generateIdFromEntropySize } from "lucia";
 
+import kyInstance from "@/lib/ky";
 import { FileWithPreview } from "@/types";
 import { supabase } from "@/lib/supabase/client";
-import kyInstance from "@/lib/ky";
 import { CreateMediaSchema } from "@/lib/zod-schema";
 
 const bucketName = process.env.NEXT_PUBLIC_BUCKETNAME!;
@@ -49,6 +49,14 @@ const uploadFile = async (file: File) => {
   }
 };
 
+const blobToFile = (theBlob: Blob, fileName: string): File => {
+  const b: any = theBlob;
+  b.lastModifiedDate = new Date();
+  b.name = fileName;
+
+  return theBlob as File;
+};
+
 export const useUploadMedia = () => {
   const [uploadingFiles, setUploadingFiles] = useState<{
     [id: string]: boolean;
@@ -61,48 +69,94 @@ export const useUploadMedia = () => {
 
     try {
       if (file.meta.format === "gif") {
-        const uploadPath = await uploadFile(file.file);
-        if (uploadPath) {
-          const { data: publicUrlData } = supabase.storage
-            .from(bucketName)
-            .getPublicUrl(uploadPath as string);
-          const url = `https://wsrv.nl/?url=${publicUrlData.publicUrl}&output=gif&n=-1`;
+        const formData = new FormData();
+        formData.append("file", file.file); // 'file' should match the field used in the server
 
-          fetch(url)
-            .then((res) => res.blob())
-            .then(async (blob) => {
-              const gifFile = new File([blob], "image.gif", {
-                type: "image/gif",
-              });
+        try {
+          const response = await fetch("http://localhost:4000/api/upload", {
+            method: "POST",
+            body: formData,
+          });
 
-              const uploadNewGif = await uploadFile(gifFile);
-              const { data: newData } = supabase.storage
-                .from(bucketName)
-                .getPublicUrl(uploadNewGif as string);
+          if (!response.ok) {
+            throw new Error("failed to convert");
+          }
 
-              const payload: CreateMediaSchema = {
-                format: file.meta.format,
-                height: file.meta.dimension?.height || 0,
-                width: file.meta.dimension?.width || 0,
-                size: gifFile.size,
-                key: uploadNewGif as string,
-                url: newData.publicUrl,
-              };
+          const blob = await response.blob();
+          const mp4File = blobToFile(blob, "convertedGIF");
 
-              const returningId = await kyInstance
-                .post("/api/post/media", {
-                  body: JSON.stringify(payload),
-                })
-                .json<{ id: string }>();
+          const uploadPath = await uploadFile(mp4File);
 
-              setInsertedMediaId((prev) => [returningId.id, ...prev]);
-              setUploadingFiles((prev) => ({ ...prev, [fileId]: false }));
-            })
-            .catch((error) => {
-              console.error("Error fetching or creating file:", error);
-              setUploadingFiles((prev) => ({ ...prev, [fileId]: false }));
-            });
+          if (uploadPath) {
+            const { data: publicUrlData } = supabase.storage
+              .from(bucketName)
+              .getPublicUrl(uploadPath as string);
+
+            const payload: CreateMediaSchema = {
+              format: file.meta.format,
+              height: file.meta.dimension.height,
+              width: file.meta.dimension.width,
+              size: mp4File.size,
+              key: uploadPath as string,
+              url: publicUrlData.publicUrl,
+            };
+
+            const returningId = await kyInstance
+              .post("/api/post/media", {
+                body: JSON.stringify(payload),
+              })
+              .json<{ id: string }>();
+
+            setInsertedMediaId((prev) => [returningId.id, ...prev]);
+            setUploadingFiles((prev) => ({ ...prev, [fileId]: false }));
+          }
+        } catch (error) {
+          setUploadingFiles((prev) => ({ ...prev, [fileId]: false }));
+          console.error("Error uploading or converting GIF:", error);
+          throw error;
         }
+        // const uploadPath = await uploadFile(file.file);
+        // if (uploadPath) {
+        //   const { data: publicUrlData } = supabase.storage
+        //     .from(bucketName)
+        //     .getPublicUrl(uploadPath as string);
+        //   const url = `https://wsrv.nl/?url=${publicUrlData.publicUrl}&output=gif&n=-1`;
+
+        //   fetch(url)
+        //     .then((res) => res.blob())
+        //     .then(async (blob) => {
+        //       const gifFile = new File([blob], "image.gif", {
+        //         type: "image/gif",
+        //       });
+
+        //       const uploadNewGif = await uploadFile(gifFile);
+        //       const { data: newData } = supabase.storage
+        //         .from(bucketName)
+        //         .getPublicUrl(uploadNewGif as string);
+
+        //       const payload: CreateMediaSchema = {
+        //         format: file.meta.format,
+        //         height: file.meta.dimension?.height || 0,
+        //         width: file.meta.dimension?.width || 0,
+        //         size: gifFile.size,
+        //         key: uploadNewGif as string,
+        //         url: newData.publicUrl,
+        //       };
+
+        //       const returningId = await kyInstance
+        //         .post("/api/post/media", {
+        //           body: JSON.stringify(payload),
+        //         })
+        //         .json<{ id: string }>();
+
+        //       setInsertedMediaId((prev) => [returningId.id, ...prev]);
+        //       setUploadingFiles((prev) => ({ ...prev, [fileId]: false }));
+        //     })
+        //     .catch((error) => {
+        //       console.error("Error fetching or creating file:", error);
+        //       setUploadingFiles((prev) => ({ ...prev, [fileId]: false }));
+        //     });
+        // }
       } else {
         const uploadPath = await uploadFile(file.file);
         if (uploadPath) {
@@ -132,9 +186,9 @@ export const useUploadMedia = () => {
     } catch (error) {
       console.error("Error during file upload:", error);
       setUploadingFiles((prev) => ({ ...prev, [fileId]: false }));
-      return null;
+      throw error;
     }
   };
 
-  return { startUpload, uploadingFiles, insertedMediaId };
+  return { startUpload, uploadingFiles, insertedMediaId, setInsertedMediaId };
 };
