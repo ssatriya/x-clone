@@ -2,6 +2,7 @@ import { validateRequest } from "@/lib/auth/validate-request";
 import db from "@/lib/db";
 import {
   likeTable,
+  mediaTable,
   postTable,
   quoteTable,
   replyTable,
@@ -53,10 +54,11 @@ export async function GET(req: NextRequest) {
 
     const ogPost = aliasedTable(postTable, "ogPost");
     const ogUser = aliasedTable(userTable, "ogUser");
-    const ogReply = aliasedTable(replyTable, "ogReply");
     const ogLike = aliasedTable(likeTable, "ogLike");
-    const ogRepost = aliasedTable(repostTable, "ogRepost");
+    const ogReply = aliasedTable(replyTable, "ogReply");
+    const ogMedia = aliasedTable(mediaTable, "ogMedia");
     const ogQuote = aliasedTable(quoteTable, "ogQuote");
+    const ogRepost = aliasedTable(repostTable, "ogRepost");
     const likeTableAgg = aliasedTable(likeTable, "likeTableAgg");
 
     const likedPosts: Awaited<ProfilePostLikes[]> = await db
@@ -139,6 +141,54 @@ export async function GET(req: NextRequest) {
             'likeTargetId', ${likeTableAgg.likeTargetId}
           )
 		    ) FILTER (WHERE ${likeTableAgg.likeTargetId} IS NOT NULL)`,
+        media: sql<
+          {
+            id: string;
+            url: string;
+            size: number;
+            format: string;
+            width: number;
+            height: number;
+          }[]
+        >`
+          COALESCE(
+            json_agg(
+              json_build_object(
+                'id', ${mediaTable.id},
+                'url', ${mediaTable.url},
+                'size', ${mediaTable.size},
+                'format', ${mediaTable.format},
+                'width', ${mediaTable.width},
+                'height', ${mediaTable.height}
+              )
+            ) FILTER (WHERE ${mediaTable.id} IS NOT NULL),
+            '[]'
+          )
+        `,
+        ogMedia: sql<
+          {
+            id: string;
+            url: string;
+            size: number;
+            format: string;
+            width: number;
+            height: number;
+          }[]
+        >`
+        COALESCE(
+          json_agg(
+            json_build_object(
+              'id', ${ogMedia.id},
+              'url', ${ogMedia.url},
+              'size', ${ogMedia.size},
+              'format', ${ogMedia.format},
+              'width', ${ogMedia.width},
+              'height', ${ogMedia.height}
+            )
+          ) FILTER (WHERE ${ogMedia.id} IS NOT NULL),
+          '[]'
+        )
+      `,
       })
       .from(likeTable)
       .innerJoin(postTable, eq(likeTable.likeTargetId, postTable.id))
@@ -153,6 +203,8 @@ export async function GET(req: NextRequest) {
       .leftJoin(ogQuote, eq(ogQuote.quoteTargetId, ogPost.id))
       .leftJoin(ogRepost, eq(ogRepost.repostTargetId, ogPost.id))
       .leftJoin(likeTableAgg, eq(likeTableAgg.likeTargetId, postTable.id))
+      .leftJoin(mediaTable, eq(postTable.id, mediaTable.postId))
+      .leftJoin(ogMedia, eq(ogPost.id, ogMedia.postId))
       .where(filter)
       .groupBy(
         postTable.id,
@@ -163,7 +215,6 @@ export async function GET(req: NextRequest) {
         ogPost.id,
         ogPost.content,
         ogPost.createdAt,
-        // ogPost.media,
         ogUser.id,
         ogUser.name,
         ogUser.username,

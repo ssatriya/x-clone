@@ -69,7 +69,6 @@ const ProfileLikes = ({ loggedInUser, username }: Props) => {
           const {
             originalPostId,
             originalPostContent,
-            originalPostMedia,
             originalPostCreatedAt,
             originalReplyCount,
             originalLike,
@@ -91,7 +90,7 @@ const ProfileLikes = ({ loggedInUser, username }: Props) => {
                   id: p.postId,
                   content: p.postContent,
                   createdAt: p.postCreatedAt,
-                  media: p.postMedia,
+                  media: post.media,
                   parentPostId: p.parentPostId,
                   postType: p.postType,
                   rootPostId: p.postRootPostId,
@@ -118,7 +117,7 @@ const ProfileLikes = ({ loggedInUser, username }: Props) => {
                   id: p.postId,
                   content: p.postContent,
                   createdAt: p.postCreatedAt,
-                  media: p.postMedia,
+                  media: post.media,
                   parentPostId: p.parentPostId,
                   postType: p.postType,
                   rootPostId: p.postRootPostId,
@@ -145,7 +144,7 @@ const ProfileLikes = ({ loggedInUser, username }: Props) => {
                   id: p.postId,
                   like: post.like,
                   quote: post.quote,
-                  media: p.postMedia,
+                  media: post.media,
                   repost: post.repost,
                   postType: p.postType,
                   content: p.postContent,
@@ -162,7 +161,7 @@ const ProfileLikes = ({ loggedInUser, username }: Props) => {
                 }}
                 quotedPost={{
                   id: originalPostId,
-                  media: originalPostMedia,
+                  media: post.ogMedia,
                   content: originalPostContent,
                   createdAt: originalPostCreatedAt,
                 }}
@@ -191,7 +190,7 @@ const ProfileLikes = ({ loggedInUser, username }: Props) => {
                   like: originalLike,
                   quote: originalQuote,
                   repost: originalRepost,
-                  media: originalPostMedia,
+                  media: post.ogMedia,
                   content: originalPostContent,
                   replyCount: originalReplyCount,
                   rootPostId: originalRootPostId,

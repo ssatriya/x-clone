@@ -146,7 +146,7 @@ export interface ReplyContext {
   originalName: string;
   originalPhoto: string;
   originalPostContent: string;
-  originalPostMedia: string | null;
+  originalPostMedia: Media[];
   originalPostCreatedAt: Date;
   originalPostId: string;
   originalUsername: string;
@@ -221,13 +221,14 @@ export type ProfilePostLikes = {
   quote: Quote[] | null;
   repost: Repost[] | null;
   replyCount: number;
+  ogMedia: Media[];
+  media: Media[];
   post: {
     name: string;
     photo: string;
     postContent: string;
     postCreatedAt: Date;
     postId: string;
-    postMedia: string;
     postRootPostId: string;
     postOriginalPostId: string | null;
     parentPostId: string;
@@ -241,7 +242,7 @@ export type ProfilePostLikes = {
     originalPostContent: string;
     originalPostCreatedAt: Date;
     originalPostId: string;
-    originalPostMedia: string;
+
     originalUserId: string;
     originalUsername: string;
     originalReplyCount: number;
