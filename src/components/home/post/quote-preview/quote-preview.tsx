@@ -3,11 +3,10 @@
 import Link from "next/link";
 import Image from "next/image";
 
+import { Media } from "@/types";
 import { useRouter } from "next/navigation";
-import useMediaURL from "@/hooks/useMediaURL";
 import PostInfo from "@/components/home/post/post-info";
 import PostMedia from "@/components/home/post/media/post-media";
-import { Media } from "@/types";
 
 type Props = {
   post: {

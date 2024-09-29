@@ -8,8 +8,8 @@ import { cn } from "@/lib/utils";
 import PostInfo from "./post-info";
 import PostMedia from "./media/post-media";
 import Linkify from "@/components/linkify";
+import Divider from "@/components/ui/divider";
 import { Like, Media, Quote, Repost } from "@/types";
-import useMediaURL from "@/hooks/useMediaURL";
 import QuotePreview from "./quote-preview/quote-preview";
 import LikeButton from "./engagement-button/like/like-button";
 import ViewButton from "./engagement-button/view/view-button";
@@ -18,7 +18,6 @@ import ReplyButton from "./engagement-button/reply/reply-button";
 import RepostButton from "./engagement-button/repost/repost-button";
 import CompactQuotePreview from "./quote-preview/compact-post-preview";
 import BookmarkButton from "./engagement-button/bookmark/bookmark-button";
-import Divider from "@/components/ui/divider";
 
 type Props = {
   loggedInUser: User;

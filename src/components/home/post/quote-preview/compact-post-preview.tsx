@@ -2,10 +2,9 @@ import React from "react";
 import Image from "next/image";
 
 import { cn } from "@/lib/utils";
-import useMediaURL from "@/hooks/useMediaURL";
+import { Media } from "@/types";
 import CompactQuoteMedia from "./compact-post-media";
 import PostInfo from "@/components/home/post/post-info";
-import { Media } from "@/types";
 
 type Props = {
   post: {

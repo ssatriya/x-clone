@@ -7,8 +7,8 @@ import PostInfo from "./post-info";
 import Icons from "@/components/icons";
 import Linkify from "@/components/linkify";
 import PostMedia from "./media/post-media";
-import useMediaURL from "@/hooks/useMediaURL";
 import { cn, getBasePath } from "@/lib/utils";
+import Divider from "@/components/ui/divider";
 import { Like, Media, Quote, Repost } from "@/types";
 import UserTooltip from "@/components/user-tooltip";
 import LikeButton from "./engagement-button/like/like-button";
@@ -17,7 +17,6 @@ import ShareButton from "./engagement-button/share/share-button";
 import ReplyButton from "./engagement-button/reply/reply-button";
 import RepostButton from "./engagement-button/repost/repost-button";
 import BookmarkButton from "./engagement-button/bookmark/bookmark-button";
-import Divider from "@/components/ui/divider";
 
 type Props = {
   loggedInUser: User;

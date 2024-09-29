@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Media, mediaFormat, MediaType } from "@/types";
+import { Media, MediaFormat } from "@/types";
 
 type Props = {
   mediaURL: Media[];
@@ -19,7 +19,7 @@ const CompactQuoteMedia = ({ mediaURL }: Props) => {
   return (
     <div className={classNames}>
       {mediaURL.map((media, index) => {
-        const fileType = media.format as mediaFormat;
+        const fileType = media.format as MediaFormat;
 
         if (
           fileType === "jpeg" ||
