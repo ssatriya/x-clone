@@ -1,15 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { Dispatch, SetStateAction, useState } from "react";
 
 import { Media } from "@/types";
 import { cn } from "@/lib/utils";
 import Icons from "@/components/icons";
 import Button from "@/components/ui/button";
-import GIFPlayer from "@/components/gif-player";
-import { MediaPlayState } from "../../post/media/post-media";
-import { usePathname, useRouter } from "next/navigation";
 import ModalGIFPlayer from "./modal-gif-player";
 
 type Props = {
@@ -29,8 +27,6 @@ const PhotoCarousel = ({
   isMobile,
   photoNumber,
 }: Props) => {
-  const router = useRouter();
-  const pathname = usePathname();
   const [currentIndex, setCurrentIndex] = useState(photoNumber - 1);
 
   const goToNext = () => {
@@ -54,7 +50,7 @@ const PhotoCarousel = ({
             e.stopPropagation();
             onClose();
           }}
-          className="h-[34px] w-[34px] hover:bg-white/10 bg-black/60"
+          className="h-[34px] w-[34px] hover:bg-black/40 bg-black/60"
         >
           <Icons.close className="h-5 w-5 fill-secondary" />
         </Button>
@@ -65,7 +61,7 @@ const PhotoCarousel = ({
           <Button
             variant="ghost"
             size="icon"
-            className="h-[34px] w-[34px] hover:bg-white/10 bg-black/60"
+            className="h-[34px] w-[34px] hover:bg-black/40 bg-black/60"
             onClick={(e) => {
               e.stopPropagation();
             }}
@@ -82,7 +78,7 @@ const PhotoCarousel = ({
           <Button
             variant="ghost"
             size="icon"
-            className="h-[34px] w-[34px] hover:bg-white/10 bg-black/60"
+            className="h-[34px] w-[34px] hover:bg-black/40 bg-black/60"
             onClick={(e) => {
               e.stopPropagation();
               setIsSidebarOpen((prev) => !prev);
@@ -107,7 +103,7 @@ const PhotoCarousel = ({
               e.stopPropagation();
               goToPrev();
             }}
-            className="h-[34px] w-[34px] hover:bg-white/10 bg-black/60"
+            className="h-[34px] w-[34px] hover:bg-black/40 bg-black/60"
           >
             <Icons.arrowLeft className="h-5 w-5 fill-secondary" />
           </Button>
@@ -123,7 +119,7 @@ const PhotoCarousel = ({
               e.stopPropagation();
               goToNext();
             }}
-            className="h-[34px] w-[34px] hover:bg-white/10 bg-black/60"
+            className="h-[34px] w-[34px] hover:bg-black/40 bg-black/60"
           >
             <Icons.arrowRight className="h-5 w-5 fill-secondary" />
           </Button>

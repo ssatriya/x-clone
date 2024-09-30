@@ -198,10 +198,9 @@ const PostSidebar = ({
           setIsInputFocus={setIsInputFocus}
           isButtonDisabled={isButtonDisabled}
         />
-        <Divider className="bg-border h-[1px]" />
-        <div className="bg-orange-500 w-full h-10 px-4"></div>
       </div>
-      <div style={{ minHeight: "200vh", width: "355px" }}>
+      <Divider className="bg-border h-[1px]" />
+      <div style={{ minHeight: "200vh" }}>
         <DescendantPost loggedInUser={loggedInUser} postId={post.post.postId} />
       </div>
     </div>
