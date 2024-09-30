@@ -25,46 +25,53 @@ const PostInfo = ({ post, user, moreButton = true }: Props) => {
   return (
     <div className="flex justify-between items-start w-full">
       <div className="flex-1 min-w-0 mr-2">
-        <div
-          className="flex items-center overflow-hidden"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <UserTooltip username={username} userId={userId}>
-            <Link
-              href={`/${username ? username.slice(1) : ""}`}
-              className="hover:underline focus:outline-none focus:underline truncate"
-              id="name"
-            >
-              <span className="text-[15px] font-bold">{name}</span>
-            </Link>
-          </UserTooltip>
-          <span className="flex-shrink-0 w-[18px] h-[18px] ml-[2px]">
-            <Icons.verified className="fill-primary" />
-          </span>
-          <div className="flex items-center gap-1 ml-1 overflow-hidden">
+        <div className="flex items-start overflow-hidden">
+          <div className="flex items-center">
             <UserTooltip username={username} userId={userId}>
               <Link
                 href={`/${username ? username.slice(1) : ""}`}
-                tabIndex={-1}
-                id="username"
-                className="truncate"
+                className="hover:underline focus:outline-none focus:underline"
+                id="name"
               >
-                <span className="text-[15px] text-gray">{username}</span>
+                <span className="text-[15px] font-bold overflow-hidden">
+                  {name}
+                </span>
               </Link>
             </UserTooltip>
-            <span className="text-gray flex-shrink-0">·</span>
+            <span className="flex-shrink-0 w-[18px] h-[18px] ml-[2px]">
+              <Icons.verified className="fill-primary" />
+            </span>
+          </div>
+          <div className="flex items-start min-w-0 max-w-[40%] ml-1">
+            <div className="min-w-0 max-w-full overflow-hidden">
+              <UserTooltip username={username} userId={userId}>
+                <Link
+                  href={`/${username ? username.slice(1) : ""}`}
+                  tabIndex={-1}
+                  id="username"
+                  className="truncate block"
+                >
+                  <span className="text-[15px] text-gray truncate">
+                    {username}
+                  </span>
+                </Link>
+              </UserTooltip>
+            </div>
+            <span className="text-gray flex-shrink-0 mx-1">·</span>
             <Link
               href={`/${username}/status/${postId}`}
               aria-label={`${formatTimeToNow(new Date(createdAt))} ago`}
               className="focus:outline-none focus:underline decoration-gray truncate"
               id="posted-at"
             >
-              <time
-                dateTime={createdAt.toString()}
-                className="text-[15px] text-gray"
-              >
-                {formatTimeToNow(new Date(createdAt))}
-              </time>
+              <div className="min-w-0 max-w-[40%]">
+                <time
+                  dateTime={createdAt.toString()}
+                  className="text-[15px] text-gray truncate"
+                >
+                  {formatTimeToNow(new Date(createdAt))}
+                </time>
+              </div>
             </Link>
           </div>
         </div>

@@ -25,17 +25,17 @@ const DescendantPost = ({ postId, loggedInUser }: Props) => {
         .json<{ descendants: ReplyContext[] }>(),
   });
 
-  useEffect(() => {
-    return () => {
-      queryClient.resetQueries({ queryKey });
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     queryClient.resetQueries({ queryKey });
+  //   };
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   return (
     <>
       {isLoading && (
-        <div className="flex items-center justify-center w-full h-32">
+        <div className="flex items-center justify-center h-32">
           <span className="loader"></span>
         </div>
       )}
