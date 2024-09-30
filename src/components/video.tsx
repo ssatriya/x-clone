@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import Button from "./ui/button";
+
 import Icons from "./icons";
-import { cn, formatDuration } from "@/lib/utils";
-import SeekSlider, { SliderRefProps } from "./ui/seek-slider";
-import { useVideoSlider } from "@/hooks/useVideoSlider";
+import Button from "./ui/button";
 import VolumeControl from "./ui/volume-control";
+import { cn, formatDuration } from "@/lib/utils";
+import useVideoSeekSlider from "@/hooks/useVideoSeekSlider";
+import SeekSlider, { SliderRefProps } from "./ui/seek-slider";
 
 type Props = {
   src: string;
@@ -20,15 +21,15 @@ const Video = ({ src }: Props) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const {
-    currentTime,
     isSeeking,
     isPlaying,
+    currentTime,
     totalDuration,
-    updateCurrentTime,
     updateSeeking,
-    updateTotalDuration,
     updateIsPlaying,
-  } = useVideoSlider();
+    updateCurrentTime,
+    updateTotalDuration,
+  } = useVideoSeekSlider();
 
   const volumeHandler = (value: number) => {
     const video = videoRef.current;
@@ -113,6 +114,7 @@ const Video = ({ src }: Props) => {
       const newPosPercentage = (currentTime / totalDuration) * 100;
       sliderRef.current.updateSliderFill(newPosPercentage);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTime, isSeeking]);
 
   useEffect(() => {
@@ -121,6 +123,7 @@ const Video = ({ src }: Props) => {
     if (video) {
       video.volume = volume;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { User } from "lucia";
 import Image from "next/image";
 import { useCallback } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -11,15 +12,16 @@ import Linkify from "@/components/linkify";
 import UserTooltip from "@/components/user-tooltip";
 import FollowButton from "@/components/profile/follow/follow-button";
 
-type Props = Following;
+type Props = Following & { loggedInUser: User };
 
 const UserFollowItem = ({
   id,
-  name,
-  username,
   bio,
-  isFollowing,
+  name,
   photo,
+  username,
+  isFollowing,
+  loggedInUser,
 }: Props) => {
   const queryClient = useQueryClient();
 
@@ -102,12 +104,14 @@ const UserFollowItem = ({
               </Link>
             </UserTooltip>
           </div>
-          <FollowButton
-            follow={followHandler}
-            isFollowing={isFollowingLocal}
-            username={username}
-            size="default"
-          />
+          {loggedInUser.id !== id && (
+            <FollowButton
+              follow={followHandler}
+              isFollowing={isFollowingLocal}
+              username={username}
+              size="default"
+            />
+          )}
         </div>
         <Linkify>
           <span className="text-[15px] text-secondary-lighter leading-5">

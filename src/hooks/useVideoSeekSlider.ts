@@ -1,17 +1,17 @@
 import { create } from "zustand";
 
 interface VideoState {
-  currentTime: number;
-  totalDuration: number;
   isSeeking: boolean;
   isPlaying: boolean;
+  currentTime: number;
+  totalDuration: number;
   updateCurrentTime: (time: number) => void;
-  updateTotalDuration: (duration: number) => void;
   updateSeeking: (isSeeking: boolean) => void;
   updateIsPlaying: (isPlaying: boolean) => void;
+  updateTotalDuration: (duration: number) => void;
 }
 
-export const useVideoSlider = create<VideoState>((set) => ({
+const useVideoSeekSlider = create<VideoState>((set) => ({
   currentTime: 0,
   totalDuration: 0,
   isSeeking: false,
@@ -21,3 +21,5 @@ export const useVideoSlider = create<VideoState>((set) => ({
   updateSeeking: (isSeeking) => set({ isSeeking }),
   updateIsPlaying: (isPlaying) => set({ isPlaying }),
 }));
+
+export default useVideoSeekSlider;

@@ -1,7 +1,9 @@
 import { eq, sql } from "drizzle-orm";
+import { redirect } from "next/navigation";
 
 import db from "@/lib/db";
 import { followerTable, userTable } from "@/lib/db/schema";
+import { validateRequest } from "@/lib/auth/validate-request";
 import FollowersList from "@/components/profile/follow/followers-list";
 
 type Props = {
@@ -24,6 +26,12 @@ export async function generateMetadata({ params: { username } }: Props) {
 }
 
 export default async function Page({ params: { username } }: Props) {
+  const { user: loggedInUser } = await validateRequest();
+
+  if (!loggedInUser) {
+    return redirect("/");
+  }
+
   const [user] = await db
     .select({ id: userTable.id })
     .from(userTable)
@@ -51,5 +59,5 @@ export default async function Page({ params: { username } }: Props) {
     );
   }
 
-  return <FollowersList username={username} />;
+  return <FollowersList username={username} loggedInUser={loggedInUser} />;
 }

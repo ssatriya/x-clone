@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
         `.mapWith(Boolean),
       })
       .from(followerTable)
-      .leftJoin(userTable, eq(userTable.id, followerTable.followerId))
+      .leftJoin(userTable, eq(userTable.id, followerTable.followingId))
       .where(eq(followerTable.followerId, user.id));
 
     const nextOffset =

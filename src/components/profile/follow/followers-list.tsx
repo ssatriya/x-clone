@@ -1,5 +1,6 @@
 "use client";
 
+import { User } from "lucia";
 import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
 
 import kyInstance from "@/lib/ky";
@@ -9,9 +10,10 @@ import InfiniteScrollContainer from "@/components/infinite-scroll-container";
 
 type Props = {
   username: string;
+  loggedInUser: User;
 };
 
-const FollowersList = ({ username }: Props) => {
+const FollowersList = ({ username, loggedInUser }: Props) => {
   const { data, isLoading, hasNextPage, isFetching, fetchNextPage } =
     useInfiniteQuery({
       queryKey: ["followers-list", username],
@@ -48,7 +50,11 @@ const FollowersList = ({ username }: Props) => {
       {!isLoading &&
         followersList &&
         followersList.map((followers, index) => (
-          <UserFollowItem key={index} {...followers} />
+          <UserFollowItem
+            key={index}
+            {...followers}
+            loggedInUser={loggedInUser}
+          />
         ))}
     </InfiniteScrollContainer>
   );

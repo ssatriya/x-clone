@@ -1,11 +1,11 @@
 import { redirect } from "next/navigation";
+import { and, eq, ne, sql } from "drizzle-orm";
 
+import db from "@/lib/db";
 import { sleep } from "@/lib/utils";
 import HomeTab from "@/components/home/home-tab";
-import { validateRequest } from "@/lib/auth/validate-request";
-import db from "@/lib/db";
 import { notificationTable } from "@/lib/db/schema";
-import { and, eq, ne, sql } from "drizzle-orm";
+import { validateRequest } from "@/lib/auth/validate-request";
 
 export async function generateMetadata() {
   const { user: loggedInUser } = await validateRequest();
@@ -49,7 +49,7 @@ export default async function Page() {
 
   if (!loggedInUser) return redirect("/");
 
-  await sleep(1000);
+  // await sleep(1000);
 
   return <HomeTab loggedInUser={loggedInUser} />;
 }
