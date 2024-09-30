@@ -2,7 +2,7 @@ import AllNotification from "@/components/notification/all-notification";
 import { validateRequest } from "@/lib/auth/validate-request";
 import db from "@/lib/db";
 import { notificationTable } from "@/lib/db/schema";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, ne, sql } from "drizzle-orm";
 import { redirect } from "next/navigation";
 
 export async function generateMetadata() {
@@ -20,6 +20,7 @@ export async function generateMetadata() {
     .where(
       and(
         eq(notificationTable.recipientId, loggedInUser.id),
+        ne(notificationTable.issuerId, loggedInUser.id),
         eq(notificationTable.read, false)
       )
     );

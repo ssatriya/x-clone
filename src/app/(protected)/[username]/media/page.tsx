@@ -7,7 +7,7 @@ import {
   postTable,
   userTable,
 } from "@/lib/db/schema";
-import { and, eq, isNotNull, sql } from "drizzle-orm";
+import { and, eq, isNotNull, ne, sql } from "drizzle-orm";
 import { redirect } from "next/navigation";
 
 type Props = {
@@ -31,6 +31,7 @@ export async function generateMetadata({ params: { username } }: Props) {
     .where(
       and(
         eq(notificationTable.recipientId, loggedInUser.id),
+        ne(notificationTable.issuerId, loggedInUser.id),
         eq(notificationTable.read, false)
       )
     );

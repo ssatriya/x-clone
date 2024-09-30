@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { and, eq } from "drizzle-orm";
+import { and, eq, ne } from "drizzle-orm";
 import { Toaster } from "react-hot-toast";
 import { redirect } from "next/navigation";
 
@@ -34,6 +34,7 @@ export default async function Layout({
     .where(
       and(
         eq(notificationTable.recipientId, loggedInUser.id),
+        ne(notificationTable.issuerId, loggedInUser.id),
         eq(notificationTable.read, false)
       )
     );
@@ -41,7 +42,10 @@ export default async function Layout({
   return (
     <div className="flex justify-center w-full">
       <div className="relative flex justify-center">
-        <LeftSidebar user={loggedInUser} initialNotifications={notifications} />
+        <LeftSidebar
+          loggedInUser={loggedInUser}
+          initialNotifications={notifications}
+        />
       </div>
       <section className="relative flex min-h-screen max-md:w-full">
         <div

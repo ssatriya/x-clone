@@ -1,7 +1,7 @@
 import { validateRequest } from "@/lib/auth/validate-request";
 import db from "@/lib/db";
 import { notificationTable } from "@/lib/db/schema";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, ne, sql } from "drizzle-orm";
 
 export async function GET() {
   try {
@@ -17,6 +17,7 @@ export async function GET() {
       .where(
         and(
           eq(notificationTable.recipientId, loggedInUser.id),
+          ne(notificationTable.issuerId, loggedInUser.id),
           eq(notificationTable.read, false)
         )
       );

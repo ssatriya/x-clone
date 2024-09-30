@@ -1,4 +1,4 @@
-import { aliasedTable, and, desc, eq, isNotNull } from "drizzle-orm";
+import { aliasedTable, and, desc, eq, isNotNull, ne } from "drizzle-orm";
 
 import db from "@/lib/db";
 import { validateRequest } from "@/lib/auth/validate-request";
@@ -40,6 +40,7 @@ export async function GET() {
       .where(
         and(
           eq(notificationTable.recipientId, loggedInUser.id),
+          ne(notificationTable.issuerId, loggedInUser.id),
           isNotNull(userTable.id)
         )
       )

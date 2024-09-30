@@ -5,7 +5,7 @@ import HomeTab from "@/components/home/home-tab";
 import { validateRequest } from "@/lib/auth/validate-request";
 import db from "@/lib/db";
 import { notificationTable } from "@/lib/db/schema";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, ne, sql } from "drizzle-orm";
 
 export async function generateMetadata() {
   const { user: loggedInUser } = await validateRequest();
@@ -22,6 +22,7 @@ export async function generateMetadata() {
     .where(
       and(
         eq(notificationTable.recipientId, loggedInUser.id),
+        ne(notificationTable.issuerId, loggedInUser.id),
         eq(notificationTable.read, false)
       )
     );

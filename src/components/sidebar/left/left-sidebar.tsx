@@ -18,11 +18,11 @@ import { logout } from "@/app/actions/logout";
 import { supabase } from "@/lib/supabase/client";
 
 type Props = {
-  user: User;
+  loggedInUser: User;
   initialNotifications: InitialNotification[];
 };
 
-const LeftSidebar = ({ user, initialNotifications }: Props) => {
+const LeftSidebar = ({ loggedInUser, initialNotifications }: Props) => {
   const router = useRouter();
   const mediaQuery = useMediaQuery("(min-width: 1300px)");
   const [isNormalSidebar, setIsNormalSidebar] = useState(true);
@@ -58,7 +58,8 @@ const LeftSidebar = ({ user, initialNotifications }: Props) => {
       notificationType: payload.new.notification_type,
     };
 
-    if (payload.new.recipient_id === user.id) {
+    if (payload.new.recipient_id === loggedInUser.id) {
+      if (payload.new.issuer_id === loggedInUser.id) return;
       setIsNotification((prev) => prev.concat(newPayload));
     }
   };
@@ -74,12 +75,14 @@ const LeftSidebar = ({ user, initialNotifications }: Props) => {
       notificationType: payload.new.notification_type,
     };
 
-    if (payload.new.recipient_id === user.id && !payload.new.read) {
+    if (payload.new.issuer_id === loggedInUser.id) return;
+    if (payload.new.recipient_id === loggedInUser.id && !payload.new.read) {
       setIsNotification((prev) => prev.concat(newPayload));
       return;
     }
 
-    if (payload.new.recipient_id === user.id && payload.new.read) {
+    if (payload.new.recipient_id === loggedInUser.id && payload.new.read) {
+      if (payload.new.issuer_id === loggedInUser.id) return;
       setIsNotification((prev) => [
         ...prev.filter((notification) => notification.id !== newPayload.id),
       ]);
@@ -106,7 +109,7 @@ const LeftSidebar = ({ user, initialNotifications }: Props) => {
           event: "INSERT",
           schema: "public",
           table: "notification",
-          filter: `recipient_id=eq.${user.id}`,
+          filter: `recipient_id=eq.${loggedInUser.id}`,
         },
         handleInserts
       )
@@ -116,7 +119,7 @@ const LeftSidebar = ({ user, initialNotifications }: Props) => {
           event: "UPDATE",
           schema: "public",
           table: "notification",
-          filter: `recipient_id=eq.${user.id}`,
+          filter: `recipient_id=eq.${loggedInUser.id}`,
         },
         handleChanges
       )
@@ -135,7 +138,7 @@ const LeftSidebar = ({ user, initialNotifications }: Props) => {
       supabase.removeChannel(channel);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user.id]);
+  }, [loggedInUser.id]);
 
   const routes = [
     {
@@ -200,7 +203,7 @@ const LeftSidebar = ({ user, initialNotifications }: Props) => {
       label: "Profile",
       ariaLabel: "Your profile",
       icon: "profile",
-      href: `/${user.username?.slice(1)}`,
+      href: `/${loggedInUser.username?.slice(1)}`,
       disabled: false,
     },
     {
@@ -274,8 +277,8 @@ const LeftSidebar = ({ user, initialNotifications }: Props) => {
         <MenuButton className="flex items-center justify-between w-full p-3 mb-4 transition-colors rounded-full hover:bg-secondary-lighter/10">
           <div className="min-[1300px]:hidden block">
             <Image
-              src={user.photo!}
-              alt={user.username!}
+              src={loggedInUser.photo!}
+              alt={loggedInUser.username!}
               height={40}
               width={40}
               priority
@@ -285,8 +288,8 @@ const LeftSidebar = ({ user, initialNotifications }: Props) => {
           <div className="min-[1300px]:flex justify-between w-full items-center hidden">
             <div className="flex gap-2">
               <Image
-                src={user.photo!}
-                alt={user.username!}
+                src={loggedInUser.photo!}
+                alt={loggedInUser.username!}
                 height={40}
                 width={40}
                 priority
@@ -294,10 +297,10 @@ const LeftSidebar = ({ user, initialNotifications }: Props) => {
               />
               <div className="flex flex-col items-start">
                 <span className="text-[15px] font-bold leading-5">
-                  {user.name}
+                  {loggedInUser.name}
                 </span>
                 <span className="text-[15px] leading-5 text-gray">
-                  {user.username}
+                  {loggedInUser.username}
                 </span>
               </div>
             </div>
