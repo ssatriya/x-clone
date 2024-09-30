@@ -73,13 +73,16 @@ export const useUploadMedia = () => {
         formData.append("file", file.file);
 
         try {
-          const response = await fetch("http://localhost:4000/api/upload", {
-            method: "POST",
-            body: formData,
-            // headers: {
-            //   "x-api-key": process.env.NEXT_PUBLIC_CONVERT_GIF_API!, // API key sent in the headers
-            // },
-          });
+          const response = await fetch(
+            "https://express-ffmpeg.fly.dev/api/upload",
+            {
+              method: "POST",
+              body: formData,
+              headers: {
+                "x-api-key": process.env.NEXT_PUBLIC_CONVERT_GIF_API!,
+              },
+            }
+          );
 
           if (!response.ok) {
             throw new Error("failed to convert");
