@@ -70,12 +70,15 @@ export const useUploadMedia = () => {
     try {
       if (file.meta.format === "gif") {
         const formData = new FormData();
-        formData.append("file", file.file); // 'file' should match the field used in the server
+        formData.append("file", file.file);
 
         try {
           const response = await fetch("http://localhost:4000/api/upload", {
             method: "POST",
             body: formData,
+            // headers: {
+            //   "x-api-key": process.env.NEXT_PUBLIC_CONVERT_GIF_API!, // API key sent in the headers
+            // },
           });
 
           if (!response.ok) {
