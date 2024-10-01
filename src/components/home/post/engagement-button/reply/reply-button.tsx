@@ -1,25 +1,26 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { User } from "lucia";
 import { cn } from "@/lib/utils";
+import kyInstance from "@/lib/ky";
 import Icons from "@/components/icons";
 import StatNumber from "../stat-number";
 import ReplyModal from "./reply-modal";
-import kyInstance from "@/lib/ky";
 import { ReplyCountInfo } from "@/types";
 import Button from "@/components/ui/button";
+import ButtonTooltip from "@/components/button-tooltip";
 
 type Props = {
   loggedInUser: User;
   post: {
     id: string;
-    content: string | null;
     createdAt: Date;
     rootPostId: string;
     replyCount: number;
+    content: string | null;
   };
   user: {
     name: string;
@@ -68,38 +69,40 @@ const ReplyButton = ({
 
   return (
     <div className="flex flex-1 relative right-2">
-      <Button
-        aria-label="Reply"
-        onClick={(e) => {
-          e.stopPropagation();
-          setIsOpen(true);
-        }}
-        variant="ghost"
-        size="icon"
-        className="group flex items-center justify-center focus:outline-none"
-      >
-        <i
-          className={cn(
-            size === "sm" && "h-[34px] w-[34px]",
-            size === "md" && "h-[38.5px] w-[38.5px]",
-            "group-hover:bg-primary/10 group-focus-visible:outline group-focus-visible:outline-2 flex items-center justify-center rounded-full group-focus-visible:-outline-offset-2 group-focus-visible:outline-ring"
-          )}
+      <ButtonTooltip content="Reply">
+        <Button
+          aria-label="Reply"
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsOpen(true);
+          }}
+          variant="ghost"
+          size="icon"
+          className="group flex items-center justify-center focus:outline-none"
         >
-          <Icons.reply
+          <i
             className={cn(
-              "fill-gray group-hover:fill-primary group-focus-visible:fill-primary",
-              size === "sm" && "w-[18px] h-[18px]",
-              size === "md" && "w-[22.5px] h-[22.5px]"
+              size === "sm" && "h-[34px] w-[34px]",
+              size === "md" && "h-[38.5px] w-[38.5px]",
+              "group-hover:bg-primary/10 group-focus-visible:outline group-focus-visible:outline-2 flex items-center justify-center rounded-full group-focus-visible:-outline-offset-2 group-focus-visible:outline-ring"
             )}
+          >
+            <Icons.reply
+              className={cn(
+                "fill-gray group-hover:fill-primary group-focus-visible:fill-primary",
+                size === "sm" && "w-[18px] h-[18px]",
+                size === "md" && "w-[22.5px] h-[22.5px]"
+              )}
+            />
+          </i>
+          <StatNumber
+            classNames="text-gray group-hover:text-primary group-focus-visible:text-primary relative"
+            count={replyCount}
+            isVisible={replyCount > 0}
+            movePixel={move}
           />
-        </i>
-        <StatNumber
-          classNames="text-gray group-hover:text-primary group-focus-visible:text-primary relative"
-          count={replyCount}
-          isVisible={replyCount > 0}
-          movePixel={move}
-        />
-      </Button>
+        </Button>
+      </ButtonTooltip>
       <ReplyModal
         isOpen={isOpen}
         setIsOpen={setIsOpen}

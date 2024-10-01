@@ -247,7 +247,7 @@ const PostInput = ({ loggedInUser }: Props) => {
       {isPending && (
         <div className="absolute inset-0 z-40 bg-black/60 right-[1px] top-[1px]" />
       )}
-      <div className="relative flex gap-2 justify-between px-4 pb-2 overflow-hidden">
+      <div className="relative flex gap-2 justify-between px-4 pb-2">
         <div className="pt-3 h-fit relative">
           <Link
             href={`/${loggedInUser.username.slice(1)}`}
@@ -301,7 +301,10 @@ const PostInput = ({ loggedInUser }: Props) => {
                   </p>
                 </Button>
               </div>
-              <Divider orientation="horizontal" className="bg-border h-[1px]" />
+              <Divider
+                orientation="horizontal"
+                className="bg-border h-[1px] mb-2"
+              />
             </div>
           )}
           <AnimatePresence initial={false}>
@@ -322,12 +325,12 @@ const PostInput = ({ loggedInUser }: Props) => {
                   multiple
                 />
                 <InputOptions
-                  containerClassNames="flex items-center -ml-2 py-[3px] mt-2"
+                  containerClassNames="flex items-center -ml-2 py-[3px]"
                   buttons={optionButtonConfigs}
                 />
-                <div className="flex items-center h-full">
+                <div className="flex items-center h-full gap-3 overflow-hidden">
                   {inputCount > 0 && (
-                    <div className="flex items-center justify-center mt-2">
+                    <div className="flex items-center justify-center">
                       <ProgressCircle inputCount={inputCount} />
                       <div className="h-[31px]">
                         <Divider
@@ -355,7 +358,7 @@ const PostInput = ({ loggedInUser }: Props) => {
                     onClick={submitHandler}
                     data-button="post-button"
                     type="submit"
-                    className="font-bold text-[15px] px-4 ml-3 mt-2"
+                    className="font-bold text-[15px] px-4"
                   >
                     Post
                   </Button>

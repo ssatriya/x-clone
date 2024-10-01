@@ -42,7 +42,7 @@ const PostInfo = ({ post, user, moreButton = true }: Props) => {
               <Icons.verified className="fill-primary" />
             </span>
           </div>
-          <div className="flex items-start min-w-0 max-w-[40%] ml-1">
+          <div className="flex items-start min-w-0 max-w-[50%] ml-1">
             <div className="min-w-0 max-w-full overflow-hidden">
               <UserTooltip username={username} userId={userId}>
                 <Link
@@ -61,17 +61,15 @@ const PostInfo = ({ post, user, moreButton = true }: Props) => {
             <Link
               href={`/${username}/status/${postId}`}
               aria-label={`${formatTimeToNow(new Date(createdAt))} ago`}
-              className="focus:outline-none focus:underline decoration-gray truncate"
+              className="focus:outline-none focus:underline decoration-gray"
               id="posted-at"
             >
-              <div className="min-w-0 max-w-[40%]">
-                <time
-                  dateTime={createdAt.toString()}
-                  className="text-[15px] text-gray truncate"
-                >
-                  {formatTimeToNow(new Date(createdAt))}
-                </time>
-              </div>
+              <time
+                dateTime={createdAt.toString()}
+                className="text-[15px] text-gray"
+              >
+                {formatTimeToNow(new Date(createdAt))}
+              </time>
             </Link>
           </div>
         </div>

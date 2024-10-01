@@ -2,7 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
 import { PropsWithChildren, useEffect, useRef, useState } from "react";
-import { createPopper, Instance as PopperInstance } from "@popperjs/core";
 
 import Button from "./ui/button";
 import kyInstance from "@/lib/ky";

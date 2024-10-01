@@ -12,6 +12,7 @@ import QuoteModal from "./quote-modal";
 import Button from "@/components/ui/button";
 import { Media, QuoteInfo, RepostInfo } from "@/types";
 import { CreateRepostPayload } from "@/lib/zod-schema";
+import ButtonTooltip from "@/components/button-tooltip";
 import StatNumber from "@/components/home/post/engagement-button/stat-number";
 
 type Props = {
@@ -129,43 +130,45 @@ const RepostButton = ({
   return (
     <div className="flex flex-1">
       <Menu>
-        <MenuButton as={Fragment}>
-          <Button
-            aria-label="Repost"
-            variant="ghost"
-            size="icon"
-            onClick={(e) => e.stopPropagation()}
-            className="group flex items-center justify-center focus:outline-none"
-          >
-            <i
-              className={cn(
-                size === "sm" && "h-[34px] w-[34px]",
-                size === "md" && "h-[38.5px] w-[38.5px]",
-                "group-focus-visible:outline group-focus-visible:outline-2 flex items-center justify-center rounded-full group-focus-visible:-outline-offset-2 group-focus-visible:outline-green-300 group-hover:bg-green-500/10"
-              )}
+        <ButtonTooltip content="Repost">
+          <MenuButton as={Fragment}>
+            <Button
+              aria-label="Repost"
+              variant="ghost"
+              size="icon"
+              onClick={(e) => e.stopPropagation()}
+              className="group flex items-center justify-center focus:outline-none"
             >
-              <Icons.repost
+              <i
                 className={cn(
-                  repostOrQuotedByUser && "fill-green-500",
-                  !repostOrQuotedByUser &&
-                    "fill-gray group-hover:fill-green-500 group-focus-visible:fill-green-500",
-                  size === "sm" && "w-[18px] h-[18px]",
-                  size === "md" && "w-[22.5px] h-[22.5px]"
+                  size === "sm" && "h-[34px] w-[34px]",
+                  size === "md" && "h-[38.5px] w-[38.5px]",
+                  "group-focus-visible:outline group-focus-visible:outline-2 flex items-center justify-center rounded-full group-focus-visible:-outline-offset-2 group-focus-visible:outline-green-300 group-hover:bg-green-500/10"
                 )}
+              >
+                <Icons.repost
+                  className={cn(
+                    repostOrQuotedByUser && "fill-green-500",
+                    !repostOrQuotedByUser &&
+                      "fill-gray group-hover:fill-green-500 group-focus-visible:fill-green-500",
+                    size === "sm" && "w-[18px] h-[18px]",
+                    size === "md" && "w-[22.5px] h-[22.5px]"
+                  )}
+                />
+              </i>
+              <StatNumber
+                classNames={cn(
+                  "group-hover:text-green-500 group-focus-visible:text-green-500",
+                  repostOrQuotedByUser && "text-green-500",
+                  !repostOrQuotedByUser && "text-gray"
+                )}
+                count={totalCount}
+                isVisible={totalCount > 0}
+                movePixel={move}
               />
-            </i>
-            <StatNumber
-              classNames={cn(
-                "group-hover:text-green-500 group-focus-visible:text-green-500",
-                repostOrQuotedByUser && "text-green-500",
-                !repostOrQuotedByUser && "text-gray"
-              )}
-              count={totalCount}
-              isVisible={totalCount > 0}
-              movePixel={move}
-            />
-          </Button>
-        </MenuButton>
+            </Button>
+          </MenuButton>
+        </ButtonTooltip>
         <MenuItems
           anchor={{ to: "bottom end", gap: "-28px", offset: "28px" }}
           className="bg-black rounded-xl shadow-repost"

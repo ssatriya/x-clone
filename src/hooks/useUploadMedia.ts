@@ -175,7 +175,7 @@ export const useUploadMedia = () => {
             height: file.meta.dimension?.height || 0,
             width: file.meta.dimension?.width || 0,
             size: file.file.size,
-            key: `x-clone-media/${uploadPath as string}`,
+            key: uploadPath as string,
             url: publicUrlData.publicUrl,
           };
 

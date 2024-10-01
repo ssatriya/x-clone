@@ -8,8 +8,9 @@ import kyInstance from "@/lib/ky";
 import { LikeInfo } from "@/types";
 import Icons from "@/components/icons";
 import StatNumber from "../stat-number";
-import { CreateLikePayload } from "@/lib/zod-schema";
 import Button from "@/components/ui/button";
+import { CreateLikePayload } from "@/lib/zod-schema";
+import ButtonTooltip from "@/components/button-tooltip";
 
 type Props = {
   userId: string;
@@ -79,45 +80,47 @@ const LikeButton = ({ userId, postId, initialLike, size }: Props) => {
 
   return (
     <div className="flex flex-1">
-      <Button
-        aria-label="Like"
-        size="icon"
-        variant="ghost"
-        onClick={(e) => {
-          e.stopPropagation();
-          likeHandler();
-        }}
-        className="group flex items-center justify-center focus:outline-none"
-      >
-        <i
-          className={cn(
-            size === "sm" && "h-[34px] w-[34px]",
-            size === "md" && "h-[38.5px] w-[38.5px]",
-            " group-hover:bg-like/10 group-focus-visible:outline group-focus-visible:outline-2 flex items-center justify-center rounded-full group-focus-visible:-outline-offset-2 group-focus-visible:outline-red-300"
-          )}
+      <ButtonTooltip content="Like">
+        <Button
+          aria-label="Like"
+          size="icon"
+          variant="ghost"
+          onClick={(e) => {
+            e.stopPropagation();
+            likeHandler();
+          }}
+          className="group flex items-center justify-center focus:outline-none"
         >
-          <Icons.like
-            strokeWidth={2}
+          <i
             className={cn(
-              likeData.isLikedByUser && "fill-like stroke-like",
-              !likeData.isLikedByUser && "fill-transparent stroke-gray",
-              "group-hover:stroke-like group-focus-visible:fill-like group-focus-visible:stroke-like",
-              size === "sm" && "w-[18px] h-[18px]",
-              size === "md" && "w-[22.5px] h-[22.5px]"
+              size === "sm" && "h-[34px] w-[34px]",
+              size === "md" && "h-[38.5px] w-[38.5px]",
+              " group-hover:bg-like/10 group-focus-visible:outline group-focus-visible:outline-2 flex items-center justify-center rounded-full group-focus-visible:-outline-offset-2 group-focus-visible:outline-red-300"
             )}
+          >
+            <Icons.like
+              strokeWidth={2}
+              className={cn(
+                likeData.isLikedByUser && "fill-like stroke-like",
+                !likeData.isLikedByUser && "fill-transparent stroke-gray",
+                "group-hover:stroke-like group-focus-visible:fill-like group-focus-visible:stroke-like",
+                size === "sm" && "w-[18px] h-[18px]",
+                size === "md" && "w-[22.5px] h-[22.5px]"
+              )}
+            />
+          </i>
+          <StatNumber
+            classNames={cn(
+              "group-hover:text-like group-focus-visible:text-like",
+              likeData.isLikedByUser && "text-like",
+              !likeData.isLikedByUser && "text-gray"
+            )}
+            count={likeData.likeCount}
+            isVisible={likeData.likeCount > 0}
+            movePixel={move}
           />
-        </i>
-        <StatNumber
-          classNames={cn(
-            "group-hover:text-like group-focus-visible:text-like",
-            likeData.isLikedByUser && "text-like",
-            !likeData.isLikedByUser && "text-gray"
-          )}
-          count={likeData.likeCount}
-          isVisible={likeData.likeCount > 0}
-          movePixel={move}
-        />
-      </Button>
+        </Button>
+      </ButtonTooltip>
     </div>
   );
 };
