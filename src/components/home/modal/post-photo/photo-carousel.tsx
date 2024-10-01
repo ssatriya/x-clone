@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useState } from "react";
+import { usePathname } from "next/navigation";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 import { Media } from "@/types";
 import { cn } from "@/lib/utils";
@@ -12,22 +12,25 @@ import ModalGIFPlayer from "./modal-gif-player";
 
 type Props = {
   photos: Media[];
-  onClose: () => void;
-  setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
-  isSidebarOpen: boolean;
   isMobile: boolean;
+  onClose: () => void;
   photoNumber: number;
+  isSidebarOpen: boolean;
+  setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 const PhotoCarousel = ({
   photos,
   onClose,
-  setIsSidebarOpen,
-  isSidebarOpen,
   isMobile,
   photoNumber,
+  isSidebarOpen,
+  setIsSidebarOpen,
 }: Props) => {
+  const pathname = usePathname();
   const [currentIndex, setCurrentIndex] = useState(photoNumber - 1);
+
+  const baseURL = pathname.slice(0, pathname.length - 1);
 
   const goToNext = () => {
     setCurrentIndex((prev) => prev + 1);
@@ -36,6 +39,16 @@ const PhotoCarousel = ({
   const goToPrev = () => {
     setCurrentIndex((prev) => prev - 1);
   };
+
+  useEffect(() => {
+    const newURL = `${baseURL}${currentIndex + 1}`;
+    window.history.replaceState(
+      { ...window.history.state, as: newURL, url: newURL },
+      "",
+      newURL
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentIndex]);
 
   return (
     <div
@@ -126,7 +139,12 @@ const PhotoCarousel = ({
         )}
       </div>
 
-      <div className="h-full w-full flex items-center justify-center">
+      <div
+        className="h-full w-full flex items-center justify-center"
+        onClick={() => {
+          onClose();
+        }}
+      >
         {photos[currentIndex].format === "gif" && (
           <div key={currentIndex} className="w-fit h-fit flex-shrink-0">
             <ModalGIFPlayer src={photos[currentIndex].url} />
@@ -142,6 +160,9 @@ const PhotoCarousel = ({
                 priority
                 alt="media preview"
                 className="object-cover"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
               />
             </div>
           </div>
