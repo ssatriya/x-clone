@@ -81,6 +81,7 @@ const LikeNotification = ({
                     <Link
                       href={`/${notification.username?.slice(1)}`}
                       className="font-bold hover:underline"
+                      onClick={(e) => e.stopPropagation()}
                     >
                       {notification.name}
                     </Link>
