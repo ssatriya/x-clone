@@ -68,6 +68,7 @@ const LikeNotification = ({
               width={32}
               alt="user-avatar"
               className="rounded-full"
+              priority
             />
           ))}
         </div>

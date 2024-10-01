@@ -46,6 +46,7 @@ const ProfilePhotoModal = ({ photo }: Props) => {
               width={368}
               height={368}
               className="rounded-full"
+              priority
             />
           )}
         </DialogPanel>

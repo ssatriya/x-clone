@@ -52,6 +52,7 @@ const FollowNotification = ({ notification }: Props) => {
           height={32}
           width={32}
           className="rounded-full mb-3"
+          priority
         />
         <span>
           <span className="font-bold">{notification.name}</span> followed you
