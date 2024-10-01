@@ -8,6 +8,7 @@ import Button from "./ui/button";
 import kyInstance from "@/lib/ky";
 import { UserInfo } from "@/types";
 import { useCurrentSession } from "./session-provider";
+import usePopperInstance from "@/hooks/usePopperInstance";
 
 type Props = {
   username: string;
@@ -17,21 +18,17 @@ const UserTooltipWithLink = ({
   username,
   children,
 }: PropsWithChildren<Props>) => {
-  const [visible, setVisible] = useState(false);
-  const referenceRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
-  const [popperInstance, setPopperInstance] = useState<PopperInstance | null>(
-    null
-  );
+  const referenceRef = useRef<HTMLDivElement>(null);
+  const [tooltipVisible, setTooltipVisible] = useState(false);
+  usePopperInstance(referenceRef, tooltipRef, tooltipVisible);
+
   const {
     session: { user },
   } = useCurrentSession();
 
   const isOwnProfile = user ? user.username === username : false;
-
-  const showTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const userInfoQueryKey = ["user-info", username.slice(1)];
 
   const { data, isLoading } = useQuery({
@@ -46,70 +43,14 @@ const UserTooltipWithLink = ({
     staleTime: Infinity,
   });
 
-  useEffect(() => {
-    if (referenceRef.current && tooltipRef.current) {
-      const instance = createPopper(referenceRef.current, tooltipRef.current, {
-        placement: "bottom",
-        modifiers: [
-          {
-            name: "offset",
-            options: {
-              offset: [0, 0],
-            },
-          },
-          {
-            name: "preventOverflow",
-            options: {
-              boundary: "viewport",
-              padding: 8,
-            },
-          },
-          {
-            name: "flip",
-            options: {
-              fallbackPlacements: ["top", "bottom-start", "bottom-end"],
-            },
-          },
-        ],
-      });
-      setPopperInstance(instance);
-    }
-
-    return () => {
-      if (popperInstance) {
-        popperInstance.destroy();
-      }
-    };
-  }, [popperInstance]);
-
-  useEffect(() => {
-    if (popperInstance) {
-      popperInstance.update();
-    }
-  }, [visible, popperInstance]);
-
-  const showTooltip = () => {
-    if (hideTimeoutRef.current) {
-      clearTimeout(hideTimeoutRef.current);
-    }
-    showTimeoutRef.current = setTimeout(() => {
-      setVisible(true);
-    }, 200);
-  };
-
-  const hideTooltip = () => {
-    if (showTimeoutRef.current) {
-      clearTimeout(showTimeoutRef.current);
-    }
-    hideTimeoutRef.current = setTimeout(() => {
-      setVisible(false);
-    }, 200);
+  const handleTooltipVisibility = (show: boolean) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => setTooltipVisible(show), 200);
   };
 
   useEffect(() => {
     return () => {
-      if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);
-      if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, []);
 
@@ -117,21 +58,21 @@ const UserTooltipWithLink = ({
     <div className="inline-block">
       <div
         ref={referenceRef}
-        onMouseEnter={showTooltip}
-        onMouseLeave={hideTooltip}
+        onMouseEnter={() => handleTooltipVisibility(true)}
+        onMouseLeave={() => handleTooltipVisibility(false)}
       >
         {children}
       </div>
       <div
         ref={tooltipRef}
         onMouseEnter={() => {
-          if (hideTimeoutRef.current) {
-            clearTimeout(hideTimeoutRef.current);
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
           }
         }}
-        onMouseLeave={hideTooltip}
+        onMouseLeave={() => handleTooltipVisibility(false)}
         className={`z-50 transition-opacity duration-300 w-[300px] bg-black shadow-repost rounded-2xl p-4 absolute cursor-default [transition:visibility_0ms_ease_600ms,opacity_400ms_ease_400ms]
-           ${visible ? "opacity-100 visible" : "opacity-0 invisible"}`}
+           ${tooltipVisible ? "opacity-100 visible" : "opacity-0 invisible"}`}
       >
         {isLoading && (
           <div className="flex items-center justify-center">
