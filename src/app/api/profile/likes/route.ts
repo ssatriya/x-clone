@@ -10,7 +10,7 @@ import {
   userTable,
 } from "@/lib/db/schema";
 import { ProfilePostLikes } from "@/types";
-import { aliasedTable, and, eq, lte, sql, SQL } from "drizzle-orm";
+import { aliasedTable, and, eq, lte, ne, sql, SQL } from "drizzle-orm";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -41,13 +41,15 @@ export async function GET(req: NextRequest) {
 
     const decodedCursor = cursor ? decodeURIComponent(cursor) : null;
 
-    let filter = eq(likeTable.userOriginId, user.id) as
-      | SQL<unknown>
-      | undefined;
+    let filter = and(
+      eq(likeTable.userOriginId, user.id),
+      ne(postTable.userId, user.id)
+    ) as SQL<unknown> | undefined;
 
     if (decodedCursor) {
       filter = and(
         eq(likeTable.userOriginId, user.id),
+        ne(postTable.userId, user.id),
         lte(likeTable.createdAt, new Date(decodedCursor))
       );
     }
@@ -67,7 +69,6 @@ export async function GET(req: NextRequest) {
           postId: postTable.id,
           postContent: postTable.content,
           postCreatedAt: postTable.createdAt,
-          // postMedia: postTable.media,
           postParentPostId: postTable.parentPostId,
           postRootPostId: postTable.rootPostId,
           postType: postTable.postType,
@@ -81,7 +82,6 @@ export async function GET(req: NextRequest) {
           originalPostId: ogPost.id,
           originalPostContent: ogPost.content,
           originalPostCreatedAt: ogPost.createdAt,
-          // originalPostMedia: ogPost.media,
           originalUserId: ogUser.id,
           originalUsername: ogUser.username,
           originalName: ogUser.name,

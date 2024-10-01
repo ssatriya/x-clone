@@ -64,5 +64,4 @@ export default async function Page({ params: { username } }: Props) {
   if (!loggedInUser) return redirect("/");
 
   return <ProfileReplies loggedInUser={loggedInUser} username={username} />;
-  // return <div>with replies page</div>;
 }

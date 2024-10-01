@@ -1,7 +1,13 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { PropsWithChildren, useEffect, useRef, useState } from "react";
+import {
+  PropsWithChildren,
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 
 import Icons from "@/components/icons";
@@ -28,6 +34,7 @@ const PersonalTabsWrapper = ({
   const router = useRouter();
   const pathname = usePathname();
   const tabListRef = useRef<HTMLDivElement>(null);
+  const [isPending, startTransition] = useTransition();
   const [currentDirection, setCurrentDirection] = useState<"left" | "right">(
     "left"
   );
@@ -58,9 +65,12 @@ const PersonalTabsWrapper = ({
 
     const path = pathMap[index];
     if (path) {
-      router.push(path);
+      startTransition(() => {
+        router.push(path);
+      });
     }
   };
+  console.log({ isPending });
 
   const scroll = (direction: "left" | "right") => {
     setCurrentDirection(direction);
@@ -150,19 +160,44 @@ const PersonalTabsWrapper = ({
           </TabList>
           <TabPanels>
             <TabPanel>
-              <div className="md:w-[599px]">{children}</div>
+              {!isPending && <div className="md:w-[599px]">{children}</div>}
+              {isPending && (
+                <div className="w-full h-full flex items-start justify-center mt-10">
+                  <span className="loader" />
+                </div>
+              )}
             </TabPanel>
             <TabPanel>
-              <div className="md:w-[599px]">{children}</div>
+              {!isPending && <div className="md:w-[599px]">{children}</div>}
+              {isPending && (
+                <div className="w-full h-full flex items-start justify-center mt-10">
+                  <span className="loader" />
+                </div>
+              )}
             </TabPanel>
             <TabPanel>
-              <div className="md:w-[599px]">{children}</div>
+              {!isPending && <div className="md:w-[599px]">{children}</div>}
+              {isPending && (
+                <div className="w-full h-full flex items-start justify-center mt-10">
+                  <span className="loader" />
+                </div>
+              )}
             </TabPanel>
             <TabPanel>
-              <div className="md:w-[599px]">{children}</div>
+              {!isPending && <div className="md:w-[599px]">{children}</div>}
+              {isPending && (
+                <div className="w-full h-full flex items-start justify-center mt-10">
+                  <span className="loader" />
+                </div>
+              )}
             </TabPanel>
             <TabPanel>
-              <div className="md:w-[599px]">{children}</div>
+              {!isPending && <div className="md:w-[599px]">{children}</div>}
+              {isPending && (
+                <div className="w-full h-full flex items-start justify-center mt-10">
+                  <span className="loader" />
+                </div>
+              )}
             </TabPanel>
             <TabPanel>
               <div className="md:w-[599px]">
@@ -172,7 +207,12 @@ const PersonalTabsWrapper = ({
                     Your likes are private. Only you can see them.
                   </span>
                 </div>
-                {children}
+                {!isPending && children}
+                {isPending && (
+                  <div className="w-full h-full flex items-start justify-center mt-10">
+                    <span className="loader" />
+                  </div>
+                )}
               </div>
             </TabPanel>
           </TabPanels>
