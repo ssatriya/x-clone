@@ -241,14 +241,9 @@ const PostInput = ({ loggedInUser }: Props) => {
         inputRef.current?.focus();
       }}
     >
-      {/* {isPending && (
-        <Progressbar
-          isPending={isPending}
-          hasFiles={files.length > 0}
-          overallProgress={30}
-          classNames="absolute -top-[5px] right-0 z-50"
-        />
-      )} */}
+      {isPending && (
+        <Progressbar classNames="absolute -top-[5px] right-0 z-30 w-full h-1" />
+      )}
       {isPending && (
         <div className="absolute inset-0 z-40 bg-black/60 right-[1px] top-[1px]" />
       )}

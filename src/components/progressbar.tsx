@@ -1,31 +1,32 @@
-// import { Progress } from "@nextui-org/react";
+import { useEffect, useState } from "react";
+import ProgressBar from "@ramonak/react-progress-bar";
 
-const Progressbar = ({
-  overallProgress,
-  isPending,
-  classNames,
-  hasFiles,
-}: {
-  overallProgress: number;
-  isPending: boolean;
-  classNames: string;
-  hasFiles: boolean;
-}) => {
-  const computedProgress = isPending
-    ? overallProgress > 0
-      ? overallProgress
-      : 10
-    : 100;
+import { cn } from "@/lib/utils";
+
+const Progressbar = ({ classNames }: { classNames: string }) => {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setProgress((oldProgress) => {
+        const newProgress = oldProgress + 20;
+        return newProgress > 100 ? 100 : newProgress;
+      });
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <div>progressbar wip change</div>
-    // <Progress
-    //   size="sm"
-    //   aria-label="Posting..."
-    //   value={computedProgress}
-    //   radius="none"
-    //   classNames={{ track: "bg-transparent" }}
-    //   className={classNames}
-    // />
+    <ProgressBar
+      completed={progress}
+      maxCompleted={100}
+      className={cn(classNames)}
+      height="4px"
+      isLabelVisible={false}
+      barContainerClassName="bg-transparent"
+      bgColor="#1D9BF0"
+    />
   );
 };
 
