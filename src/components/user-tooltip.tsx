@@ -27,18 +27,17 @@ const UserTooltip = ({
 }: PropsWithChildren<Props>) => {
   const queryClient = useQueryClient();
 
-  const [tooltipVisible, setTooltipVisible] = useState(false);
-  const referenceRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
+  const referenceRef = useRef<HTMLDivElement>(null);
+  const [tooltipVisible, setTooltipVisible] = useState(false);
+  usePopperInstance(referenceRef, tooltipRef, tooltipVisible);
 
   const {
     session: { user },
   } = useCurrentSession();
 
   const isOwnProfile = user ? user.username === username : false;
-
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
   const userInfoQueryKey = ["user-info", username.slice(1)];
 
   const { data, isLoading: isUserInfoLoading } = useQuery({
@@ -92,8 +91,6 @@ const UserTooltip = ({
       queryClient.invalidateQueries({ queryKey: userInfoQueryKey });
     },
   });
-
-  usePopperInstance(referenceRef, tooltipRef, tooltipVisible);
 
   const handleTooltipVisibility = (show: boolean) => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
