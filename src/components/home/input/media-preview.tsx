@@ -43,12 +43,12 @@ const MediaPreview = ({
           <MediaItem
             key={id}
             mediaId={id}
-            mediaFormat={format}
             src={preview}
-            fill={files.length === 3 && i === 0}
-            handleRemove={handleRemove}
+            mediaFormat={format}
             isPosting={isPosting}
-            isUploading={false}
+            isUploading={isUploading}
+            handleRemove={handleRemove}
+            fill={files.length === 3 && i === 0}
           />
         );
       })}

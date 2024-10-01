@@ -70,7 +70,6 @@ const PersonalTabsWrapper = ({
       });
     }
   };
-  console.log({ isPending });
 
   const scroll = (direction: "left" | "right") => {
     setCurrentDirection(direction);
