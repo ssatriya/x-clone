@@ -13,7 +13,6 @@ const Providers = ({ children }: PropsWithChildren) => {
         height="4px"
         color="#1D9BF0"
         options={{ showSpinner: false }}
-        shallowRouting
       />
       {children}
     </QueryClientProvider>
