@@ -4,6 +4,8 @@ import db from "@/lib/db";
 import Button from "@/components/ui/button";
 import { followerTable, userTable } from "@/lib/db/schema";
 import FollowingList from "@/components/profile/follow/following-list";
+import { validateRequest } from "@/lib/auth/validate-request";
+import { redirect } from "next/navigation";
 
 type Props = {
   params: {
@@ -25,6 +27,12 @@ export async function generateMetadata({ params: { username } }: Props) {
 }
 
 export default async function Page({ params: { username } }: Props) {
+  const { user: loggedInUser } = await validateRequest();
+
+  if (!loggedInUser) {
+    return redirect("/");
+  }
+
   const [user] = await db
     .select({ id: userTable.id })
     .from(userTable)
@@ -55,5 +63,5 @@ export default async function Page({ params: { username } }: Props) {
     );
   }
 
-  return <FollowingList username={username} />;
+  return <FollowingList username={username} loggedInUser={loggedInUser} />;
 }
