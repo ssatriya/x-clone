@@ -43,7 +43,7 @@ const MediaPreviewSlider = ({
 
     if (!emblaApi) return;
     if (files.length > 2) {
-      emblaApi.scrollTo(files.length - 1, false);
+      emblaApi.scrollTo(files.length - 1, true);
     }
   }, [files.length, emblaApi]);
 
