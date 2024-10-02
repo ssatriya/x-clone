@@ -43,9 +43,9 @@ const MediaPreviewSlider = ({
 
     if (!emblaApi) return;
     if (files.length > 2) {
-      emblaApi.scrollTo(files.length - 1, true);
+      emblaApi.scrollTo(files.length - 1);
     }
-  }, [files.length, emblaApi]);
+  }, [files, emblaApi]);
 
   if (files.length === 0) return;
   const MAX_HEIGHT_SINGLE_LANDSCAPE = 342;
@@ -54,7 +54,6 @@ const MediaPreviewSlider = ({
 
   const ASPECT_RATIO =
     files[0].meta.dimension.width / files[0].meta.dimension.height;
-  console.log({ ASPECT_RATIO });
 
   const isLandscape = ASPECT_RATIO > 1;
   const isPortrait = ASPECT_RATIO < 1;
