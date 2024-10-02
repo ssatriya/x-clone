@@ -28,6 +28,7 @@ import Progressbar from "@/components/progressbar";
 import { CreatePostPayload } from "@/lib/zod-schema";
 import { useUploadMedia } from "@/hooks/useUploadMedia";
 import ButtonTooltip from "@/components/button-tooltip";
+import MediaPreviewSlider from "./media-preview-slider";
 
 type Props = {
   loggedInUser: User;
@@ -281,10 +282,16 @@ const PostInput = ({ loggedInUser }: Props) => {
                 minRows={1}
               />
             </div>
-            <MediaPreview
+            {/* <MediaPreview
               files={files}
-              handleRemove={handleRemove}
               isPosting={isPending}
+              handleRemove={handleRemove}
+              uploadingFiles={uploadingFiles}
+            /> */}
+            <MediaPreviewSlider
+              files={files}
+              isPosting={isPending}
+              handleRemove={handleRemove}
               uploadingFiles={uploadingFiles}
             />
           </div>

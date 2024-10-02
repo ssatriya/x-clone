@@ -19,12 +19,12 @@ type Props = {
 
 const MediaItem = ({
   src,
-  mediaId,
-  mediaFormat,
   fill,
+  mediaId,
   isPosting,
-  handleRemove,
+  mediaFormat,
   isUploading,
+  handleRemove,
 }: Props) => {
   const styles = cn("overflow-hidden relative rounded-2xl shadow h-full", {
     "row-span-2": fill,
