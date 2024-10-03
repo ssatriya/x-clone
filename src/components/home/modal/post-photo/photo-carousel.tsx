@@ -2,13 +2,21 @@
 
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import useEmblaCarousel from "embla-carousel-react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 
 import { Media } from "@/types";
 import { cn } from "@/lib/utils";
 import Icons from "@/components/icons";
 import Button from "@/components/ui/button";
 import ModalGIFPlayer from "./modal-gif-player";
+import { usePrevNextButtons } from "@/hooks/usePrevNextButtons";
 
 type Props = {
   photos: Media[];
@@ -30,14 +38,30 @@ const PhotoCarousel = ({
   const pathname = usePathname();
   const [currentIndex, setCurrentIndex] = useState(photoNumber - 1);
 
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    dragFree: false,
+    containScroll: "keepSnaps",
+    slidesToScroll: "auto",
+    startIndex: photoNumber - 1,
+  });
+
+  const {
+    prevBtnDisabled,
+    nextBtnDisabled,
+    onPrevButtonClick,
+    onNextButtonClick,
+  } = usePrevNextButtons(emblaApi);
+
   const baseURL = pathname.slice(0, pathname.length - 1);
 
-  const goToNext = () => {
-    setCurrentIndex((prev) => prev + 1);
+  const scrollPrev = () => {
+    onPrevButtonClick();
+    setCurrentIndex((prev) => prev - 1);
   };
 
-  const goToPrev = () => {
-    setCurrentIndex((prev) => prev - 1);
+  const scrollNext = () => {
+    onNextButtonClick();
+    setCurrentIndex((prev) => prev + 1);
   };
 
   useEffect(() => {
@@ -68,7 +92,6 @@ const PhotoCarousel = ({
           <Icons.close className="h-5 w-5 fill-secondary" />
         </Button>
       </div>
-
       <div className="absolute top-0 right-0 p-3 z-10">
         {isMobile && (
           <Button
@@ -106,15 +129,14 @@ const PhotoCarousel = ({
           </Button>
         )}
       </div>
-
       <div className="absolute top-1/2 left-0 p-3 z-10">
-        {currentIndex > 0 && (
+        {!prevBtnDisabled && (
           <Button
             variant="ghost"
             size="icon"
             onClick={(e) => {
               e.stopPropagation();
-              goToPrev();
+              scrollPrev();
             }}
             className="h-[34px] w-[34px] hover:bg-black/40 bg-black/60"
           >
@@ -122,15 +144,14 @@ const PhotoCarousel = ({
           </Button>
         )}
       </div>
-
       <div className="absolute top-1/2 right-0 p-3 z-10">
-        {currentIndex < photos.length - 1 && (
+        {!nextBtnDisabled && (
           <Button
             variant="ghost"
             size="icon"
             onClick={(e) => {
               e.stopPropagation();
-              goToNext();
+              scrollNext();
             }}
             className="h-[34px] w-[34px] hover:bg-black/40 bg-black/60"
           >
@@ -138,35 +159,29 @@ const PhotoCarousel = ({
           </Button>
         )}
       </div>
-
       <div
-        className="h-full w-full flex items-center justify-center"
-        onClick={() => {
-          onClose();
-        }}
+        className="overflow-hidden select-none touch-none pointer-events-none w-full h-full"
+        ref={emblaRef}
       >
-        {photos[currentIndex].format === "gif" && (
-          <div key={currentIndex} className="w-fit h-fit flex-shrink-0">
-            <ModalGIFPlayer src={photos[currentIndex].url} />
-          </div>
-        )}
-        {photos[currentIndex].format !== "gif" && (
-          <div key={currentIndex} className="w-full h-full flex-shrink-0">
-            <div className="h-full w-full flex items-center justify-center">
-              <Image
-                src={photos[currentIndex].url}
-                width={photos[currentIndex].width}
-                height={photos[currentIndex].height}
-                priority
-                alt="media preview"
-                className="object-cover"
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              />
-            </div>
-          </div>
-        )}
+        <div className="flex h-full">
+          {photos.map((photo) => {
+            return (
+              <div
+                key={photo.id}
+                className="flex-[0_0_100%] min-w-0 relative h-full flex items-center justify-center"
+              >
+                {/* eslint-disable @next/next/no-img-element  */}
+                <img
+                  src={photo.url}
+                  alt="media"
+                  className="max-h-full max-w-full object-contain"
+                  loading="lazy"
+                  onLoad={() => {}}
+                />
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
