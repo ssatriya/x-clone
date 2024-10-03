@@ -1,4 +1,4 @@
-import { and, gte, inArray, isNull } from "drizzle-orm";
+import { and, inArray, isNull, lte } from "drizzle-orm";
 
 import db from "@/lib/db";
 import { mediaTable } from "@/lib/db/schema";
@@ -23,7 +23,7 @@ export async function GET(req: Request) {
       .where(
         and(
           isNull(mediaTable.postId),
-          gte(mediaTable.createdAt, new Date(Date.now() - 1000 * 60 * 60))
+          lte(mediaTable.createdAt, new Date(Date.now() - 1000 * 60 * 60 * 24))
         )
       );
 
