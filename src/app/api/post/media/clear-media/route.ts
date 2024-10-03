@@ -23,7 +23,7 @@ export async function GET(req: Request) {
       .where(
         and(
           isNull(mediaTable.postId),
-          lte(mediaTable.createdAt, new Date(Date.now() - 60 * 60 * 1000))
+          lte(mediaTable.createdAt, new Date(Date.now() - 24 * 60 * 60 * 1000))
         )
       );
 
