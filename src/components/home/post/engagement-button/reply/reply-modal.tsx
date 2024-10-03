@@ -62,16 +62,16 @@ type Props = {
 
 const ReplyModal = ({ loggedInUser, setIsOpen, isOpen, post, user }: Props) => {
   const queryClient = useQueryClient();
-  const { startUpload, uploadingFiles, insertedMediaId } = useUploadMedia();
+  const { startUpload, uploadingFiles } = useUploadMedia();
 
   const mediaRef = useRef<HTMLInputElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  const [inputValue, setInputValue] = useState("");
   const [inputCount, setInputCount] = useState(0);
+  const [inputValue, setInputValue] = useState("");
+  const [isPending, setIsPending] = useState(false);
   const [isInputFocus, setIsInputFocus] = useState(false);
   const [files, setFiles] = useState<FileWithPreview[]>([]);
-  const [isPending, setIsPending] = useState(false);
 
   const { focusPostId } = useCurrentFocusPost();
 
@@ -213,7 +213,7 @@ const ReplyModal = ({ loggedInUser, setIsOpen, isOpen, post, user }: Props) => {
         postType: "reply",
         parentPostId: post.id,
         rootPostId: post.rootPostId,
-        mediaId: insertedMediaId,
+        mediaId: files.map((file) => file.meta.id),
       };
       createReply(payload);
     } catch (error) {

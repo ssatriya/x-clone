@@ -40,18 +40,19 @@ type Props = {
 };
 
 const ComposeModal = ({ loggedInUser }: Props) => {
-  const queryClient = useQueryClient();
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(true);
+  const queryClient = useQueryClient();
+  const { startUpload, uploadingFiles } = useUploadMedia();
+
   const mediaRef = useRef<HTMLInputElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  const [inputValue, setInputValue] = useState("");
+  const [isOpen, setIsOpen] = useState(true);
   const [inputCount, setInputCount] = useState(0);
+  const [inputValue, setInputValue] = useState("");
+  const [isPending, setIsPending] = useState(false);
   const [isInputFocus, setIsInputFocus] = useState(true);
   const [files, setFiles] = useState<FileWithPreview[]>([]);
-  const [isPending, setIsPending] = useState(false);
-  const { startUpload, uploadingFiles, insertedMediaId } = useUploadMedia();
 
   const { mutate: createPost } = useMutation({
     mutationKey: ["create-post"],
@@ -174,7 +175,7 @@ const ComposeModal = ({ loggedInUser }: Props) => {
     const payload: CreatePostPayload = {
       content: inputValue.trim(),
       postType: "post",
-      mediaId: insertedMediaId,
+      mediaId: files.map((file) => file.meta.id),
     };
     createPost(payload);
   };

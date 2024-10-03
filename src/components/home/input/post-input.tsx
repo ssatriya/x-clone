@@ -35,8 +35,7 @@ type Props = {
 
 const PostInput = ({ loggedInUser }: Props) => {
   const queryClient = useQueryClient();
-  const { startUpload, uploadingFiles, insertedMediaId, setInsertedMediaId } =
-    useUploadMedia();
+  const { startUpload, uploadingFiles } = useUploadMedia();
 
   const mediaRef = useRef<HTMLInputElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -59,7 +58,6 @@ const PostInput = ({ loggedInUser }: Props) => {
       setFiles([]);
       setIsInputFocus(false);
       setIsPending(false);
-      setInsertedMediaId([]);
     },
   });
 
@@ -175,7 +173,7 @@ const PostInput = ({ loggedInUser }: Props) => {
     const payload: CreatePostPayload = {
       content: inputValue.trim(),
       postType: "post",
-      mediaId: insertedMediaId,
+      mediaId: files.map((file) => file.meta.id),
     };
     createPost(payload);
   };

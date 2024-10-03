@@ -74,15 +74,16 @@ const QuoteModal = ({
   originalPost,
 }: Props) => {
   const queryClient = useQueryClient();
+  const { startUpload, uploadingFiles } = useUploadMedia();
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const mediaRef = useRef<HTMLInputElement>(null);
-  const [isInputFocus, setIsInputFocus] = useState(false);
+
   const [inputCount, setInputCount] = useState(0);
   const [inputValue, setInputValue] = useState("");
-  const [files, setFiles] = useState<FileWithPreview[]>([]);
   const [isPending, setIsPending] = useState(false);
-  const { startUpload, uploadingFiles, insertedMediaId } = useUploadMedia();
+  const [isInputFocus, setIsInputFocus] = useState(false);
+  const [files, setFiles] = useState<FileWithPreview[]>([]);
 
   const repostQueryKey = ["get-repost", postId];
 
@@ -280,7 +281,7 @@ const QuoteModal = ({
         content: inputValue.trim(),
         postType: "quote",
         quoteTargetId: postId,
-        mediaId: insertedMediaId,
+        mediaId: files.map((file) => file.meta.id),
       };
       quoteMutate(payload);
     } else {
