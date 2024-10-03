@@ -37,6 +37,7 @@ export const CreateLikeSchema = z.object({
 export type CreateLikePayload = z.infer<typeof CreateLikeSchema>;
 
 export const CreateMediaSchema = z.object({
+  id: z.string(),
   postId: z.string().optional(),
   url: z.string(),
   key: z.string(),

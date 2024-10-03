@@ -268,9 +268,7 @@ export const likeTableRelation = relations(likeTable, ({ one }) => ({
 export const mediaTable = pgTable(
   "media",
   {
-    id: text("id")
-      .primaryKey()
-      .$defaultFn(() => generateIdFromEntropySize(10)),
+    id: text("id").primaryKey(),
     userId: text("user_id")
       .notNull()
       .references(() => userTable.id, { onDelete: "set null" }),
