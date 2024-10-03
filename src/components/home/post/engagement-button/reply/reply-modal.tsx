@@ -15,6 +15,7 @@ import {
   DialogBackdrop,
 } from "@headlessui/react";
 import Image from "next/image";
+import toast from "react-hot-toast";
 import TextareaAutosize from "react-textarea-autosize";
 import { generateIdFromEntropySize, User } from "lucia";
 import { AnimatePresence, motion } from "framer-motion";
@@ -38,9 +39,9 @@ import { CreateReplyPayload } from "@/lib/zod-schema";
 import { useUploadMedia } from "@/hooks/useUploadMedia";
 import useCurrentFocusPost from "@/hooks/useCurrentFocusPost";
 import InputOptions from "@/components/home/input/input-options";
-import MediaPreview from "@/components/home/input/media-preview";
 import ProgressCircle from "@/components/home/input/progress-circle";
 import { FileWithPreview, MediaFormat, OptionButtonConfig } from "@/types";
+import MediaPreviewSlider from "@/components/home/input/media-preview-slider";
 
 type Props = {
   loggedInUser: User;
@@ -164,7 +165,12 @@ const ReplyModal = ({ loggedInUser, setIsOpen, isOpen, post, user }: Props) => {
             setFiles((prev) => [...(prev ?? []), fileWithPreview]);
             await startUpload(fileWithPreview);
           } catch (error) {
-            console.error(error);
+            if (error) {
+              toast.error("Failed to upload GIF, try again later.", {
+                position: "bottom-center",
+              });
+              console.error(error);
+            }
           }
         }
         if (fileType == "mp4") {
@@ -259,16 +265,11 @@ const ReplyModal = ({ loggedInUser, setIsOpen, isOpen, post, user }: Props) => {
     >
       <DialogBackdrop className="fixed inset-0 bg-black sm-plus:bg-backdrop" />
       <div className="fixed inset-0 flex items-start justify-center w-screen top-0 sm-plus:top-12">
-        <DialogPanel className="bg-black overflow-clip max-sm:h-full max-w-[600px] w-full h-fit sm-plus:max-h-[680px] sm-plus:rounded-2xl rounded-none relative flex flex-col">
-          <DialogTitle className="font-bold h-[53px] flex-shrink-0 flex items-center px-4 sticky top-0 z-20 sm-plus:rounded-2xl rounded-none bg-black/60">
-            {/* {isPosting && (
-              <Progressbar
-                isPending={isPosting}
-                overallProgress={overallProgress}
-                hasFiles={files.length > 0}
-                classNames="absolute right-0 top-0 z-50"
-              />
-            )} */}
+        <DialogPanel className="bg-black max-sm:h-full max-w-[600px] w-full h-fit sm-plus:max-h-[680px] sm-plus:rounded-2xl rounded-none relative flex flex-col">
+          <DialogTitle className="font-bold h-[53px] flex-shrink-0 flex items-center px-4 sticky top-0 z-20 sm-plus:rounded-2xl rounded-none bg-black/60 overflow-hidden">
+            {isPosting && (
+              <Progressbar classNames="absolute top-0 right-0 z-30 w-full h-1" />
+            )}
             <div className="flex justify-between w-full">
               <Button
                 onClick={() => setIsOpen(false)}
@@ -350,7 +351,7 @@ const ReplyModal = ({ loggedInUser, setIsOpen, isOpen, post, user }: Props) => {
                           autoFocus={true}
                         />
                       </motion.div>
-                      <MediaPreview
+                      <MediaPreviewSlider
                         files={files}
                         isPosting={isPosting}
                         handleRemove={handleRemove}
@@ -384,7 +385,7 @@ const ReplyModal = ({ loggedInUser, setIsOpen, isOpen, post, user }: Props) => {
                     containerClassNames="flex items-center -ml-2 py-[3px] mt-2"
                     buttons={optionButtonConfigs}
                   />
-                  <div className="flex items-center h-full gap-2">
+                  <div className="flex items-center h-full gap-2 overflow-hidden">
                     {inputCount > 0 && (
                       <div className="flex items-center justify-center">
                         <ProgressCircle inputCount={inputCount} />
