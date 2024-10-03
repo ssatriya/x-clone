@@ -61,7 +61,6 @@ export const useUploadMedia = () => {
   const [uploadingFiles, setUploadingFiles] = useState<{
     [id: string]: boolean;
   }>({});
-  const [insertedMediaId, setInsertedMediaId] = useState<string[]>([]);
 
   const startUpload = async (file: FileWithPreview) => {
     const fileId = file.meta.id;
@@ -99,6 +98,7 @@ export const useUploadMedia = () => {
               .getPublicUrl(uploadPath as string);
 
             const payload: CreateMediaSchema = {
+              id: file.meta.id,
               format: file.meta.format,
               height: file.meta.dimension.height,
               width: file.meta.dimension.width,
@@ -107,13 +107,12 @@ export const useUploadMedia = () => {
               url: publicUrlData.publicUrl,
             };
 
-            const returningId = await kyInstance
+            await kyInstance
               .post("/api/post/media", {
                 body: JSON.stringify(payload),
               })
               .json<{ id: string }>();
 
-            setInsertedMediaId((prev) => [returningId.id, ...prev]);
             setUploadingFiles((prev) => ({ ...prev, [fileId]: false }));
           }
         } catch (error) {
@@ -171,6 +170,7 @@ export const useUploadMedia = () => {
             .getPublicUrl(uploadPath as string);
 
           const payload: CreateMediaSchema = {
+            id: file.meta.id,
             format: file.meta.format,
             height: file.meta.dimension?.height || 0,
             width: file.meta.dimension?.width || 0,
@@ -179,13 +179,12 @@ export const useUploadMedia = () => {
             url: publicUrlData.publicUrl,
           };
 
-          const returningId = await kyInstance
+          await kyInstance
             .post("/api/post/media", {
               body: JSON.stringify(payload),
             })
             .json<{ id: string }>();
 
-          setInsertedMediaId((prev) => [returningId.id, ...prev]);
           setUploadingFiles((prev) => ({ ...prev, [fileId]: false }));
         }
       }
@@ -196,5 +195,5 @@ export const useUploadMedia = () => {
     }
   };
 
-  return { startUpload, uploadingFiles, insertedMediaId, setInsertedMediaId };
+  return { startUpload, uploadingFiles };
 };
