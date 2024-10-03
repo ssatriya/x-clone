@@ -8,11 +8,10 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import { cn } from "@/lib/utils";
 import Icons from "@/components/icons";
-import { FileWithPreview, OptionButtonConfig } from "@/types";
-import MediaPreview from "./media-preview";
-import Button from "@/components/ui/button";
-import ButtonTooltip from "@/components/button-tooltip";
 import InputOptions from "./input-options";
+import Button from "@/components/ui/button";
+import MediaPreviewSlider from "./media-preview-slider";
+import { FileWithPreview, OptionButtonConfig } from "@/types";
 
 type Props = {
   photo: string;
@@ -132,7 +131,7 @@ const InputReply = ({
         </div>
         <div className="flex gap-2">
           <div className="w-10 flex-shrink-0 h-auto" />
-          <MediaPreview
+          <MediaPreviewSlider
             files={files}
             handleRemove={handleRemove}
             isPosting={isPosting}
@@ -146,7 +145,7 @@ const InputReply = ({
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="flex gap-2 w-full overflow-hidden"
+              className="flex gap-2 w-full"
             >
               <div className="w-10" />
               <input
