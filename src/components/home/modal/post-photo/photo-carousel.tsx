@@ -17,6 +17,7 @@ import Icons from "@/components/icons";
 import Button from "@/components/ui/button";
 import ModalGIFPlayer from "./modal-gif-player";
 import { usePrevNextButtons } from "@/hooks/usePrevNextButtons";
+import Progressbar from "@/components/progressbar";
 
 type Props = {
   photos: Media[];
@@ -36,6 +37,7 @@ const PhotoCarousel = ({
   setIsSidebarOpen,
 }: Props) => {
   const pathname = usePathname();
+  const [onLoad, setOnload] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(photoNumber - 1);
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -160,7 +162,7 @@ const PhotoCarousel = ({
         )}
       </div>
       <div
-        className="overflow-hidden select-none touch-none pointer-events-none w-full h-full"
+        className="overflow-hidden select-none touch-none w-full h-full"
         ref={emblaRef}
       >
         <div className="flex h-full">
@@ -169,14 +171,29 @@ const PhotoCarousel = ({
               <div
                 key={photo.id}
                 className="flex-[0_0_100%] min-w-0 relative h-full flex items-center justify-center"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onClose();
+                }}
               >
+                <Progressbar
+                  classNames={cn(
+                    onLoad ? "opacity-0" : "opacity-100",
+                    "absolute top-0 w-full z-40"
+                  )}
+                />
                 {/* eslint-disable @next/next/no-img-element  */}
                 <img
                   src={photo.url}
                   alt="media"
                   className="max-h-full max-w-full object-contain"
                   loading="lazy"
-                  onLoad={() => {}}
+                  onLoad={() => {
+                    setOnload(true);
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
                 />
               </div>
             );
