@@ -19,7 +19,6 @@ import {
 } from "@/lib/utils";
 import kyInstance from "@/lib/ky";
 import Icons from "@/components/icons";
-import MediaPreview from "./media-preview";
 import InputOptions from "./input-options";
 import Button from "@/components/ui/button";
 import Divider from "@/components/ui/divider";
@@ -282,12 +281,6 @@ const PostInput = ({ loggedInUser }: Props) => {
                 minRows={1}
               />
             </div>
-            {/* <MediaPreview
-              files={files}
-              isPosting={isPending}
-              handleRemove={handleRemove}
-              uploadingFiles={uploadingFiles}
-            /> */}
             <MediaPreviewSlider
               files={files}
               isPosting={isPending}
