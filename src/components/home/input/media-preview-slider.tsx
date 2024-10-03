@@ -98,7 +98,7 @@ const MediaPreviewSlider = ({
             variant="ghost"
             size="icon"
             onClick={onPrevButtonClick}
-            className="h-[34px] w-[34px] bg-black/60 hover:bg-black/50"
+            className="h-[34px] w-[34px] bg-black/70 hover:bg-black/60"
           >
             <Icons.arrowLeft className="h-5 w-5 fill-secondary" />
           </Button>
@@ -110,7 +110,7 @@ const MediaPreviewSlider = ({
             variant="ghost"
             size="icon"
             onClick={onNextButtonClick}
-            className="h-[34px] w-[34px] bg-black/60 hover:bg-black/50"
+            className="h-[34px] w-[34px] bg-black/70 hover:bg-black/60"
           >
             <Icons.arrowRight className="h-5 w-5 fill-secondary" />
           </Button>
@@ -136,7 +136,7 @@ const MediaPreviewSlider = ({
                       variant="ghost"
                       size="icon"
                       onClick={() => handleRemove(media.meta.id)}
-                      className="h-8 w-8 bg-black/60 hover:bg-black/50 pointer-events-auto"
+                      className="h-8 w-8 bg-black/70 hover:bg-black/60 pointer-events-auto"
                     >
                       <Icons.close className="h-[18px] w-[18px] fill-secondary" />
                     </Button>
@@ -147,7 +147,7 @@ const MediaPreviewSlider = ({
                     <Button
                       variant="ghost"
                       onClick={() => handleRemove(media.meta.id)}
-                      className="h-8 px-4 bg-black/60 hover:bg-black/50 pointer-events-auto font-bold"
+                      className="h-8 px-4 bg-black/70 hover:bg-black/60 pointer-events-auto font-bold"
                     >
                       Edit
                     </Button>
