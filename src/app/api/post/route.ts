@@ -85,7 +85,6 @@ export async function GET(req: NextRequest) {
 
     const ogPost = aliasedTable(postTable, "ogPost");
     const ogUser = aliasedTable(userTable, "ogUser");
-    const ogMedia = aliasedTable(mediaTable, "ogMedia");
 
     const [post] = await db
       .select({
@@ -146,20 +145,24 @@ export async function GET(req: NextRequest) {
             height: number;
           }[]
         >`
-              COALESCE(
-                json_agg(
-                  json_build_object(
-                    'id', ${mediaTable.id},
-                    'url', ${mediaTable.url},
-                    'size', ${mediaTable.size},
-                    'format', ${mediaTable.format},
-                    'width', ${mediaTable.width},
-                    'height', ${mediaTable.height}
-                  )
-                ) FILTER (WHERE ${mediaTable.id} IS NOT NULL),
-                '[]'
-              )
-            `,
+            COALESCE(
+              (
+                SELECT json_agg(media)
+                FROM (
+                  SELECT DISTINCT
+                    ${mediaTable.id} as id,
+                    ${mediaTable.url} as url,
+                    ${mediaTable.size} as size,
+                    ${mediaTable.format} as format,
+                    ${mediaTable.width} as width,
+                    ${mediaTable.height} as height
+                  FROM ${mediaTable}
+                  WHERE ${mediaTable.postId} = ${postTable.id}
+                ) as media
+              ),
+              '[]'
+            )
+          `,
         ogMedia: sql<
           {
             id: string;
@@ -171,16 +174,20 @@ export async function GET(req: NextRequest) {
           }[]
         >`
             COALESCE(
-              json_agg(
-                json_build_object(
-                  'id', ${ogMedia.id},
-                  'url', ${ogMedia.url},
-                  'size', ${ogMedia.size},
-                  'format', ${ogMedia.format},
-                  'width', ${ogMedia.width},
-                  'height', ${ogMedia.height}
-                )
-              ) FILTER (WHERE ${ogMedia.id} IS NOT NULL),
+              (
+                SELECT json_agg(media)
+                FROM (
+                 SELECT DISTINCT
+                    ${mediaTable.id} as id,
+                    ${mediaTable.url} as url,
+                    ${mediaTable.size} as size,
+                    ${mediaTable.format} as format,
+                    ${mediaTable.width} as width,
+                    ${mediaTable.height} as height
+                  FROM ${mediaTable}
+                  WHERE ${mediaTable.postId} = ${ogPost.id}
+                ) as media
+              ),
               '[]'
             )
           `,
@@ -193,8 +200,6 @@ export async function GET(req: NextRequest) {
       .leftJoin(repostTable, eq(postTable.id, repostTable.repostTargetId))
       .leftJoin(quoteTable, eq(postTable.id, quoteTable.quoteTargetId))
       .leftJoin(likeTable, eq(postTable.id, likeTable.likeTargetId))
-      .leftJoin(mediaTable, eq(postTable.id, mediaTable.postId))
-      .leftJoin(ogMedia, eq(ogPost.id, ogMedia.postId))
       .where(
         and(eq(postTable.id, postId), eq(userTable.username, `@${username}`))
       )

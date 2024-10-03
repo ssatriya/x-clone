@@ -263,7 +263,6 @@ const PostMedia = ({
                   width: "100%",
                 }}
                 onClick={(e) => {
-                  console.log("click");
                   router.push(photoModalURL, { scroll: false });
                 }}
               >
@@ -298,7 +297,7 @@ const PostMedia = ({
                   <img
                     src={`https://wsrv.nl/?url=${
                       media.url
-                    }&w=${400}&output=jpeg`}
+                    }&w=${600}&output=jpeg`}
                     alt="img"
                     className="object-cover h-full w-full focus-visible:outline-none"
                   />

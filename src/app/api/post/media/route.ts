@@ -19,11 +19,12 @@ export async function POST(req: NextRequest) {
       return new Response("invalid payload", { status: 400 });
     }
 
-    const { url, key, size, format, width, height } = payload.data;
+    const { id, url, key, size, format, width, height } = payload.data;
 
     const [res] = await db
       .insert(mediaTable)
       .values({
+        id,
         userId: loggedInUser.id,
         url,
         key,

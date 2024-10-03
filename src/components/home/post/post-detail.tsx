@@ -15,10 +15,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
   compress,
+  updateProgress,
   formatTimestamp,
   getImageDimension,
   getVideoDimension,
-  updateProgress,
 } from "@/lib/utils";
 import kyInstance from "@/lib/ky";
 import Icons from "@/components/icons";
@@ -48,17 +48,18 @@ type Props = {
 };
 
 const PostDetail = ({ loggedInUser, username, postId }: Props) => {
-  const divRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
-  const mediaRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
-  const [inputValue, setInputValue] = useState("");
+  const { setFocusPost } = useCurrentFocusPost();
+  const { startUpload, uploadingFiles } = useUploadMedia();
+
+  const divRef = useRef<HTMLDivElement>(null);
+  const mediaRef = useRef<HTMLInputElement>(null);
   const [inputCount, setInputCount] = useState(0);
+  const [inputValue, setInputValue] = useState("");
   const [isPending, setIsPending] = useState(false);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const [isInputFocus, setIsInputFocus] = useState(false);
   const [files, setFiles] = useState<FileWithPreview[]>([]);
-  const { setFocusPost } = useCurrentFocusPost();
-  const { startUpload, uploadingFiles, insertedMediaId } = useUploadMedia();
 
   const queryKey = ["post-detail", postId, username];
   const { data, isLoading } = useQuery({
@@ -240,7 +241,7 @@ const PostDetail = ({ loggedInUser, username, postId }: Props) => {
       postType: "reply",
       parentPostId: data.post.postId,
       rootPostId: data.post.postRootPostId,
-      mediaId: insertedMediaId,
+      mediaId: files.map((file) => file.meta.id),
     };
     createReply(payload);
   };

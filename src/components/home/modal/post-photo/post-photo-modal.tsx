@@ -36,19 +36,20 @@ type Props = {
 const PostPhotoModal = ({ photoNumber, post, loggedInUser }: Props) => {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [isOpen, setIsOpen] = useState(true);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const mediaQuery = useMediaQuery("(min-width: 950px)");
+  const { startUpload, uploadingFiles } = useUploadMedia();
+
+  const [isOpen, setIsOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-  const { startUpload, uploadingFiles, insertedMediaId } = useUploadMedia();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   useEffect(() => {
     if (!mediaQuery) {
-      setIsSidebarOpen(false);
       setIsMobile(true);
+      setIsSidebarOpen(false);
     } else {
-      setIsSidebarOpen(true);
       setIsMobile(false);
+      setIsSidebarOpen(true);
     }
   }, [mediaQuery]);
 
@@ -197,7 +198,7 @@ const PostPhotoModal = ({ photoNumber, post, loggedInUser }: Props) => {
         postType: "reply",
         parentPostId: post.post.postId,
         rootPostId: post.post.postRootPostId,
-        mediaId: insertedMediaId,
+        mediaId: files.map((file) => file.meta.id),
       };
       createReply(payload);
     } catch (error) {
