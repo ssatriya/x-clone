@@ -1,4 +1,4 @@
-import { and, inArray, isNull, lte } from "drizzle-orm";
+import { and, gte, inArray, isNull } from "drizzle-orm";
 
 import db from "@/lib/db";
 import { mediaTable } from "@/lib/db/schema";
@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabase/client";
 
 const bucketName = process.env.NEXT_PUBLIC_BUCKETNAME!;
 
-export async function DELETE(req: Request) {
+export async function GET(req: Request) {
   try {
     const authHeader = req.headers.get("Authorization");
 
@@ -23,7 +23,7 @@ export async function DELETE(req: Request) {
       .where(
         and(
           isNull(mediaTable.postId),
-          lte(mediaTable.createdAt, new Date(Date.now() - 1000 * 60 * 60 * 24))
+          gte(mediaTable.createdAt, new Date(Date.now() - 1000 * 60 * 60))
         )
       );
 
