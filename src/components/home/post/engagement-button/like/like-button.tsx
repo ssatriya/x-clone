@@ -29,6 +29,7 @@ const LikeButton = ({ userId, postId, initialLike, size }: Props) => {
     queryFn: () =>
       kyInstance.get(`/api/post/like?postId=${postId}`).json<LikeInfo>(),
     initialData: initialLike,
+    refetchOnMount: false,
   });
 
   const [move, setMove] = useState(
