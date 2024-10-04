@@ -198,38 +198,47 @@ SELECT
   -- Counts of replies for the original post
   COUNT(DISTINCT ogReply.id) AS "originalReplyCount",
 
--- Aggregated media for this post
-COALESCE(
-  json_agg(
-    jsonb_build_object(
-      'id', media.id,
-      'url', media.url,
-      'key', media.key,
-      'size', media.size,
-      'format', media.format,
-      'width', media.width,
-      'height', media.height
-    ) ORDER BY media.created_at ASC  -- Order media by created_at in descending order
-  ) FILTER (WHERE media.id IS NOT NULL),
-  '[]'
-) AS media,
+  -- Aggregated media for this post
+  COALESCE(
+    (
+      SELECT json_agg(media)
+      FROM (
+        SELECT 
+          media.id,
+          media.url,
+          media.key,
+          media.size,
+          media.format,
+          media.width,
+          media.height
+        FROM media
+        WHERE media.post_id = ph."postId"
+        ORDER BY media.created_at ASC  -- Order by created_at
+      ) as media
+    ),
+    '[]'
+  ) AS media,
 
--- Aggregated media for the original post
-COALESCE(
-  json_agg(
-    jsonb_build_object(
-      'id', ogMedia.id,
-      'url', ogMedia.url,
-      'key', ogMedia.key,
-      'size', ogMedia.size,
-      'format', ogMedia.format,
-      'width', ogMedia.width,
-      'height', ogMedia.height
-    ) ORDER BY ogMedia.created_at ASC  -- Order original media by created_at in descending order
-  ) FILTER (WHERE ogMedia.id IS NOT NULL),
-  '[]'
-) AS "originalMedia"
-
+  -- Aggregated media for the original post
+  COALESCE(
+    (
+      SELECT json_agg(originalMedia)
+      FROM (
+        SELECT 
+          ogMedia.id,
+          ogMedia.url,
+          ogMedia.key,
+          ogMedia.size,
+          ogMedia.format,
+          ogMedia.width,
+          ogMedia.height
+        FROM media ogMedia
+        WHERE ogMedia.post_id = ph."originalPostId"
+        ORDER BY ogMedia.created_at ASC  -- Order by created_at
+      ) as originalMedia
+    ),
+    '[]'
+  ) AS "originalMedia"
 FROM 
   post_hierarchy ph
 LEFT JOIN repost ON repost.repost_target_id = ph."postId"
@@ -268,7 +277,6 @@ ORDER BY
   ph.thread_start_time DESC, ph."createdAt"
 LIMIT ${pageSize} OFFSET ${offset};
     `);
-    // WHERE post.user_id IN (${sql.raw(followerArrayForSQL)})
 
     const nextOffset =
       followedPosts.length === pageSize ? offset + pageSize : null;
