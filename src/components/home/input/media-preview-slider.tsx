@@ -8,6 +8,7 @@ import Icons from "@/components/icons";
 import { FileWithPreview } from "@/types";
 import Button from "@/components/ui/button";
 import { usePrevNextButtons } from "@/hooks/usePrevNextButtons";
+import { cn } from "@/lib/utils";
 
 type Props = {
   isPosting: boolean;
@@ -76,7 +77,8 @@ const MediaPreviewSlider = ({
         : 514,
   };
 
-  if (!isVideo || files.length > 1) {
+  // !isVideo || files.length > 1
+  if (files.length > 1) {
     containerStyle.aspectRatio =
       files.length > 1
         ? 514 / MAX_HEIGHT_MULTIPLE
@@ -120,18 +122,31 @@ const MediaPreviewSlider = ({
         className="overflow-hidden select-none touch-none pointer-events-none"
         ref={emblaRef}
       >
-        <div className="flex -ml-2" style={containerStyle}>
+        <div
+          className={cn("flex w-full", files.length > 1 && "-mx-1")}
+          style={containerStyle}
+        >
           {files.map((media, index) => {
-            const imageFormat = ["gif", "jpg", "jpeg", "png"];
+            const imageFormat = ["jpg", "jpeg", "png"];
             const isImage = imageFormat.includes(media.meta.format);
             const isVideo = media.meta.format === "mp4";
+            const isGIF = media.meta.format === "gif";
             return (
               <div
-                className={`flex-[0_0_auto] min-w-0 pl-2 relative transform translate-x-0 translate-y-0 ${slideSize}`}
+                className={cn(
+                  "flex-[0_0_auto] min-w-0 relative transform translate-x-0 translate-y-0",
+                  slideSize,
+                  files.length > 1 && "px-1"
+                )}
                 key={index}
               >
                 {!isPosting && (
-                  <div className="absolute right-1 top-1 z-10">
+                  <div
+                    className={cn(
+                      "absolute top-1 z-10",
+                      files.length > 1 ? "right-2" : "right-1"
+                    )}
+                  >
                     <Button
                       variant="ghost"
                       size="icon"
@@ -143,7 +158,12 @@ const MediaPreviewSlider = ({
                   </div>
                 )}
                 {!isPosting && (
-                  <div className="absolute left-3 top-1 z-10">
+                  <div
+                    className={cn(
+                      "absolute top-1 z-10",
+                      files.length > 1 ? "left-2" : "left-1"
+                    )}
+                  >
                     <Button
                       variant="ghost"
                       onClick={() => handleRemove(media.meta.id)}
@@ -163,14 +183,29 @@ const MediaPreviewSlider = ({
                     className="w-full h-full object-cover rounded-2xl"
                   />
                 )}
+                {isGIF && (
+                  <>
+                    <Image
+                      src={media.meta.preview}
+                      alt="preview media"
+                      width={0}
+                      height={0}
+                      priority
+                      className="w-full h-full object-cover rounded-2xl"
+                    />
+                    <div className="absolute bottom-3 left-3 bg-black/70 h-5 flex items-center justify-center px-2.5 rounded-[4px]">
+                      <span className="text-xs leading-3 font-bold">GIF</span>
+                    </div>
+                  </>
+                )}
                 {isVideo && (
                   <div className="h-full w-full">
                     <video
-                      height={290}
+                      // height={290}
                       controls
                       loop
                       playsInline
-                      className="rounded-2xl h-full w-full object-contain"
+                      className="rounded-2xl h-full w-full object-contain pointer-events-auto"
                     >
                       <source src={media.meta.preview} />
                     </video>

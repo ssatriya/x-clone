@@ -74,14 +74,14 @@ const MediaItem = ({
             controls
             loop
             playsInline
-            className="rounded-2xl h-full w-full object-contain overflow-clip"
+            className="rounded-2xl h-full w-full object-cover overflow-clip"
           >
             <source src={src} />
           </video>
         </div>
       )}
       {mediaFormat == "gif" && (
-        <div className="h-full w-full relative">
+        <div>
           <Image
             src={src}
             width={0}
