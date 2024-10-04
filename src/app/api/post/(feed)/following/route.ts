@@ -274,7 +274,8 @@ GROUP BY
   ph."originalPhoto",
   ph."originalRootPostId"
 ORDER BY 
-  ph.thread_start_time DESC, ph."createdAt"
+  ph.thread_start_time DESC, 
+  ph."createdAt"
 LIMIT ${pageSize} OFFSET ${offset};
     `);
 

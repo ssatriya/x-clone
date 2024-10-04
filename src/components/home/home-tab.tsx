@@ -13,6 +13,7 @@ import ForYouFeed from "./for-you-feed";
 import PostInput from "./input/post-input";
 import Button from "@/components/ui/button";
 import FollowingFeed from "./following-feed";
+import LoadingOverlay from "../loading-overlay";
 import useScrollPosition from "@/hooks/useScrollPosition";
 
 type Props = {
@@ -20,9 +21,11 @@ type Props = {
 };
 
 const HomeTab = ({ loggedInUser }: Props) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isUserScroll, setIsUserScroll] = useState(false);
   const scrollY = useScrollPosition();
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isUserScroll, setIsUserScroll] = useState(false);
 
   useEffect(() => {
     if (scrollY > 0) {
@@ -39,9 +42,19 @@ const HomeTab = ({ loggedInUser }: Props) => {
     defaultValue: 0,
   });
 
+  useEffect(() => {
+    if (value !== undefined) {
+      setIsLoaded(true);
+    }
+  }, [value]);
+
   const onChangeHandler = (index: number) => {
     setValue(index);
   };
+
+  if (!isLoaded) {
+    return <LoadingOverlay />;
+  }
 
   return (
     <>
