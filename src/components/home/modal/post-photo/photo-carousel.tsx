@@ -176,12 +176,12 @@ const PhotoCarousel = ({
                   onClose();
                 }}
               >
-                <Progressbar
+                {/* <Progressbar
                   classNames={cn(
                     onLoad ? "opacity-0" : "opacity-100",
                     "absolute top-0 w-full z-40"
                   )}
-                />
+                /> */}
                 {/* eslint-disable @next/next/no-img-element  */}
                 <img
                   src={photo.url}
@@ -190,6 +190,9 @@ const PhotoCarousel = ({
                   loading="lazy"
                   onLoad={() => {
                     setOnload(true);
+                  }}
+                  onLoadStart={() => {
+                    setOnload(false);
                   }}
                   onClick={(e) => {
                     e.stopPropagation();
