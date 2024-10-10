@@ -44,7 +44,6 @@ const FollowingFeed = ({ loggedInUser }: Props) => {
     });
 
   const posts = data?.pages.flatMap((page) => page.followedPosts) || [];
-
   // useEffect(() => {
   //   queryClient.resetQueries({ queryKey: ["following-feed"] });
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
