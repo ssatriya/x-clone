@@ -111,9 +111,11 @@ export async function GET(req: NextRequest) {
                 ${mediaTable.size} as size,
                 ${mediaTable.format} as format,
                 ${mediaTable.width} as width,
-                ${mediaTable.height} as height
+                ${mediaTable.height} as height,
+                ${mediaTable.createdAt} as "createdAt"
               FROM ${mediaTable}
               WHERE ${mediaTable.postId} = ${postTable.id}
+              ORDER BY ${mediaTable.createdAt} ASC
             ) as media
           ),
           '[]'
@@ -131,7 +133,7 @@ export async function GET(req: NextRequest) {
         >`
         COALESCE(
           (
-            SELECT json_agg(media)
+            SELECT json_agg(ogMedia)
             FROM (
              SELECT DISTINCT
                 ${mediaTable.id} as id,
@@ -139,10 +141,12 @@ export async function GET(req: NextRequest) {
                 ${mediaTable.size} as size,
                 ${mediaTable.format} as format,
                 ${mediaTable.width} as width,
-                ${mediaTable.height} as height
+                ${mediaTable.height} as height,
+                ${mediaTable.createdAt} as "createdAt"
               FROM ${mediaTable}
               WHERE ${mediaTable.postId} = ${ogPost.id}
-            ) as media
+              ORDER BY ${mediaTable.createdAt} ASC
+            ) as ogMedia
           ),
           '[]'
         )

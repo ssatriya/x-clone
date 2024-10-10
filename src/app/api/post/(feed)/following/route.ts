@@ -206,7 +206,6 @@ SELECT
         SELECT 
           media.id,
           media.url,
-          media.key,
           media.size,
           media.format,
           media.width,
@@ -227,7 +226,6 @@ SELECT
         SELECT 
           ogMedia.id,
           ogMedia.url,
-          ogMedia.key,
           ogMedia.size,
           ogMedia.format,
           ogMedia.width,
