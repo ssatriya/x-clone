@@ -41,15 +41,15 @@ const PersonalProfileInfo = ({ user }: Props) => {
 
   return (
     <div className="relative">
-      <Link href="/DonnyRqmQ2UTug/header_photo">
-        <div
-          style={{
-            maxWidth: 598,
-            aspectRatio: 598 / 200,
-          }}
-          className="cursor-pointer overflow-hidden relative"
-        >
-          {user.headerPhoto && (
+      {user.headerPhoto && (
+        <Link href={`/${user.username.slice(1)}/header_photo`}>
+          <div
+            style={{
+              maxWidth: 598,
+              aspectRatio: 598 / 200,
+            }}
+            className="cursor-pointer overflow-hidden relative"
+          >
             <Image
               src="/header-photo.jpg"
               alt="header-photo"
@@ -58,12 +58,20 @@ const PersonalProfileInfo = ({ user }: Props) => {
               fill
               priority
             />
-          )}
-          {!user.headerPhoto && (
-            <div className="max-w-[598px] h-full bg-zinc-800" />
-          )}
+          </div>
+        </Link>
+      )}
+      {!user.headerPhoto && (
+        <div
+          style={{
+            maxWidth: 598,
+            aspectRatio: 598 / 200,
+          }}
+          className="overflow-hidden relative"
+        >
+          <div className="max-w-[598px] h-full bg-zinc-800" />
         </div>
-      </Link>
+      )}
       <Link href={`/${user.username.slice(1)}/photo`}>
         <div className="absolute ml-4 -translate-y-[50%] flex items-center justify-center h-[141px] w-[141px] bg-black rounded-full">
           <Image
