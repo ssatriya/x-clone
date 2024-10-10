@@ -1,10 +1,11 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { PropsWithChildren, useEffect, useState } from "react";
+import { PropsWithChildren, useEffect, useState, useTransition } from "react";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 
 import { getInitialIndex } from "@/lib/utils";
+import LoadingSpinner from "@/components/loading-spinner";
 
 const routeIndexMap: Record<string, number> = {
   notifications: 0,
@@ -13,8 +14,9 @@ const routeIndexMap: Record<string, number> = {
 };
 
 const NotificationTabWrapper = ({ children }: PropsWithChildren) => {
-  const pathname = usePathname();
   const router = useRouter();
+  const pathname = usePathname();
+  const [isPending, startTransition] = useTransition();
 
   const defaultTab = "posts";
 
@@ -39,7 +41,9 @@ const NotificationTabWrapper = ({ children }: PropsWithChildren) => {
 
     const path = pathMap[index];
     if (path) {
-      router.push(path);
+      startTransition(() => {
+        router.push(path);
+      });
     }
   };
 
@@ -72,13 +76,28 @@ const NotificationTabWrapper = ({ children }: PropsWithChildren) => {
         </TabList>
         <TabPanels>
           <TabPanel>
-            <div className="max-w-[598px]">{children}</div>
+            {!isPending && <div className="max-w-[598px]">{children}</div>}
+            {isPending && (
+              <div className="w-full h-full flex items-start justify-center mt-10">
+                <LoadingSpinner />
+              </div>
+            )}
           </TabPanel>
           <TabPanel>
-            <div className="max-w-[598px]">{children}</div>
+            {!isPending && <div className="max-w-[598px]">{children}</div>}
+            {isPending && (
+              <div className="w-full h-full flex items-start justify-center mt-10">
+                <LoadingSpinner />
+              </div>
+            )}
           </TabPanel>
           <TabPanel>
-            <div className="max-w-[598px]">{children}</div>
+            {!isPending && <div className="max-w-[598px]">{children}</div>}
+            {isPending && (
+              <div className="w-full h-full flex items-start justify-center mt-10">
+                <LoadingSpinner />
+              </div>
+            )}
           </TabPanel>
         </TabPanels>
       </TabGroup>

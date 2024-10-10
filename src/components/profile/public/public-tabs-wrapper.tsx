@@ -1,10 +1,11 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { PropsWithChildren, useEffect, useState } from "react";
+import { PropsWithChildren, useEffect, useState, useTransition } from "react";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 
 import { getInitialIndex } from "@/lib/utils";
+import LoadingSpinner from "@/components/loading-spinner";
 
 type Props = {
   username: string;
@@ -22,6 +23,7 @@ const PublicTabsWrapper = ({
 }: PropsWithChildren<Props>) => {
   const router = useRouter();
   const pathname = usePathname();
+  const [isPending, startTransition] = useTransition();
 
   const defaultTab = "posts";
 
@@ -46,7 +48,9 @@ const PublicTabsWrapper = ({
 
     const path = pathMap[index];
     if (path) {
-      router.push(path);
+      startTransition(() => {
+        router.push(path);
+      });
     }
   };
 
@@ -80,13 +84,28 @@ const PublicTabsWrapper = ({
           </TabList>
           <TabPanels>
             <TabPanel>
-              <div className="md:w-[599px]">{children}</div>
+              {!isPending && <div className="md:w-[599px]">{children}</div>}
+              {isPending && (
+                <div className="w-full h-full flex items-start justify-center mt-10">
+                  <LoadingSpinner />
+                </div>
+              )}
             </TabPanel>
             <TabPanel>
-              <div className="md:w-[599px]">{children}</div>
+              {!isPending && <div className="md:w-[599px]">{children}</div>}
+              {isPending && (
+                <div className="w-full h-full flex items-start justify-center mt-10">
+                  <LoadingSpinner />
+                </div>
+              )}
             </TabPanel>
             <TabPanel>
-              <div className="md:w-[599px]">{children}</div>
+              {!isPending && <div className="md:w-[599px]">{children}</div>}
+              {isPending && (
+                <div className="w-full h-full flex items-start justify-center mt-10">
+                  <LoadingSpinner />
+                </div>
+              )}
             </TabPanel>
           </TabPanels>
         </TabGroup>
