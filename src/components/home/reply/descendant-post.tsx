@@ -1,12 +1,12 @@
 "use client";
 
 import { User } from "lucia";
-import { useEffect } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import kyInstance from "@/lib/ky";
 import { ReplyContext } from "@/types";
 import PostItem from "@/components/home/post/post-item";
+import LoadingSpinner from "@/components/loading-spinner";
 
 type Props = {
   postId: string;
@@ -14,7 +14,6 @@ type Props = {
 };
 
 const DescendantPost = ({ postId, loggedInUser }: Props) => {
-  const queryClient = useQueryClient();
   const queryKey = ["get-descendants-reply", postId];
 
   const { data, isLoading } = useQuery({
@@ -25,18 +24,11 @@ const DescendantPost = ({ postId, loggedInUser }: Props) => {
         .json<{ descendants: ReplyContext[] }>(),
   });
 
-  // useEffect(() => {
-  //   return () => {
-  //     queryClient.resetQueries({ queryKey });
-  //   };
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
   return (
     <>
       {isLoading && (
         <div className="flex items-center justify-center h-32">
-          <span className="loader"></span>
+          <LoadingSpinner />
         </div>
       )}
       {!isLoading &&

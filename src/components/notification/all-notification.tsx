@@ -7,6 +7,7 @@ import kyInstance from "@/lib/ky";
 import { Notification } from "@/types";
 import LikeNotification from "./like-notification";
 import FollowNotification from "./follow-notification";
+import LoadingSpinner from "@/components/loading-spinner";
 
 const AllNotification = () => {
   const queryClient = useQueryClient();
@@ -27,7 +28,7 @@ const AllNotification = () => {
   if (!data && isLoading) {
     return (
       <div className="w-full h-full flex items-start justify-center mt-10">
-        <span className="loader" />
+        <LoadingSpinner />
       </div>
     );
   }

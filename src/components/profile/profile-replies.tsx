@@ -7,6 +7,7 @@ import kyInstance from "@/lib/ky";
 import { CustomPost } from "@/types";
 import PostItem from "@/components/home/post/post-item";
 import QuoteItem from "@/components/home/post/quote-item";
+import LoadingSpinner from "@/components/loading-spinner";
 import RepostItem from "@/components/home/post/repost-item";
 import InfiniteScrollContainer from "@/components/infinite-scroll-container";
 
@@ -43,7 +44,7 @@ const ProfileReplies = ({ username, loggedInUser }: Props) => {
   if (isLoading) {
     return (
       <div className="w-full h-full flex items-start justify-center mt-10">
-        <span className="loader" />
+        <LoadingSpinner />
       </div>
     );
   }

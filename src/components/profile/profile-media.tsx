@@ -8,6 +8,7 @@ import kyInstance from "@/lib/ky";
 import Icons from "@/components/icons";
 import { formatDuration } from "@/lib/utils";
 import { MediaFormat, ProfilePostMedia } from "@/types";
+import LoadingSpinner from "@/components/loading-spinner";
 import InfiniteScrollContainer from "@/components/infinite-scroll-container";
 
 type Props = {
@@ -65,7 +66,7 @@ const ProfileMedia = ({ username }: Props) => {
   if (isLoading) {
     return (
       <div className="w-full h-full flex items-start justify-center mt-10">
-        <span className="loader" />
+        <LoadingSpinner />
       </div>
     );
   }

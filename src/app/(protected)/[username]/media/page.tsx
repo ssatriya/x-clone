@@ -1,10 +1,10 @@
 import { redirect } from "next/navigation";
 import { and, eq, ne, sql } from "drizzle-orm";
 
-import { userTable, mediaTable, notificationTable } from "@/lib/db/schema";
 import db from "@/lib/db";
 import ProfileMedia from "@/components/profile/profile-media";
 import { validateRequest } from "@/lib/auth/validate-request";
+import { userTable, mediaTable, notificationTable } from "@/lib/db/schema";
 
 type Props = {
   params: {

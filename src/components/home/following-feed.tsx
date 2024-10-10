@@ -1,19 +1,15 @@
 "use client";
 
 import { User } from "lucia";
-import {
-  useInfiniteQuery,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 
 import kyInstance from "@/lib/ky";
 import { CustomPost } from "@/types";
-import { useEffect } from "react";
 import PostItem from "./post/post-item";
 import QuoteItem from "./post/quote-item";
 import RepostItem from "./post/repost-item";
 import Button from "@/components/ui/button";
+import LoadingSpinner from "@/components/loading-spinner";
 import InfiniteScrollContainer from "@/components/infinite-scroll-container";
 
 type Props = {
@@ -67,7 +63,7 @@ const FollowingFeed = ({ loggedInUser }: Props) => {
   if (isLoading) {
     return (
       <div className="w-full h-full flex items-start justify-center mt-10">
-        <span className="loader" />
+        <LoadingSpinner />
       </div>
     );
   }

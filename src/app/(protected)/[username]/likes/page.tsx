@@ -3,7 +3,7 @@ import { and, eq, ne, sql } from "drizzle-orm";
 
 import db from "@/lib/db";
 import { validateRequest } from "@/lib/auth/validate-request";
-import { notificationTable, userTable } from "@/lib/db/schema";
+import { likeTable, notificationTable, userTable } from "@/lib/db/schema";
 import ProfileLikes from "@/components/profile/personal/profile-likes";
 
 type Props = {
@@ -63,6 +63,27 @@ export default async function Page({ params: { username } }: Props) {
   const { user: loggedInUser } = await validateRequest();
 
   if (!loggedInUser) return redirect("/");
+
+  const [{ likeCount }] = await db
+    .select({
+      likeCount: sql<number>`count(${likeTable})`.mapWith(Number),
+    })
+    .from(likeTable)
+    .where(eq(likeTable.userOriginId, loggedInUser.id));
+
+  if (likeCount === 0) {
+    return (
+      <div className="flex flex-col my-8 max-w-[400px] mx-auto px-8">
+        <span className="font-extrabold text-[31px] leading-9 text-secondary-lighter mb-2">
+          You don’t have any likes yet
+        </span>
+        <span className="text-[15px] leading-5 text-gray mb-7">
+          Tap the heart on any post to show it some love. When you do, it’ll
+          show up here.
+        </span>
+      </div>
+    );
+  }
 
   return <ProfileLikes username={username} loggedInUser={loggedInUser} />;
 }

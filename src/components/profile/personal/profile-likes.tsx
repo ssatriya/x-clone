@@ -7,6 +7,7 @@ import kyInstance from "@/lib/ky";
 import { ProfilePostLikes } from "@/types";
 import PostItem from "@/components/home/post/post-item";
 import QuoteItem from "@/components/home/post/quote-item";
+import LoadingSpinner from "@/components/loading-spinner";
 import RepostItem from "@/components/home/post/repost-item";
 import InfiniteScrollContainer from "@/components/infinite-scroll-container";
 
@@ -52,11 +53,7 @@ const ProfileLikes = ({ loggedInUser, username }: Props) => {
   const likedPosts = data?.pages.flatMap((page) => page.likedPosts) || [];
 
   if (isLoading) {
-    return (
-      <div className="w-full h-full flex items-start justify-center mt-10">
-        <span className="loader" />
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   return (

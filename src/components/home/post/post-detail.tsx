@@ -32,6 +32,7 @@ import DescendantPost from "../reply/descendant-post";
 import { CreateReplyPayload } from "@/lib/zod-schema";
 import { useUploadMedia } from "@/hooks/useUploadMedia";
 import QuotePreview from "./quote-preview/quote-preview";
+import LoadingSpinner from "@/components/loading-spinner";
 import MoreButton from "./engagement-button/more/more-button";
 import useCurrentFocusPost from "@/hooks/useCurrentFocusPost";
 import LikeButton from "./engagement-button/like/like-button";
@@ -212,7 +213,7 @@ const PostDetail = ({ loggedInUser, username, postId }: Props) => {
   if (!data && isLoading) {
     return (
       <div className="flex items-center justify-center w-full h-auto scroll-mt-[53px] py-[123px]">
-        <span className="loader"></span>
+        <LoadingSpinner />
       </div>
     );
   }

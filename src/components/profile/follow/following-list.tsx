@@ -5,6 +5,7 @@ import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
 
 import kyInstance from "@/lib/ky";
 import { Following } from "@/types";
+import LoadingSpinner from "@/components/loading-spinner";
 import UserFollowItem from "@/components/profile/follow/user-follow-item";
 import InfiniteScrollContainer from "@/components/infinite-scroll-container";
 
@@ -38,7 +39,7 @@ const FollowingList = ({ username, loggedInUser }: Props) => {
   if (isLoading) {
     return (
       <div className="w-full h-full flex items-start justify-center mt-10">
-        <span className="loader" />
+        <LoadingSpinner />
       </div>
     );
   }

@@ -10,6 +10,7 @@ import { UserInfo } from "@/types";
 import Icons from "@/components/icons";
 import Button from "@/components/ui/button";
 import FollowButton from "../follow/follow-button";
+import LoadingSpinner from "@/components/loading-spinner";
 
 type Props = {
   user: UserInfo;
@@ -94,7 +95,7 @@ const PublicProfileInfo = ({ user, usernameParams }: Props) => {
         </div>
         <div className="h-[188px] w-full mt-1 mb-3" />
         <div className="absolute inset-0 flex items-center justify-center z-10">
-          <div className="loader" />
+          <LoadingSpinner />
         </div>
       </div>
     );

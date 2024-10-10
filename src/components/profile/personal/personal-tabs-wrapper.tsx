@@ -2,17 +2,18 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import {
-  PropsWithChildren,
-  useEffect,
   useRef,
   useState,
+  useEffect,
   useTransition,
+  PropsWithChildren,
 } from "react";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 
 import Icons from "@/components/icons";
 import Button from "@/components/ui/button";
 import { getInitialIndex } from "@/lib/utils";
+import LoadingSpinner from "@/components/loading-spinner";
 
 type Props = {
   username: string;
@@ -162,7 +163,7 @@ const PersonalTabsWrapper = ({
               {!isPending && <div className="md:w-[599px]">{children}</div>}
               {isPending && (
                 <div className="w-full h-full flex items-start justify-center mt-10">
-                  <span className="loader" />
+                  <LoadingSpinner />
                 </div>
               )}
             </TabPanel>
@@ -170,7 +171,7 @@ const PersonalTabsWrapper = ({
               {!isPending && <div className="md:w-[599px]">{children}</div>}
               {isPending && (
                 <div className="w-full h-full flex items-start justify-center mt-10">
-                  <span className="loader" />
+                  <LoadingSpinner />
                 </div>
               )}
             </TabPanel>
@@ -178,7 +179,7 @@ const PersonalTabsWrapper = ({
               {!isPending && <div className="md:w-[599px]">{children}</div>}
               {isPending && (
                 <div className="w-full h-full flex items-start justify-center mt-10">
-                  <span className="loader" />
+                  <LoadingSpinner />
                 </div>
               )}
             </TabPanel>
@@ -186,7 +187,7 @@ const PersonalTabsWrapper = ({
               {!isPending && <div className="md:w-[599px]">{children}</div>}
               {isPending && (
                 <div className="w-full h-full flex items-start justify-center mt-10">
-                  <span className="loader" />
+                  <LoadingSpinner />
                 </div>
               )}
             </TabPanel>
@@ -194,7 +195,7 @@ const PersonalTabsWrapper = ({
               {!isPending && <div className="md:w-[599px]">{children}</div>}
               {isPending && (
                 <div className="w-full h-full flex items-start justify-center mt-10">
-                  <span className="loader" />
+                  <LoadingSpinner />
                 </div>
               )}
             </TabPanel>
@@ -209,7 +210,7 @@ const PersonalTabsWrapper = ({
                 {!isPending && children}
                 {isPending && (
                   <div className="w-full h-full flex items-start justify-center mt-10">
-                    <span className="loader" />
+                    <LoadingSpinner />
                   </div>
                 )}
               </div>
