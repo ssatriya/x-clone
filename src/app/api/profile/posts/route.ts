@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
         post.content AS "postContent",
         post.parent_post_id AS "parentPostId",
         post.root_post_id AS "rootPostId",
-        post.created_at AS "createdAt",
+        post.created_at AT TIME ZONE 'UTC' AS "createdAt",
         post.post_type AS "postType",
         "user".id AS "userId",
         "user".username,
