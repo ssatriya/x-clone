@@ -1,11 +1,10 @@
 import { redirect } from "next/navigation";
-
-import { validateRequest } from "@/lib/auth/validate-request";
-import db from "@/lib/db";
-import { notificationTable, userTable } from "@/lib/db/schema";
 import { and, eq, ne, sql } from "drizzle-orm";
+
+import db from "@/lib/db";
+import { validateRequest } from "@/lib/auth/validate-request";
 import ProfilePosts from "@/components/profile/profile-posts";
-import { Suspense } from "react";
+import { notificationTable, userTable } from "@/lib/db/schema";
 
 type Props = {
   params: {

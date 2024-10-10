@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import { and, eq, ne, sql } from "drizzle-orm";
 
 import db from "@/lib/db";
-import { sleep } from "@/lib/utils";
 import HomeTab from "@/components/home/home-tab";
 import { notificationTable } from "@/lib/db/schema";
 import { validateRequest } from "@/lib/auth/validate-request";

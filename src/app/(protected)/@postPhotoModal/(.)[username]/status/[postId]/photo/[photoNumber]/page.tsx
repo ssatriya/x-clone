@@ -3,12 +3,12 @@ import { aliasedTable, and, eq, sql } from "drizzle-orm";
 
 import {
   likeTable,
-  mediaTable,
   postTable,
-  quoteTable,
-  replyTable,
-  repostTable,
   userTable,
+  mediaTable,
+  replyTable,
+  quoteTable,
+  repostTable,
 } from "@/lib/db/schema";
 import db from "@/lib/db";
 import { ForYouFeedPost } from "@/types";

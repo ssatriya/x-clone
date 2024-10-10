@@ -1,10 +1,10 @@
+import { redirect } from "next/navigation";
 import { and, eq, ne, sql } from "drizzle-orm";
 
 import db from "@/lib/db";
-import { notificationTable, userTable } from "@/lib/db/schema";
 import Button from "@/components/ui/button";
 import { validateRequest } from "@/lib/auth/validate-request";
-import { redirect } from "next/navigation";
+import { notificationTable, userTable } from "@/lib/db/schema";
 
 type Props = {
   params: {

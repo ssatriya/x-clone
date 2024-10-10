@@ -1,11 +1,11 @@
 import { eq, sql } from "drizzle-orm";
+import { redirect } from "next/navigation";
 
 import db from "@/lib/db";
 import Button from "@/components/ui/button";
 import { followerTable, userTable } from "@/lib/db/schema";
-import FollowingList from "@/components/profile/follow/following-list";
 import { validateRequest } from "@/lib/auth/validate-request";
-import { redirect } from "next/navigation";
+import FollowingList from "@/components/profile/follow/following-list";
 
 type Props = {
   params: {

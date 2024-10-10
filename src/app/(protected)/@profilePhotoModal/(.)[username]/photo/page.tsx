@@ -1,7 +1,8 @@
-import ProfilePhotoModal from "@/components/home/modal/profile-photo-modal";
+import { eq } from "drizzle-orm";
+
 import db from "@/lib/db";
 import { userTable } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import ProfilePhotoModal from "@/components/home/modal/profile-photo-modal";
 
 type Props = {
   params: {

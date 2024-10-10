@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
-import { validateRequest } from "@/lib/auth/validate-request";
 import PostDetail from "@/components/home/post/post-detail";
+import { validateRequest } from "@/lib/auth/validate-request";
 
 type Props = {
   params: {
