@@ -5,8 +5,8 @@ import Icons from "@/components/icons";
 const Search = () => {
   return (
     <div className="bg-black h-[53px] pt-1">
-      <div className="flex items-center border border-transparent rounded-full group bg-muted focus-within:border-blue focus-within:bg-inherit">
-        <Icons.search className="w-[44px] h-[19px] fill-gray pl-3" />
+      <div className="flex focus-within:border-primary items-center border border-transparent rounded-full group bg-muted focus-within:border-blue focus-within:bg-inherit">
+        <Icons.search className="w-[44px] h-[19px] fill-gray group-focus-within:fill-primary pl-3" />
         <input
           autoCapitalize="sentences"
           placeholder="Search"
